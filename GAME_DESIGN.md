@@ -45,7 +45,9 @@ Each theme has 5 questions per level (90 questions in all). Each level picks 3 o
 
 ## Players
 - 1 to 4 players on one laptop. Each player types a name (letters only, up to 8),
-  names their pup, and picks a breed. Skip the pup name and you get Biscuit, Waffles, Peanut or Noodle.
+  names their pup, and picks a breed. The boxes suggest fun random names (like LEGEND and
+  Sir Barksalot) - leave a box empty to use the suggestion, or press 🎲 to roll a new one.
+  The name lists are PLAYER_NAMES and PUP_NAMES at the top of game.js.
 - Everyone has their own lives, coins, level and shop stuff.
 - Turns:
   - Right answer: you keep going (and after passing a level you carry straight on to the next).
@@ -75,6 +77,20 @@ Each theme has 5 questions per level (90 questions in all). Each level picks 3 o
   In multiplayer they're also for teasing the other players (keep it silly and friendly).
 - Everything you buy lasts for one game.
 - Items live in `shop.js` - easy to add more.
+
+## Sound and music
+- Everything is made with code in `sound.js` (no sound files).
+- Music: a hip hop beat (90 beats per minute, with swing) with piano chords Am - F - C - G.
+  It starts on the first click.
+- Sounds: piano run for right answers, sad trombone for wrong ones, a noise for each naughty
+  thing (hiss, splat, bark, crash, burp, boing), coin ding in the shop, fanfare for passing a
+  level, a big "da da da DAAA" for winning, a jingle for each new turn, and the robot host bleeps
+  when it talks.
+- 🎵 and 🔊 buttons in the top right turn music and sound effects on and off (remembered).
+
+## Polish
+- Confetti when you pass a level, and lots more when you win.
+- Keyboard: A/B/C/D or 1/2/3/4 to answer, Enter or Space for the next question.
 
 ## Build order (each step is playable)
 1. One theme, one question, answers, right/wrong, dog reacts

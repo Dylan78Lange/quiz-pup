@@ -369,13 +369,59 @@ body {
 .buy-button:disabled { background: #444; border-color: #666; color: #bbb; cursor: default; }
 #shop-close { margin: 14px 0 8px; }
 
+/* Music and sound on/off buttons - always on top, top right corner */
+#sound-buttons {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 9;
+  display: flex;
+  gap: 6px;
+}
+#sound-buttons button {
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+  background: white;
+  cursor: pointer;
+  padding: 0;
+}
+#toggle-music.off { opacity: 0.4; text-decoration: line-through; }
+
+/* Falling confetti */
+.confetti {
+  position: absolute;
+  top: -40px;
+  z-index: 8;
+  font-size: 28px;
+  pointer-events: none;
+  animation: fall linear forwards;
+}
+@keyframes fall {
+  to { transform: translateY(720px) rotate(540deg); opacity: 0.6; }
+}
+
 /* Setup: players and pups */
+.name-row { display: flex; gap: 6px; align-items: center; }
+.dice-button {
+  font-size: 24px;
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  border: 3px solid var(--gold);
+  background: var(--pink);
+  cursor: pointer;
+  padding: 0;
+}
+.dice-button:hover { transform: rotate(20deg); }
 #count-buttons { display: flex; gap: 16px; margin-top: 20px; }
 .count-button { font-size: 40px; width: 90px; height: 90px; padding: 0; }
 .setup-fields { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 12px; }
 .setup-fields label { display: flex; flex-direction: column; gap: 6px; font-weight: bold; color: var(--gold); }
 .setup-fields input {
-  width: 200px;
+  width: 220px;
   font-family: "Courier New", monospace;
   font-size: 26px;
   font-weight: bold;

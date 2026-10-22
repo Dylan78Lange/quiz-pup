@@ -32,16 +32,24 @@ const HOST_KEY = "quiz-pup-host"; // remembers which host you picked
 
 // Naughty things the pup does when you get one wrong - add your own!
 // "effect" is what shows up, "how" is the animation: "drop" falls from above, "pop" bursts in
+// "sound" is one of the sounds in sound.js
 const NAUGHTY_THINGS = [
-  { says: "Uh-oh... the pup is peeing on your leg!", effect: "💦💦💦", how: "pop" },
-  { says: "Ewww! The pup pooped on the stage!", effect: "💩", how: "drop" },
-  { says: "GRRR! The pup is growling at you!", effect: "💢 GRRR! WOOF!", how: "pop" },
-  { says: "CRASH! The pup knocked over the vase!", effect: "🏺💥", how: "drop" },
-  { says: "The pup ate the host's homework... and burped!", effect: "📄💨", how: "pop" },
-  { says: "The pup is chasing its own tail!", effect: "🌀🌀🌀", how: "pop" },
+  { says: "Uh-oh... the pup is peeing on your leg!", effect: "💦💦💦", how: "pop", sound: "hiss" },
+  { says: "Ewww! The pup pooped on the stage!", effect: "💩", how: "drop", sound: "splat" },
+  { says: "GRRR! The pup is growling at you!", effect: "💢 GRRR! WOOF!", how: "pop", sound: "bark" },
+  { says: "CRASH! The pup knocked over the vase!", effect: "🏺💥", how: "drop", sound: "crash" },
+  { says: "The pup ate the host's homework... and burped!", effect: "📄💨", how: "pop", sound: "burp" },
+  { says: "The pup is chasing its own tail!", effect: "🌀🌀🌀", how: "pop", sound: "boing" },
 ];
 
-const PUP_NAMES = ["Biscuit", "Waffles", "Peanut", "Noodle"]; // if you don't name your pup
+// Fun names for players who don't type one (letters only, up to 8)
+const PLAYER_NAMES = ["ROCKSTAR", "CHAMP", "GENIUS", "WIZARD", "LEGEND", "TURBO", "MAESTRO",
+  "SPARKY", "BRAINIAC", "HOTSHOT", "ACE", "BLAZE", "COMET", "ZIGZAG", "DJ", "MC"];
+// Fun names for pups (up to 14 letters)
+const PUP_NAMES = ["Biscuit", "Waffles", "Noodle", "Sir Barksalot", "Captain Fluff", "DJ Woofer",
+  "Professor Paws", "Sprinkles", "Meatball", "Pickles", "Mr Wiggles", "Princess Pom",
+  "Beethoven", "Lil Woof", "MC Barkley", "Cookie Dough"];
+
 const LETTERS = ["A", "B", "C", "D"];
 const MAX_SCORES = 10;               // how many players fit on the Top Score Board
 const SCORES_KEY = "quiz-pup-scores"; // where scores are saved in the browser
@@ -174,11 +182,27 @@ function showPlayerForm() {
   $("setup-title").textContent = players.length > 1 ? "PLAYER " + (setupIndex + 1) : "WHO'S PLAYING?";
   $("player-name").value = "";
   $("pup-name").value = "";
-  $("pup-name").placeholder = PUP_NAMES[setupIndex];
+  $("player-name").placeholder = freshName(PLAYER_NAMES, "name");
+  $("pup-name").placeholder = freshName(PUP_NAMES, "dogName");
   chosenBreed = BREEDS[setupIndex % BREEDS.length].key;
   showBreedButtons();
   $("setup-next").textContent = setupIndex + 1 < players.length ? "Next player ▶" : "Let's go! ★";
   $("player-name").focus();
+}
+
+// A random name nobody else in this game has yet
+function freshName(list, field) {
+  const taken = players.slice(0, setupIndex).map(p => p[field]);
+  const free = list.filter(n => !taken.includes(n));
+  return pick(free.length > 0 ? free : list);
+}
+
+// The 🎲 buttons: fill in a new random name
+function rollName(inputId, list, field) {
+  const input = $(inputId);
+  let name = freshName(list, field);
+  if (name === input.value && list.length > 1) name = freshName(list.filter(n => n !== name), field);
+  input.value = name;
 }
 
 function showBreedButtons() {
@@ -196,8 +220,8 @@ function showBreedButtons() {
 function savePlayerForm() {
   const p = players[setupIndex];
   // Names are letters only, like an arcade game
-  p.name = $("player-name").value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 8) || "P" + (setupIndex + 1);
-  p.dogName = $("pup-name").value.trim().slice(0, 12) || PUP_NAMES[setupIndex];
+  p.name = $("player-name").value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 8) || $("player-name").placeholder;
+  p.dogName = $("pup-name").value.trim().slice(0, 14) || $("pup-name").placeholder;
   p.breed = chosenBreed;
   setupIndex++;
   if (setupIndex < players.length) {
@@ -217,6 +241,7 @@ function startTurn() {
     $("turn-title").textContent = p.name + "'S TURN!";
     $("turn-text").textContent = "Pass the laptop to " + p.name + ". " + p.dogName + " is ready!";
     showOverlay("turn-screen");
+    sfx.turn();
   } else {
     continueTurn();
   }
@@ -421,6 +446,7 @@ function chooseAnswer(i) {
     hostSaysEl.textContent = pick(host().right) + " +" + level().coins + " coins!";
     dogEl.className = "pup happy";
     showPot(true);
+    sfx.right();
     nextBtn.textContent = p.current + 1 < p.levelQuestions.length ? "Next question ▶" : "See results ★";
   } else {
     // A wrong answer costs a life and ends the level (you need all 3 right to pass)
@@ -434,6 +460,8 @@ function chooseAnswer(i) {
     effectEl.textContent = oops.effect;
     effectEl.className = oops.how;
     nextBtn.textContent = "Oh no... ▶";
+    sfx.wrong();
+    setTimeout(sfx[oops.sound], 1400); // the naughty noise comes after the sad trombone
   }
 
   showHud();
@@ -495,8 +523,12 @@ function levelPassed() {
     showEnd("YOU WIN!!!",
       "You beat HARD level! " + p.dogName + " is doing the happiest dance EVER! 🐶💃",
       finishLabel(), endTurn, false);
+    sfx.win();
+    confetti(80);
     return;
   }
+  sfx.fanfare();
+  confetti(30);
 
   p.levelIndex++;
   // A right answer means you keep your turn, so carry straight on
@@ -605,7 +637,44 @@ function showScores(newOnes) {
   showOverlay("scores-screen");
 }
 
+// ---------- Confetti ----------
+const CONFETTI = ["🎉", "⭐", "🎊", "🐾", "✨", "🦴"];
+
+function confetti(howMany) {
+  const stage = $("stage");
+  for (let i = 0; i < howMany; i++) {
+    const bit = document.createElement("span");
+    bit.className = "confetti";
+    bit.textContent = pick(CONFETTI);
+    bit.style.left = Math.random() * 100 + "%";
+    bit.style.animationDuration = 1.5 + Math.random() * 2 + "s";
+    bit.style.animationDelay = Math.random() * 0.8 + "s";
+    stage.appendChild(bit);
+    setTimeout(() => bit.remove(), 4500);
+  }
+}
+
+// ---------- Keyboard shortcuts ----------
+// A/B/C/D or 1/2/3/4 to answer, Enter or Space for the next question
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") return;
+  if (document.querySelector(".overlay:not(.hidden)")) return;
+  const key = e.key.toUpperCase();
+  let choice = LETTERS.indexOf(key);
+  if (choice === -1) choice = ["1", "2", "3", "4"].indexOf(key);
+  const answers = answersEl.querySelectorAll(".answer");
+  if (choice >= 0 && answers[choice] && !answers[choice].disabled) {
+    answers[choice].click();
+  } else if ((e.key === "Enter" || e.key === " ") && e.target.tagName !== "BUTTON" &&
+             !nextBtn.classList.contains("hidden")) {
+    e.preventDefault();
+    nextBtn.click();
+  }
+});
+
 // ---------- Buttons ----------
+$("roll-player").addEventListener("click", () => rollName("player-name", PLAYER_NAMES, "name"));
+$("roll-pup").addEventListener("click", () => rollName("pup-name", PUP_NAMES, "dogName"));
 nextBtn.addEventListener("click", () => {
   if (lastWrong) return levelFailed();
   const p = me();

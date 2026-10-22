@@ -25,15 +25,16 @@ const SHOP_ITEMS = [
   { type: "wear", emoji: "👑", name: "Crown",   price: 400 },
 
   // Tricks (emotes)
-  { type: "trick", emoji: "🗣️", name: "Bark",      price: 50,  move: "naughty", effect: "WOOF! WOOF!",
+  // "sound" is one of the sounds in sound.js
+  { type: "trick", emoji: "🗣️", name: "Bark",      price: 50,  move: "naughty", effect: "WOOF! WOOF!", sound: "bark",
     says: "barks: WOOF WOOF!",          tease: "barks at" },
-  { type: "trick", emoji: "🌀", name: "Spin",      price: 100, move: "spin",    effect: "",
+  { type: "trick", emoji: "🌀", name: "Spin",      price: 100, move: "spin",    effect: "",            sound: "boing",
     says: "spins around! Wheee!",       tease: "spins around showing off to" },
-  { type: "trick", emoji: "🔄", name: "Roll Over", price: 150, move: "roll",    effect: "",
+  { type: "trick", emoji: "🔄", name: "Roll Over", price: 150, move: "roll",    effect: "",            sound: "boing",
     says: "rolls over! Good pup!",      tease: "rolls over laughing at" },
-  { type: "trick", emoji: "💃", name: "Dance",     price: 200, move: "happy",   effect: "🎵🎶🎵",
+  { type: "trick", emoji: "💃", name: "Dance",     price: 200, move: "happy",   effect: "🎵🎶🎵",       sound: "fanfare",
     says: "drops the beat and DANCES!", tease: "does a victory dance in front of" },
-  { type: "trick", emoji: "😜", name: "Raspberry", price: 300, move: "naughty", effect: "Pthhhbt! 😜",
+  { type: "trick", emoji: "😜", name: "Raspberry", price: 300, move: "naughty", effect: "Pthhhbt! 😜",  sound: "raspberry",
     says: "blows a raspberry! Pthhhbt!", tease: "blows a raspberry at" },
 ];
 
@@ -84,6 +85,7 @@ function popEffect(text) {
 function doTrick(trick) {
   animate(dogEl, trick.move);
   popEffect(trick.effect);
+  sfx[trick.sound]();
   hostSaysEl.textContent = me().dogName + " " + trick.says;
 }
 
@@ -91,6 +93,7 @@ function doTrick(trick) {
 function tease(owner, trick, pupEl) {
   animate(pupEl, trick.move);
   popEffect(trick.effect || trick.emoji);
+  sfx[trick.sound]();
   hostSaysEl.textContent = owner.dogName + " " + trick.tease + " " + me().name + "! " + trick.emoji;
 }
 
@@ -143,6 +146,7 @@ function showShop() {
 function buy(item) {
   const p = me();
   p.bank -= item.price;
+  sfx.coin();
 
   if (item.type === "treat") {
     if (item.life) p.lives++;

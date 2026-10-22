@@ -11,6 +11,11 @@
     <div class="spotlight left"></div>
     <div class="spotlight right"></div>
 
+    <div id="sound-buttons">
+      <button id="toggle-music" title="Music">🎵</button>
+      <button id="toggle-sound" title="Sound effects">🔊</button>
+    </div>
+
     <h1 id="title">QUIZ PUP</h1>
 
     <div id="hud">
@@ -78,8 +83,18 @@
       <div id="setup-player" class="hidden">
         <h1 id="setup-title" class="overlay-title small">PLAYER 1</h1>
         <div class="setup-fields">
-          <label>Your name <input id="player-name" maxlength="8" placeholder="SKY" autocomplete="off" spellcheck="false"></label>
-          <label>Your pup's name <input id="pup-name" maxlength="12" placeholder="Biscuit" autocomplete="off" spellcheck="false"></label>
+          <label>Your name
+            <span class="name-row">
+              <input id="player-name" maxlength="8" autocomplete="off" spellcheck="false">
+              <button type="button" id="roll-player" class="dice-button" title="Pick a random name">🎲</button>
+            </span>
+          </label>
+          <label>Your pup's name
+            <span class="name-row">
+              <input id="pup-name" maxlength="14" autocomplete="off" spellcheck="false">
+              <button type="button" id="roll-pup" class="dice-button" title="Pick a random pup name">🎲</button>
+            </span>
+          </label>
         </div>
         <p>Pick your pup:</p>
         <div id="breed-buttons"></div>
@@ -150,6 +165,7 @@
   </div>
 
   <script src="dogs.js"></script>
+  <script src="sound.js"></script>
   <script src="questions/themes.js"></script>
   <script src="questions/geography.js"></script>
   <script src="questions/video-games.js"></script>
