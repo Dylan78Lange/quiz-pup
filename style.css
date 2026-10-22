@@ -183,6 +183,18 @@ body {
 #theme { color: var(--gold); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
 #question { font-size: 24px; font-weight: bold; margin-top: 4px; }
 
+/* Logo picture questions: the logo is painted in its brand color */
+#logo-card {
+  display: inline-block;
+  background: white;
+  border-radius: 14px;
+  padding: 12px;
+  margin: 8px 0 2px;
+  box-shadow: 0 0 0 4px var(--gold);
+  animation: pop 0.5s ease-out;
+}
+#logo svg { width: 110px; height: 110px; display: block; }
+
 /* Answer boxes - pointy "game show" shape */
 #answers {
   display: grid;

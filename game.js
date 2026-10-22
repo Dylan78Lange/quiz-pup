@@ -419,6 +419,7 @@ function showQuestion() {
   lastWrong = false;
   themeEl.textContent = q.theme + "  •  Question " + (p.current + 1) + " of " + p.levelQuestions.length;
   questionEl.textContent = q.question;
+  showLogo(q);
   answersEl.innerHTML = "";
   nextBtn.classList.add("hidden");
   passBtn.classList.toggle("hidden", stillPlaying().length < 2);
@@ -437,6 +438,13 @@ function showQuestion() {
     btn.addEventListener("click", () => chooseAnswer(i));
     answersEl.appendChild(btn);
   });
+}
+
+// Picture questions have a "logo" - one of the names in logos.js
+function showLogo(q) {
+  const card = $("logo-card");
+  card.classList.toggle("hidden", !q.logo);
+  $("logo").innerHTML = q.logo ? logoSvg(q.logo) : "";
 }
 
 function chooseAnswer(i) {
