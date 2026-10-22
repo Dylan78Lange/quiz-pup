@@ -8,12 +8,17 @@
 </head>
 <body>
   <div id="stage">
+    <div class="spotlight left"></div>
+    <div class="spotlight right"></div>
+
     <h1 id="title">QUIZ PUP</h1>
 
     <div id="host">
-      <div id="host-face">🕺</div>
+      <div id="host-face">🕺<span id="mic">🎤</span></div>
       <div id="host-says">Welcome to Quiz Pup!</div>
     </div>
+
+    <div id="progress"></div>
 
     <div id="question-box">
       <div id="theme"></div>
@@ -22,13 +27,29 @@
 
     <div id="answers"></div>
 
-    <div id="dog-area">
+    <div id="floor">
       <div id="effect"></div>
       <div id="dog">🐶</div>
       <div id="dog-name">Biscuit</div>
     </div>
 
-    <button id="next" class="hidden">Next question ▶</button>
+    <button id="next" class="big-button hidden">Next question ▶</button>
+
+    <!-- Start screen -->
+    <div id="start-screen" class="overlay">
+      <h1 class="overlay-title">QUIZ PUP</h1>
+      <div class="overlay-dog">🐶</div>
+      <p>The quiz show where your pup is the star!</p>
+      <button id="start" class="big-button">★ START THE SHOW ★</button>
+    </div>
+
+    <!-- End of level screen -->
+    <div id="end-screen" class="overlay hidden">
+      <h1 id="end-title" class="overlay-title"></h1>
+      <div id="end-stars"></div>
+      <p id="end-text"></p>
+      <button id="again" class="big-button">Play again ↺</button>
+    </div>
   </div>
 
   <script src="questions.js"></script>
