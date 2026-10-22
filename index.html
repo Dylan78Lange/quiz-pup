@@ -36,8 +36,12 @@
 
     <div id="floor">
       <div id="effect"></div>
-      <div id="dog">🐶</div>
+      <div id="pup-row">
+        <span id="toys"></span>
+        <div id="dog"><span id="hat"></span>🐶</div>
+      </div>
       <div id="dog-name">Biscuit</div>
+      <div id="tricks"></div>
     </div>
 
     <button id="next" class="big-button hidden">Next question ▶</button>
@@ -78,8 +82,21 @@
       </div>
       <div class="end-buttons">
         <button id="end-main" class="big-button"></button>
+        <button id="end-shop" class="big-button shop">🛒 Pup Shop</button>
         <button id="end-quit" class="big-button quit">Quit &amp; keep my coins</button>
       </div>
+    </div>
+
+    <!-- Pup Shop (opens on top of the end screen) -->
+    <div id="shop-screen" class="overlay hidden">
+      <h1 class="overlay-title small">PUP SHOP</h1>
+      <div id="shop-top">
+        <div id="shop-dog"><span id="shop-hat"></span>🐶</div>
+        <div>Your coins: <span class="coin">Q</span> <span id="shop-coins">0</span></div>
+      </div>
+      <p id="shop-says"></p>
+      <div id="shop-items"></div>
+      <button id="shop-close" class="big-button">Back to the show ▶</button>
     </div>
   </div>
 
@@ -91,5 +108,6 @@
   <script src="questions/brand-icons.js"></script>
   <script src="questions/famous-people.js"></script>
   <script src="game.js"></script>
+  <script src="shop.js"></script>
 </body>
 </html>

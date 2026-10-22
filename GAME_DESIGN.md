@@ -51,8 +51,15 @@ Each theme has 5 questions per level (90 questions in all). Each level picks 3 o
 - Scoreboard is saved only in this browser on this computer (no online, no personal info - initials only).
 
 ## Shop
-- Spend coins on treats, toys and emote tricks.
-- Emotes let you tease the other player (keep it silly and friendly).
+- The Pup Shop opens between levels (the "🛒 Pup Shop" button on the end-of-level screen).
+- Spending uses your banked coins, so it lowers your Top Score Board score - spend or save?
+- Treats: the pup eats them right away. Super Steak (500) gives +1 life (up to 3).
+- Toys: sit next to the pup on stage.
+- Dress-up: one hat at a time on the pup's head (bow, cap, top hat, crown).
+- Tricks (emotes): buttons under the pup - bark, spin, roll over, dance, raspberry.
+  In multiplayer these will be for teasing the other players (keep it silly and friendly).
+- Everything you buy lasts for one game.
+- Items live in `shop.js` - easy to add more.
 
 ## Build order (each step is playable)
 1. One theme, one question, answers, right/wrong, dog reacts

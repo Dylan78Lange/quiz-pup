@@ -109,6 +109,7 @@ function newGame() {
   lives = LIVES;
   bank = 0;
   levelIndex = 0;
+  resetShop();
   startScreen.classList.add("hidden");
   showThemePicker();
 }
@@ -218,6 +219,7 @@ function showEnd(title, text, mainLabel, mainAction, quit, canSave) {
   endMainBtn.textContent = mainLabel;
   afterEnd = mainAction;
   endQuitBtn.classList.toggle("hidden", !quit);
+  document.getElementById("end-shop").classList.toggle("hidden", !quit); // shop is open between levels
   endScreen.classList.remove("hidden");
 }
 

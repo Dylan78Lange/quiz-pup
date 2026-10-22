@@ -25,3 +25,4 @@ This is a child's first game project. The person chatting with you may be a kid.
 - `questions/themes.js` - the list of themes
 - `questions/<theme>.js` - one file of questions per theme (easy to add your own)
 - `game.js` - the game code
+- `shop.js` - the Pup Shop: things to buy and how buying works
