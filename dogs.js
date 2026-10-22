@@ -144,8 +144,60 @@ function dogBodySvg(breed) {
     s += '<circle cx="57" cy="138" r="7" ' + fur + '/><circle cx="83" cy="138" r="7" ' + fur + "/>";
   }
 
-  // Head (the same face as the small pups)
-  s += '<g class="head"><svg x="20" y="0" width="100" height="100" viewBox="0 0 100 100" overflow="visible">' + dogFace(breed) + "</svg></g>";
+  // Head (the same face as the small pups), plus extras that move with the head:
+  // angry eyebrows, dizzy swirl eyes, and homework paper in its mouth
+  s += '<g class="head"><svg x="20" y="0" width="100" height="100" viewBox="0 0 100 100" overflow="visible">' + dogFace(breed);
+  s += '<g class="brows" stroke="#1a1040" stroke-width="3.5" stroke-linecap="round"><path d="M29 43 L44 49"/><path d="M71 43 L56 49"/></g>';
+  s += '<g class="swirl-eyes" fill="' + d.fur + '" stroke="#1a1040" stroke-width="1.8" stroke-linecap="round">';
+  s += '<circle cx="38" cy="54" r="6" stroke="none"/><circle cx="62" cy="54" r="6" stroke="none"/>';
+  s += '<path fill="none" d="M38 54 m-1 0 a1.5 1.5 0 1 1 2 1 a3 3 0 1 1 -4 -3 a4.5 4.5 0 1 1 6 6"/>';
+  s += '<path fill="none" d="M62 54 m-1 0 a1.5 1.5 0 1 1 2 1 a3 3 0 1 1 -4 -3 a4.5 4.5 0 1 1 6 6"/></g>';
+  s += '<g class="paper"><rect x="40" y="74" width="26" height="16" rx="1" fill="#ffffff" stroke="#1a1040" stroke-width="1.5" transform="rotate(-8 53 82)"/>';
+  s += '<path d="M44 79 L62 77 M44 83 L62 81 M44 87 L56 86" stroke="#7aa7d6" stroke-width="1.2"/></g>';
+  s += "</svg></g>";
+
+  // Paper bits that fall while the pup chews the homework
+  s += '<g class="bits" fill="#ffffff" stroke="#1a1040" stroke-width="0.8">';
+  s += '<rect class="bit b1" x="64" y="88" width="4" height="4"/><rect class="bit b2" x="74" y="90" width="3" height="5"/>';
+  s += '<rect class="bit b3" x="69" y="92" width="4" height="3"/></g>';
+
+  // Burp cloud
+  s += '<g class="burp"><g fill="#d4f0b0" stroke="#1a1040" stroke-width="1.5">';
+  s += '<circle cx="104" cy="64" r="11"/><circle cx="118" cy="58" r="13"/><circle cx="132" cy="64" r="10"/><circle cx="118" cy="70" r="10"/></g>';
+  s += '<text x="118" y="68" text-anchor="middle" font-size="11" font-weight="900" font-family="sans-serif" fill="#2e5c12">BURP!</text></g>';
+
+  // Growl speech bubble
+  s += '<g class="growl-bubble">';
+  s += '<path d="M14 38 L44 62 L26 36 Z" fill="#ffffff" stroke="#1a1040" stroke-width="2" stroke-linejoin="round"/>';
+  s += '<rect x="-34" y="8" width="66" height="30" rx="12" fill="#ffffff" stroke="#1a1040" stroke-width="2.5"/>';
+  s += '<path d="M15 36 L27 36" stroke="#ffffff" stroke-width="3"/>';
+  s += '<text x="-1" y="29" text-anchor="middle" font-size="16" font-weight="900" font-family="sans-serif" fill="#e53935">GRRR!</text></g>';
+
+  // Poop (plops out beside the pup) with stink lines
+  s += '<g class="poop"><g fill="#7a4a24" stroke="#1a1040" stroke-width="1.8">';
+  s += '<ellipse cx="18" cy="144" rx="13" ry="5"/><ellipse cx="18" cy="137" rx="10" ry="4.5"/><ellipse cx="18" cy="131" rx="6.5" ry="3.8"/>';
+  s += '<path d="M18 127.5 q4 -3 1 -7" fill="none"/></g>';
+  s += '<circle cx="14.5" cy="137" r="1.6" fill="#fff"/><circle cx="21.5" cy="137" r="1.6" fill="#fff"/>';
+  s += '<g class="stink" fill="none" stroke="#7cb342" stroke-width="2" stroke-linecap="round">';
+  s += '<path d="M8 120 q-4 -5 0 -10 q4 -5 0 -10"/><path d="M18 116 q-4 -5 0 -10 q4 -5 0 -10"/><path d="M28 120 q-4 -5 0 -10 q4 -5 0 -10"/></g></g>';
+
+  // Vase with a flower (appears beside the pup, gets knocked over and smashes)
+  s += '<g transform="translate(128 148) scale(1.4) translate(-128 -148)"><g class="vase">';
+  s += '<path d="M128 104 L128 120" stroke="#2e7d32" stroke-width="2.5"/>';
+  s += '<g fill="#ff7eb6" stroke="#1a1040" stroke-width="1.2"><circle cx="128" cy="96" r="4"/><circle cx="134" cy="100" r="4"/>';
+  s += '<circle cx="122" cy="100" r="4"/><circle cx="128" cy="104" r="4"/></g><circle cx="128" cy="100" r="3" fill="#ffd23f"/>';
+  s += '<path d="M128 148 Q116 140 120 130 Q123 124 121 119 L135 119 Q133 124 136 130 Q140 140 128 148 Z" fill="#4fc3f7" stroke="#1a1040" stroke-width="2"/>';
+  s += '<path d="M121 134 Q128 137 135 134" fill="none" stroke="#ffffff" stroke-width="2"/></g>';
+  s += '<g class="shards" fill="#4fc3f7" stroke="#1a1040" stroke-width="1.5" stroke-linejoin="round">';
+  s += '<path class="shard s1" d="M120 146 l6 -8 l5 6 z"/><path class="shard s2" d="M130 147 l4 -9 l6 7 z"/>';
+  s += '<path class="shard s3" d="M124 148 l3 -5 l6 2 l-2 4 z"/><path class="shard s4" d="M136 146 l5 -4 l3 5 z"/>';
+  s += '<circle class="shard s5" cx="140" cy="144" r="3.5" fill="#ff7eb6"/></g></g>';
+
+  // Dizzy stars that circle the head
+  s += '<g class="dizzy" fill="#ffd23f" stroke="#1a1040" stroke-width="1">';
+  s += '<path d="M44 20 l2 4 l4.5 .5 l-3.3 3 l1 4.5 l-4.2 -2.3 l-4.2 2.3 l1 -4.5 l-3.3 -3 l4.5 -.5 z"/>';
+  s += '<path d="M96 20 l2 4 l4.5 .5 l-3.3 3 l1 4.5 l-4.2 -2.3 l-4.2 2.3 l1 -4.5 l-3.3 -3 l4.5 -.5 z"/>';
+  s += '<path d="M70 6 l2 4 l4.5 .5 l-3.3 3 l1 4.5 l-4.2 -2.3 l-4.2 2.3 l1 -4.5 l-3.3 -3 l4.5 -.5 z"/></g>';
 
   // Hearts that float up when the pup is happy
   s += '<g class="hearts" fill="#ff3b8d" stroke="#1a1040" stroke-width="1">';

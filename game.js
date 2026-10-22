@@ -33,16 +33,16 @@ const HOSTS = [
 const HOST_KEY = "quiz-pup-host"; // remembers which host you picked
 
 // Naughty things the pup does when you get one wrong - add your own!
-// "effect" is what shows up, "how" is the animation: "drop" falls from above, "pop" bursts in
+// "move" is the animation the full-body pup does (see "Full-body pup" in style.css)
 // "sound" is one of the sounds in sound.js
+// (You can also use "effect" for an emoji that pops up above the pup, with "how": "pop" or "drop")
 const NAUGHTY_THINGS = [
-  // "move" is an animation the full-body pup does itself (see the pee styles in style.css)
-  { says: "Uh-oh... the pup is peeing on the stage!", effect: "", how: "", move: "pee", sound: "hiss" },
-  { says: "Ewww! The pup pooped on the stage!", effect: "💩", how: "drop", sound: "splat" },
-  { says: "GRRR! The pup is growling at you!", effect: "💢 GRRR! WOOF!", how: "pop", sound: "bark" },
-  { says: "CRASH! The pup knocked over the vase!", effect: "🏺💥", how: "drop", sound: "crash" },
-  { says: "The pup ate the host's homework... and burped!", effect: "📄💨", how: "pop", sound: "burp" },
-  { says: "The pup is chasing its own tail!", effect: "🌀🌀🌀", how: "pop", sound: "boing" },
+  { says: "Uh-oh... the pup is peeing on the stage!", move: "pee", sound: "hiss" },
+  { says: "Ewww! The pup pooped on the stage!", move: "poop", sound: "splat" },
+  { says: "GRRR! The pup is growling at you!", move: "growl", sound: "bark" },
+  { says: "CRASH! The pup knocked over the vase!", move: "vase", sound: "crash" },
+  { says: "The pup ate the host's homework... and burped!", move: "homework", sound: "burp" },
+  { says: "The pup is chasing its own tail!", move: "chase", sound: "boing" },
 ];
 
 // Fun names for players who don't type one (letters only, up to 8)
@@ -506,8 +506,8 @@ function chooseAnswer(i) {
     const oops = pick(NAUGHTY_THINGS);
     hostSaysEl.textContent = pick(host().wrong) + " " + oops.says.replace("The pup", p.dogName).replace("the pup", p.dogName);
     dogEl.className = "pup full " + (oops.move || "naughty");
-    effectEl.textContent = oops.effect;
-    effectEl.className = oops.how;
+    effectEl.textContent = oops.effect || "";
+    effectEl.className = oops.how || "";
     nextBtn.textContent = "Oh no... ▶";
     sfx.wrong();
     setTimeout(sfx[oops.sound], 1400); // the naughty noise comes after the sad trombone

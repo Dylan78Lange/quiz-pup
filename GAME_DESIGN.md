@@ -8,8 +8,16 @@ Right answers make the dog happy; wrong answers cost lives. Win coins, spend the
 - Question across the top of the screen, 3-4 answers in boxes underneath, pick one.
 - Each player has a dog at the bottom of the screen that reacts:
   - Right answer: wagging tail, jumping for joy
-  - Wrong answer: the pup does something naughty and random (pees on your leg, poops on the stage,
-    growls and barks, knocks over a vase...). Silly cartoon fun, never scary.
+  - Wrong answer: the pup does something naughty and random, animated on the pup itself:
+    - Pee: lifts its back leg, a stream arcs out, a puddle spreads (and stays)
+    - Poop: strains and wobbles, a poop plops out beside it with stink lines (and stays)
+    - Growl: crouches and shakes, angry eyebrows, "GRRR!" speech bubble
+    - Vase: a vase appears, the tail swipes it, it wobbles, tips and smashes into shards
+    - Homework: chews a sheet of paper (bits fall), belly puffs, big "BURP!" cloud
+    - Tail chase: spins round and round, then swirly dizzy eyes with circling stars
+    Silly cartoon fun, never scary.
+- The stage pup is a full-body drawing (dogs.js, dogBodySvg) that is always alive: wagging tail,
+  blinking eyes, little head tilts. Happy = bouncy squash-and-stretch jump with floating hearts.
 - Retro chunky fonts and colors, drawn with simple shapes/emoji (no downloads).
 
 ## How a round works

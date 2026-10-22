@@ -355,6 +355,157 @@ body {
   20%, 80% { transform: rotate(12deg) translateX(4px); }
 }
 
+/* Props for the naughty moves are hidden until their move plays */
+.dog-body .brows, .dog-body .swirl-eyes, .dog-body .paper, .dog-body .bit, .dog-body .burp,
+.dog-body .growl-bubble, .dog-body .poop, .dog-body .vase, .dog-body .shard, .dog-body .dizzy { opacity: 0; }
+/* Parts that animate around their own middle */
+.dog-body .poop, .dog-body .stink path, .dog-body .vase, .dog-body .shard, .dog-body .burp,
+.dog-body .growl-bubble, .dog-body .paper, .dog-body .bit {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+/* Poop: strain and wobble, then it drops out beside the pup, squishes, and stinks */
+.pup.full.poop { transform-origin: 50% 100%; animation: strain 0.14s ease-in-out 9; }
+.pup.full.poop .eyes { animation: squeeze 1.3s forwards; }
+.pup.full.poop .poop { animation: poop-drop 1.6s ease-in forwards; }
+.pup.full.poop .stink path { animation: stink 1.2s ease-in-out 1.5s infinite; opacity: 0; }
+.pup.full.poop .stink path:nth-child(2) { animation-delay: 1.8s; }
+.pup.full.poop .stink path:nth-child(3) { animation-delay: 2.1s; }
+
+@keyframes strain {
+  0%, 100% { transform: translateX(0) scale(1, 1); }
+  50% { transform: translateX(-2px) scale(1.04, 0.95); }
+}
+@keyframes squeeze {
+  0%, 80% { transform: scaleY(0.25); }
+  100% { transform: scaleY(1); }
+}
+@keyframes poop-drop {
+  0%, 70% { opacity: 0; transform: translate(14px, -24px) scale(0.3); }
+  72% { opacity: 1; }
+  85% { transform: translate(0, 0) scale(1.15, 0.8); }
+  92% { transform: translate(0, -3px) scale(0.95, 1.08); }
+  100% { opacity: 1; transform: translate(0, 0) scale(1, 1); }
+}
+@keyframes stink {
+  0% { opacity: 0; transform: translateY(6px); }
+  40% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+/* Vase: it appears, the tail gives a big swipe, the vase wobbles, tips and SMASHES */
+.pup.full.vase .vase { transform-origin: 100% 100%; animation: vase-fall 1.5s ease-in forwards; }
+.pup.full.vase .tail { animation: swipe 0.9s ease-in-out; }
+.pup.full.vase .shard { animation: shatter 0.6s ease-out 1.4s forwards; }
+.pup.full.vase .s1 { --fly: -14px; --spin: -90deg; }
+.pup.full.vase .s2 { --fly: 10px; --spin: 120deg; }
+.pup.full.vase .s3 { --fly: -6px; --spin: 200deg; }
+.pup.full.vase .s4 { --fly: 18px; --spin: -150deg; }
+.pup.full.vase .s5 { --fly: 24px; --spin: 0deg; }
+.pup.full.vase .head { animation: oops-look 2.4s ease-in-out forwards; }
+
+@keyframes vase-fall {
+  0% { opacity: 0; transform: rotate(0); }
+  10% { opacity: 1; transform: rotate(0); }
+  40% { transform: rotate(-12deg); }
+  55% { transform: rotate(10deg); }
+  70% { transform: rotate(-6deg); }
+  92% { opacity: 1; transform: rotate(85deg); }
+  100% { opacity: 0; transform: rotate(90deg); }
+}
+@keyframes swipe {
+  0%, 100% { transform: rotate(0); }
+  40% { transform: rotate(35deg); }
+  60% { transform: rotate(-20deg); }
+}
+@keyframes shatter {
+  0% { opacity: 1; transform: translate(0, -12px) rotate(0) scale(0.5); }
+  60% { transform: translate(var(--fly), -14px) rotate(var(--spin)) scale(1); }
+  100% { opacity: 1; transform: translate(var(--fly), 0) rotate(var(--spin)) scale(1); }
+}
+@keyframes oops-look {
+  0%, 100% { transform: rotate(0); }
+  60%, 90% { transform: rotate(14deg) translateX(4px); }
+}
+
+/* Growl: crouch low and shake, angry eyebrows, and a GRRR! bubble from its mouth */
+.pup.full.growl { transform-origin: 50% 100%; animation: growl-shake 0.12s linear 14; }
+.pup.full.growl .brows { animation: show 0.2s forwards; }
+.pup.full.growl .growl-bubble { transform-origin: 80% 100%; animation: bubble-pop 0.4s ease-out 0.9s forwards; }
+
+@keyframes growl-shake {
+  0%, 100% { transform: translateX(-3px) scale(1.05, 0.92); }
+  50% { transform: translateX(3px) scale(1.05, 0.92); }
+}
+@keyframes show {
+  to { opacity: 1; }
+}
+@keyframes bubble-pop {
+  0% { opacity: 0; transform: scale(0.2); }
+  70% { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Homework: chomp chomp (paper gets smaller, bits fall), then a big BURP */
+.pup.full.homework .head { animation: chew 0.18s ease-in-out 7; }
+.pup.full.homework .paper { transform-origin: 0% 50%; animation: eat-paper 1.3s steps(4) forwards; }
+.pup.full.homework .bit { animation: bit-fall 0.7s ease-in 0.3s forwards; }
+.pup.full.homework .b2 { animation-delay: 0.6s; }
+.pup.full.homework .b3 { animation-delay: 0.9s; }
+.pup.full.homework .burp { transform-origin: 0% 100%; animation: burp 1.4s ease-out 1.35s forwards; }
+.pup.full.homework { animation: belly 0.5s ease-in-out 1.2s; transform-origin: 50% 100%; }
+
+@keyframes chew {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px) rotate(-2deg); }
+}
+@keyframes eat-paper {
+  0% { opacity: 1; transform: scaleX(1); }
+  99% { opacity: 1; transform: scaleX(0.15); }
+  100% { opacity: 0; transform: scaleX(0); }
+}
+@keyframes bit-fall {
+  0% { opacity: 1; transform: translateY(0) rotate(0); }
+  100% { opacity: 1; transform: translateY(50px) rotate(160deg); }
+}
+@keyframes belly {
+  0%, 100% { transform: scale(1, 1); }
+  50% { transform: scale(1.1, 0.95); }
+}
+@keyframes burp {
+  0% { opacity: 0; transform: scale(0.2); }
+  25% { opacity: 1; transform: scale(1.15); }
+  70% { opacity: 1; transform: scale(1) translateY(-8px); }
+  100% { opacity: 0; transform: scale(1.1) translateY(-20px); }
+}
+
+/* Tail chase: spin round and round, then dizzy swirly eyes and circling stars */
+.pup.full.chase { transform-origin: 50% 100%; animation: chase 1.6s ease-in-out; }
+.pup.full.chase .tail { animation-duration: 0.15s; }
+.pup.full.chase .swirl-eyes { animation: show 0.1s 1.6s forwards; }
+.pup.full.chase .dizzy {
+  transform-box: view-box;
+  transform-origin: 70px 22px;
+  animation: show 0.1s 1.6s forwards, orbit 1.2s linear 1.6s infinite;
+}
+.pup.full.chase .head { animation: woozy 1.4s ease-in-out 1.6s infinite; }
+
+@keyframes chase {
+  0% { transform: perspective(400px) rotateY(0) translateY(0); }
+  25% { transform: perspective(400px) rotateY(270deg) translateY(-14px); }
+  50% { transform: perspective(400px) rotateY(540deg) translateY(0); }
+  75% { transform: perspective(400px) rotateY(810deg) translateY(-14px); }
+  100% { transform: perspective(400px) rotateY(1080deg) translateY(0); }
+}
+@keyframes orbit {
+  to { transform: rotate(360deg); }
+}
+@keyframes woozy {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
 .pup.happy { animation: jump 0.5s ease-in-out 3; }
 .pup.naughty { animation: shake 0.15s linear 8; }
 .pup.spin { animation: spin 0.8s ease-in-out 2; }
