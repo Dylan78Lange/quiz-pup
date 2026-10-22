@@ -11,11 +11,24 @@ const LEVELS = [
   { key: "hard",   name: "HARD",   coins: 500 },
 ];
 
-// Things the host says - add your own!
-const HELLO_SAYS = ["Welcome, welcome, WELCOME to Quiz Pup!", "It's showtime, baby!", "Are you ready to rumble... with your pup?"];
-const ASK_SAYS = ["Here comes your question...", "Ooh, this one's tricky!", "Think carefully...", "Final answer?"];
-const RIGHT_SAYS = ["That's... CORRECT!", "Fan-DOG-tastic!", "You're on fire!", "Woof-derful!"];
-const WRONG_SAYS = ["Oooh, so close!", "Not quite, superstar!", "Ruh-roh!", "Better luck next time!"];
+// The hosts and the things they say - add your own lines (or a whole new host!)
+const HOSTS = [
+  {
+    key: "human", name: "Human", face: "🕺",
+    hello: ["Welcome, welcome, WELCOME to Quiz Pup!", "It's showtime, baby!", "Are you ready to rumble... with your pup?"],
+    ask:   ["Here comes your question...", "Ooh, this one's tricky!", "Think carefully...", "Final answer?"],
+    right: ["That's... CORRECT!", "Fan-DOG-tastic!", "You're on fire!", "Woof-derful!"],
+    wrong: ["Oooh, so close!", "Not quite, superstar!", "Ruh-roh!", "Better luck next time!"],
+  },
+  {
+    key: "robot", name: "Robot", face: "🤖",
+    hello: ["BEEP BOOP! WELCOME, HUMAN, TO QUIZ PUP!", "SHOWTIME MODE: ACTIVATED!", "GREETINGS, PUP OWNER. PREPARE TO QUIZ!"],
+    ask:   ["COMPUTING QUESTION... BEEP!", "THIS ONE MAKES MY CIRCUITS TINGLE.", "PROCESSING... PLEASE ANSWER.", "FINAL ANSWER? BLEEP BLOOP?"],
+    right: ["CORRECT! DOES NOT COMPUTE... YOU ARE TOO SMART!", "BEEP BEEP! WOOF-DERFUL!", "SUCCESS! MY LIGHTS ARE FLASHING!", "100% CORRECT. HIGH FIVE, HUMAN!"],
+    wrong: ["ERROR! ERROR! WRONG ANSWER!", "BZZZT! NOT QUITE!", "SYSTEM SAYS: SO CLOSE!", "OOPS. RECALCULATING..."],
+  },
+];
+const HOST_KEY = "quiz-pup-host"; // remembers which host you picked
 
 // Naughty things the pup does when you get one wrong - add your own!
 // "effect" is what shows up, "how" is the animation: "drop" falls from above, "pop" bursts in
@@ -56,6 +69,45 @@ let lastWrong = false;
 let afterEnd = null;  // what the big button on the end screen does
 let savedIds = [];    // scores saved at the end of the last game
 let memoryScores = []; // backup in case the browser can't save
+let hostKey = loadHostChoice();
+
+// ---------- Host ----------
+function host() {
+  return HOSTS.find(h => h.key === hostKey) || HOSTS[0];
+}
+
+function loadHostChoice() {
+  try {
+    return localStorage.getItem(HOST_KEY) || HOSTS[0].key;
+  } catch (e) {
+    return HOSTS[0].key;
+  }
+}
+
+function chooseHost(key) {
+  hostKey = key;
+  try {
+    localStorage.setItem(HOST_KEY, key);
+  } catch (e) {
+    // can't remember it in this browser - that's OK
+  }
+  showHost();
+}
+
+// Put the chosen host on stage and light up their button on the start screen
+function showHost() {
+  $("host-face").firstChild.textContent = host().face;
+  $("host").className = host().key;
+  const buttonsEl = $("host-buttons");
+  buttonsEl.innerHTML = "";
+  HOSTS.forEach(h => {
+    const btn = document.createElement("button");
+    btn.className = "host-button" + (h.key === hostKey ? " chosen" : "");
+    btn.innerHTML = '<span class="host-emoji">' + h.face + "</span>" + h.name;
+    btn.addEventListener("click", () => chooseHost(h.key));
+    buttonsEl.appendChild(btn);
+  });
+}
 
 function makePlayer(number) {
   return {
@@ -326,7 +378,7 @@ function startLevel(themeName) {
   showOverlay(null);
   showStage();
   showQuestion();
-  hostSaysEl.textContent = pick(HELLO_SAYS) + " Tonight's theme: " + themeName + "!";
+  hostSaysEl.textContent = pick(host().hello) + " Tonight's theme: " + themeName + "!";
 }
 
 function showQuestion() {
@@ -341,7 +393,7 @@ function showQuestion() {
   dogEl.className = "pup";
   effectEl.className = "";
   effectEl.textContent = "";
-  hostSaysEl.textContent = pick(ASK_SAYS);
+  hostSaysEl.textContent = pick(host().ask);
   showProgress();
   showPot(false);
 
@@ -366,7 +418,7 @@ function chooseAnswer(i) {
   if (i === q.right) {
     p.results.push(true);
     p.pot += level().coins;
-    hostSaysEl.textContent = pick(RIGHT_SAYS) + " +" + level().coins + " coins!";
+    hostSaysEl.textContent = pick(host().right) + " +" + level().coins + " coins!";
     dogEl.className = "pup happy";
     showPot(true);
     nextBtn.textContent = p.current + 1 < p.levelQuestions.length ? "Next question ▶" : "See results ★";
@@ -377,7 +429,7 @@ function chooseAnswer(i) {
     lastWrong = true;
     buttons[i].classList.add("wrong");
     const oops = pick(NAUGHTY_THINGS);
-    hostSaysEl.textContent = pick(WRONG_SAYS) + " " + oops.says.replace("The pup", p.dogName).replace("the pup", p.dogName);
+    hostSaysEl.textContent = pick(host().wrong) + " " + oops.says.replace("The pup", p.dogName).replace("the pup", p.dogName);
     dogEl.className = "pup naughty";
     effectEl.textContent = oops.effect;
     effectEl.className = oops.how;
@@ -576,3 +628,4 @@ $("show-scores").addEventListener("click", () => showScores([]));
 $("scores-play").addEventListener("click", newGame);
 
 $("start-dog").innerHTML = '<div class="pup">' + dogSvg("shiba") + "</div>";
+showHost();

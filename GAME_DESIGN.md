@@ -89,6 +89,9 @@ Each theme has 5 questions per level (90 questions in all). Each level picks 3 o
 ## Open questions
 - DECIDED - Game name: Quiz Pup. Coins show the letter "Q".
 - DECIDED - Dogs: each player names their dog and picks from 5 breeds: Shiba Inu, Pug, Husky, Poodle, Dalmatian. No color choice.
-- DECIDED - Host: a cool, funny human game-show presenter in 90s style (big hair, shiny suit, cheesy jokes)
+- DECIDED - Host: pick on the start screen between
+  - 🕺 Human: a cool, funny 90s game-show presenter (big hair, shiny suit, cheesy jokes)
+  - 🤖 Robot: beeps and boops, talks in CAPITALS in a green computer-screen bubble
+  The game remembers your pick. Hosts and their lines live in `HOSTS` at the top of game.js.
 - DECIDED - Wrong answer: lose 1 life and the turn goes to the next player (with 1 player, they just carry on). Right answer: the same player continues to the next question. At any time a player can choose to pass to the next player.
 - DECIDED - Coins are banked after each completed level. If you run out of lives mid-level you lose that level's unbanked coins but keep what's banked. You can also quit between levels and keep everything banked so far.
