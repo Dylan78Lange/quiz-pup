@@ -128,6 +128,7 @@ function makePlayer(number) {
     levelIndex: 0,    // 0 = easy, 1 = medium, 2 = hard
     theme: "",
     levelQuestions: [], // empty = needs to pick a theme for a new level
+    seen: [],         // questions already asked this game (so they don't come back)
     current: 0,
     results: [],      // true for a right answer, false for wrong
     owned: { toys: [], wear: "", tricks: [] }, // things from the Pup Shop
@@ -270,8 +271,11 @@ function endTurn() {
 // Pass: hand over to the next player. You get a different question when it's your turn again.
 function passTurn() {
   const p = me();
-  const fresh = pickQuestions(p.theme, level().key, 1, p.levelQuestions);
-  if (fresh.length > 0) p.levelQuestions[p.current] = fresh[0];
+  const fresh = pickQuestions(p.theme, level().key, 1, p.levelQuestions.concat(p.seen));
+  if (fresh.length > 0) {
+    p.levelQuestions[p.current] = fresh[0];
+    p.seen.push(fresh[0]);
+  }
   endTurn();
 }
 
@@ -357,9 +361,11 @@ function showPot(justWon) {
 }
 
 // ---------- Themes and questions ----------
-// Pick some random questions, skipping any in "avoid"
+// Pick some random questions, skipping any in "avoid" (unless there aren't enough left)
 function pickQuestions(themeName, levelKey, howMany, avoid) {
-  const pool = QUESTIONS.filter(q => q.theme === themeName && q.level === levelKey && !avoid.includes(q));
+  const all = QUESTIONS.filter(q => q.theme === themeName && q.level === levelKey);
+  let pool = all.filter(q => !avoid.includes(q));
+  if (pool.length < howMany) pool = all;
   const chosen = [];
   while (chosen.length < howMany && pool.length > 0) {
     const i = Math.floor(Math.random() * pool.length);
@@ -399,7 +405,8 @@ function startLevel(themeName) {
   p.pot = 0;
   p.current = 0;
   p.results = [];
-  p.levelQuestions = pickQuestions(themeName, level().key, QUESTIONS_PER_LEVEL, []);
+  p.levelQuestions = pickQuestions(themeName, level().key, QUESTIONS_PER_LEVEL, p.seen);
+  p.seen.push(...p.levelQuestions);
   showOverlay(null);
   showStage();
   showQuestion();

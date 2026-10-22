@@ -27,7 +27,8 @@ Right answers make the dog happy; wrong answers cost lives. Win coins, spend the
 5. Brand icons
 6. Famous people
 
-Each theme has 5 questions per level (90 questions in all). Each level picks 3 of the 5 at random.
+Each theme has 15 questions per level (270 questions in all). Each level picks 3 at random.
+A player won't get the same question twice in one game (until a pool runs out).
 
 ## Coins
 - Easy: 100 coins per right answer
