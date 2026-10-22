@@ -16,14 +16,14 @@ const LEVELS = [
 // The hosts and the things they say - add your own lines (or a whole new host!)
 const HOSTS = [
   {
-    key: "human", name: "Human", face: "🕺",
+    key: "human", name: "Human", // drawn in hosts.js
     hello: ["Welcome, welcome, WELCOME to Quiz Pup!", "It's showtime, baby!", "Are you ready to rumble... with your pup?"],
     ask:   ["Here comes your question...", "Ooh, this one's tricky!", "Think carefully...", "Final answer?"],
     right: ["That's... CORRECT!", "Fan-DOG-tastic!", "You're on fire!", "Woof-derful!"],
     wrong: ["Oooh, so close!", "Not quite, superstar!", "Ruh-roh!", "Better luck next time!"],
   },
   {
-    key: "robot", name: "Robot", face: "🤖",
+    key: "robot", name: "Robot",
     hello: ["BEEP BOOP! WELCOME, HUMAN, TO QUIZ PUP!", "SHOWTIME MODE: ACTIVATED!", "GREETINGS, PUP OWNER. PREPARE TO QUIZ!"],
     ask:   ["COMPUTING QUESTION... BEEP!", "THIS ONE MAKES MY CIRCUITS TINGLE.", "PROCESSING... PLEASE ANSWER.", "FINAL ANSWER? BLEEP BLOOP?"],
     right: ["CORRECT! DOES NOT COMPUTE... YOU ARE TOO SMART!", "BEEP BEEP! WOOF-DERFUL!", "SUCCESS! MY LIGHTS ARE FLASHING!", "100% CORRECT. HIGH FIVE, HUMAN!"],
@@ -107,17 +107,50 @@ function chooseHost(key) {
 
 // Put the chosen host on stage and light up their button on the start screen
 function showHost() {
-  $("host-face").firstChild.textContent = host().face;
+  $("host-face").innerHTML = hostSvg(host().key);
   $("host").className = host().key;
   const buttonsEl = $("host-buttons");
   buttonsEl.innerHTML = "";
   HOSTS.forEach(h => {
     const btn = document.createElement("button");
     btn.className = "host-button" + (h.key === hostKey ? " chosen" : "");
-    btn.innerHTML = '<span class="host-emoji">' + h.face + "</span>" + h.name;
+    btn.innerHTML = '<span class="host-mini">' + hostSvg(h.key) + "</span>" + h.name;
     btn.addEventListener("click", () => chooseHost(h.key));
     buttonsEl.appendChild(btn);
   });
+}
+
+// The host says something: the words type out, the mouth moves, and they can do a gesture
+// ("wave", "point", "cheer" or "facepalm")
+let lastSaid = "";
+let typingTimer = null;
+let talkingTimer = null;
+
+function say(text, gesture) {
+  const face = $("host-face");
+  lastSaid = text;
+  clearInterval(typingTimer);
+  clearTimeout(talkingTimer);
+
+  // Type the words out a couple of letters at a time
+  let shown = 0;
+  hostSaysEl.textContent = "";
+  typingTimer = setInterval(() => {
+    shown += 2;
+    hostSaysEl.textContent = text.slice(0, shown);
+    if (shown >= text.length) clearInterval(typingTimer);
+  }, 35);
+
+  // Talk for as long as the typing takes
+  face.classList.add("talking");
+  talkingTimer = setTimeout(() => face.classList.remove("talking"), Math.max(600, text.length * 18));
+  if (host().key === "robot") sfx.robotTalk();
+
+  if (gesture) {
+    face.classList.remove("wave", "point", "cheer", "facepalm");
+    void face.offsetWidth; // restart the animation if it's the same gesture again
+    face.classList.add(gesture);
+  }
 }
 
 function makePlayer(number) {
@@ -270,7 +303,7 @@ function continueTurn() {
     showThemePicker();
   } else {
     showQuestion();
-    if (players.length > 1) hostSaysEl.textContent = "Welcome back, " + me().name + "! " + hostSaysEl.textContent;
+    if (players.length > 1) say("Welcome back, " + me().name + "! " + lastSaid, "wave");
   }
 }
 
@@ -444,7 +477,7 @@ function startLevel(themeName) {
   showOverlay(null);
   showStage();
   showQuestion();
-  hostSaysEl.textContent = pick(host().hello) + " Tonight's theme: " + themeName + "!";
+  say(pick(host().hello) + " Tonight's theme: " + themeName + "!", "wave");
 }
 
 function showQuestion() {
@@ -460,7 +493,7 @@ function showQuestion() {
   dogEl.className = "pup full";
   effectEl.className = "";
   effectEl.textContent = "";
-  hostSaysEl.textContent = pick(host().ask);
+  say(pick(host().ask), "point");
   showProgress();
   showPot(false);
 
@@ -492,7 +525,7 @@ function chooseAnswer(i) {
   if (i === q.right) {
     p.results.push(true);
     p.pot += level().coins;
-    hostSaysEl.textContent = pick(host().right) + " +" + level().coins + " coins!";
+    say(pick(host().right) + " +" + level().coins + " coins!", "cheer");
     dogEl.className = "pup full happy";
     showPot(true);
     sfx.right();
@@ -504,7 +537,7 @@ function chooseAnswer(i) {
     lastWrong = true;
     buttons[i].classList.add("wrong");
     const oops = pick(NAUGHTY_THINGS);
-    hostSaysEl.textContent = pick(host().wrong) + " " + oops.says.replace("The pup", p.dogName).replace("the pup", p.dogName);
+    say(pick(host().wrong) + " " + oops.says.replace("The pup", p.dogName).replace("the pup", p.dogName), "facepalm");
     dogEl.className = "pup full " + (oops.move || "naughty");
     effectEl.textContent = oops.effect || "";
     effectEl.className = oops.how || "";

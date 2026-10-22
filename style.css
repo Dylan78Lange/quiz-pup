@@ -78,28 +78,113 @@ body {
   position: relative;
 }
 #host-face {
-  font-size: 64px;
-  white-space: nowrap;
   flex-shrink: 0;
-  animation: groove 1.2s ease-in-out infinite;
+  transform-origin: 50% 100%;
+  animation: groove 1.33s ease-in-out infinite; /* 90 beats per minute, like the music */
 }
-#mic { font-size: 28px; }
 @keyframes groove {
-  0%, 100% { transform: rotate(-5deg); }
-  50% { transform: rotate(5deg); }
+  0%, 100% { transform: rotate(-3deg) translateY(0); }
+  50% { transform: rotate(3deg) translateY(-3px); }
 }
+/* The bubble has a fixed size so the host doesn't jump around while the words type out */
 #host-says {
   background: white;
   border: 3px solid var(--night);
   border-radius: 14px;
   padding: 8px 14px;
   font-weight: bold;
-  max-width: 440px;
+  width: 400px;
+  max-width: calc(100% - 120px);
+  min-height: 2.6em;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
   box-shadow: 4px 4px 0 var(--night);
 }
 
+/* ---------- Drawn hosts (hosts.js) ---------- */
+.host-svg { width: 110px; height: 132px; display: block; overflow: visible; }
+.host-svg .eyes { transform-box: fill-box; transform-origin: 50% 50%; animation: blink 3.5s infinite; }
+.host-svg .mouth-open { opacity: 0; }
+.host-svg .host-head { transform-box: fill-box; transform-origin: 50% 100%; }
+.host-svg .arm-right { transform-box: view-box; }
+.host-svg.human .arm-right { transform-origin: 70px 86px; }
+.host-svg.robot .arm-right { transform-origin: 73px 66px; }
+
+/* Talking: the mouth flaps and the head bobs */
+#host-face.talking .mouth-open { animation: mouth-flap 0.22s steps(1) infinite; }
+#host-face.talking .mouth-closed { animation: mouth-flap 0.22s steps(1) infinite reverse; }
+#host-face.talking .host-head { animation: chatter 0.44s ease-in-out infinite; }
+@keyframes mouth-flap {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes chatter {
+  0%, 100% { transform: rotate(0); }
+  50% { transform: rotate(-3deg) translateY(-1px); }
+}
+
+/* Robot extras: blinking antenna, flashing chest lights, bouncing equalizer mouth */
+.host-svg .antenna-light { animation: antenna 1s steps(1) infinite; }
+.host-svg .light { animation: antenna 0.9s steps(1) infinite; }
+.host-svg .l2 { animation-delay: 0.3s; }
+.host-svg .l3 { animation-delay: 0.6s; }
+@keyframes antenna {
+  0% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+#host-face.talking .robot .mouth-open { animation: none; opacity: 1; }
+#host-face.talking .robot .mouth-closed { animation: none; opacity: 0; }
+.host-svg .bar { transform-box: fill-box; transform-origin: 50% 50%; }
+#host-face.talking .bar { animation: equalizer 0.3s ease-in-out infinite alternate; }
+#host-face.talking .bar1, #host-face.talking .bar3 { animation-delay: 0.15s; }
+#host-face.talking .bar2 { animation-duration: 0.2s; }
+@keyframes equalizer {
+  from { transform: scaleY(0.2); }
+  to { transform: scaleY(1.1); }
+}
+
+/* Gestures - the right arm turns around the shoulder */
+#host-face.wave .arm-right { animation: wave 2s ease-in-out; }
+#host-face.point .arm-right { animation: point 1.8s ease-in-out; }
+#host-face.cheer .arm-right { animation: cheer 1.8s ease-in-out; }
+#host-face.cheer .host-svg { animation: host-hop 0.45s ease-in-out 3; }
+#host-face.facepalm .arm-right { animation: facepalm 2.2s ease-in-out; }
+#host-face.facepalm .host-head { animation: head-drop 2.2s ease-in-out; }
+#host-face.facepalm .brows { transform-box: fill-box; transform-origin: 50% 50%; animation: sad-brows 2.2s ease-in-out; }
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0); }
+  15%, 35%, 55%, 75% { transform: rotate(-110deg); }
+  25%, 45%, 65% { transform: rotate(-145deg); }
+}
+@keyframes point {
+  0%, 100% { transform: rotate(0); }
+  15%, 80% { transform: rotate(-60deg); }
+}
+@keyframes cheer {
+  0%, 100% { transform: rotate(0); }
+  15%, 80% { transform: rotate(-155deg); }
+}
+@keyframes host-hop {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes facepalm {
+  0%, 100% { transform: rotate(0); }
+  20%, 80% { transform: rotate(-190deg); }
+}
+@keyframes head-drop {
+  0%, 100% { transform: rotate(0); }
+  20%, 80% { transform: rotate(8deg) translateY(2px); }
+}
+@keyframes sad-brows {
+  0%, 100% { transform: rotate(0); }
+  20%, 80% { transform: translateY(1px) scaleX(1.1) rotate(-6deg); }
+}
+
 /* Robot host: jerky robot moves and a computer-screen speech bubble */
-#host.robot #host-face { animation: robot-bob 0.8s steps(2) infinite; }
+#host.robot #host-face { animation: robot-bob 0.67s steps(2) infinite; }
 #host.robot #host-says {
   background: #0b1a0b;
   color: #39ff14;
@@ -108,8 +193,8 @@ body {
   border-color: #39ff14;
 }
 @keyframes robot-bob {
-  0% { transform: translateY(0) rotate(-4deg); }
-  100% { transform: translateY(-6px) rotate(4deg); }
+  0% { transform: translateY(0) rotate(-2deg); }
+  100% { transform: translateY(-4px) rotate(2deg); }
 }
 
 /* Host picker on the start screen */
@@ -127,7 +212,7 @@ body {
   padding: 8px 18px;
   cursor: pointer;
 }
-.host-button .host-emoji { display: block; font-size: 44px; }
+.host-button .host-mini .host-svg { width: 54px; height: 65px; margin: 0 auto 4px; }
 .host-button.chosen { border-color: var(--gold); background: #3a2a8a; box-shadow: 0 0 14px var(--gold); }
 
 /* Top bar: lives, level, coins */

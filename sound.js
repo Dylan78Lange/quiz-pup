@@ -261,9 +261,4 @@ document.addEventListener("click", e => {
   if (btn && !btn.matches(QUIET_BUTTONS)) sfx.click();
 });
 
-// The robot host bleeps whenever it talks
-new MutationObserver(() => {
-  if (host().key === "robot") sfx.robotTalk();
-}).observe(document.getElementById("host-says"), { childList: true, characterData: true, subtree: true });
-
 showSoundButtons();

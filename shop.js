@@ -86,7 +86,7 @@ function doTrick(trick) {
   animate(dogEl, trick.move);
   popEffect(trick.effect);
   sfx[trick.sound]();
-  hostSaysEl.textContent = me().dogName + " " + trick.says;
+  say(me().dogName + " " + trick.says);
 }
 
 // Another player's pup teases the player whose turn it is
@@ -94,7 +94,7 @@ function tease(owner, trick, pupEl) {
   animate(pupEl, trick.move);
   popEffect(trick.effect || trick.emoji);
   sfx[trick.sound]();
-  hostSaysEl.textContent = owner.dogName + " " + trick.tease + " " + me().name + "! " + trick.emoji;
+  say(owner.dogName + " " + trick.tease + " " + me().name + "! " + trick.emoji);
 }
 
 function openShop() {

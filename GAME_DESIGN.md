@@ -125,5 +125,9 @@ A player won't get the same question twice in one game (until a pool runs out).
   - 🕺 Human: a cool, funny 90s game-show presenter (big hair, shiny suit, cheesy jokes)
   - 🤖 Robot: beeps and boops, talks in CAPITALS in a green computer-screen bubble
   The game remembers your pick. Hosts and their lines live in `HOSTS` at the top of game.js.
+  Both are drawn characters (hosts.js) that bob to the beat and blink. When they talk the words
+  type out in the bubble and the mouth moves (the robot has a bouncing equalizer mouth). They wave
+  hello, point at the question, throw an arm up to cheer a right answer, and facepalm a wrong one.
+  Use say(text, gesture) in game.js to make the host talk.
 - DECIDED - Wrong answer: lose 1 life and the turn goes to the next player (with 1 player, they just carry on). Right answer: the same player continues to the next question. At any time a player can choose to pass to the next player.
 - DECIDED - Coins are banked after each completed level. If you run out of lives mid-level you lose that level's unbanked coins but keep what's banked. You can also quit between levels and keep everything banked so far.
