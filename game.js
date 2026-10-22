@@ -642,12 +642,25 @@ function showFinal() {
 
 // ---------- Top Score Board ----------
 // Scores are saved only in this browser, on this computer.
+// Saved data can be changed from outside the game, so only keep scores that look right.
 function loadScores() {
   try {
-    return JSON.parse(localStorage.getItem(SCORES_KEY)) || memoryScores;
+    const saved = JSON.parse(localStorage.getItem(SCORES_KEY));
+    if (!Array.isArray(saved)) return memoryScores;
+    return saved.map(cleanScore).filter(s => s !== null).slice(0, MAX_SCORES);
   } catch (e) {
     return memoryScores;
   }
+}
+
+// A score is a name (letters only), a whole number of coins, and a time
+function cleanScore(s) {
+  if (!s || typeof s !== "object") return null;
+  const initials = String(s.initials || "").toUpperCase().replace(/[^A-Z]/g, "").slice(0, 8);
+  const coins = Math.floor(Number(s.coins));
+  const when = Number(s.when);
+  if (!initials || !Number.isFinite(coins) || coins < 0 || coins > 1000000 || !Number.isFinite(when)) return null;
+  return { initials: initials, coins: coins, when: when };
 }
 
 function storeScores(scores) {
@@ -689,7 +702,8 @@ function showScores(newOnes) {
     who.textContent = (medals[i] || (i + 1) + ".") + " " + s.initials;
     const coins = document.createElement("span");
     coins.className = "score-coins";
-    coins.innerHTML = '<span class="coin">Q</span> ' + s.coins;
+    coins.innerHTML = '<span class="coin">Q</span> ';
+    coins.append(String(s.coins)); // added as plain text, never as HTML
     li.append(who, coins);
     list.appendChild(li);
   });
