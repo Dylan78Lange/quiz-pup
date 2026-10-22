@@ -2,6 +2,15 @@
 //  QUIZ PUP  -  game code
 // ============================================
 
+// Game settings - try changing these!
+const LIVES = 3;
+const QUESTIONS_PER_LEVEL = 3;
+const LEVELS = [
+  { key: "easy",   name: "EASY",   coins: 100 },
+  { key: "medium", name: "MEDIUM", coins: 250 },
+  { key: "hard",   name: "HARD",   coins: 500 },
+];
+
 // Things the host says - add your own!
 const HELLO_SAYS = ["Welcome, welcome, WELCOME to Quiz Pup!", "It's showtime, baby!", "Are you ready to rumble... with your pup?"];
 const ASK_SAYS = ["Here comes your question...", "Ooh, this one's tricky!", "Think carefully...", "Final answer?"];
@@ -19,7 +28,6 @@ const NAUGHTY_THINGS = [
   { says: "The pup is chasing its own tail!", effect: "🌀🌀🌀", how: "pop" },
 ];
 
-const QUESTIONS_PER_LEVEL = 3;
 const LETTERS = ["A", "B", "C", "D"];
 
 const questionEl = document.getElementById("question");
@@ -29,39 +37,91 @@ const hostSaysEl = document.getElementById("host-says");
 const dogEl = document.getElementById("dog");
 const effectEl = document.getElementById("effect");
 const progressEl = document.getElementById("progress");
+const potEl = document.getElementById("pot");
+const livesEl = document.getElementById("lives");
+const levelNameEl = document.getElementById("level-name");
+const bankNumEl = document.getElementById("bank-num");
 const nextBtn = document.getElementById("next");
 const startScreen = document.getElementById("start-screen");
 const endScreen = document.getElementById("end-screen");
+const endMainBtn = document.getElementById("end-main");
+const endQuitBtn = document.getElementById("end-quit");
 
+let lives = LIVES;
+let bank = 0;        // coins saved forever (banked)
+let pot = 0;         // coins won this level, not banked yet
+let levelIndex = 0;  // 0 = easy, 1 = medium, 2 = hard
+let levelQuestions = [];
 let current = 0;
-let results = []; // true for a right answer, false for wrong
+let results = [];    // true for a right answer, false for wrong
+let afterEnd = null; // what the big button on the end screen does
 
 function pick(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-// Stars at the top: ⭐ right, ❌ wrong, ⚪ not answered yet
+// Pick some random questions for this level
+function pickQuestions(levelKey, howMany) {
+  const pool = QUESTIONS.filter(q => q.level === levelKey);
+  const chosen = [];
+  while (chosen.length < howMany && pool.length > 0) {
+    const i = Math.floor(Math.random() * pool.length);
+    chosen.push(pool.splice(i, 1)[0]);
+  }
+  return chosen;
+}
+
+function level() {
+  return LEVELS[levelIndex];
+}
+
+function showHud() {
+  livesEl.textContent = "❤️".repeat(lives) + "🖤".repeat(LIVES - lives);
+  levelNameEl.textContent = level().name;
+  levelNameEl.className = level().key;
+  bankNumEl.textContent = bank;
+}
+
+// Stars under the host: ⭐ right, ❌ wrong, ⚪ not answered yet
 function showProgress() {
   let stars = "";
-  for (let i = 0; i < QUESTIONS_PER_LEVEL; i++) {
+  for (let i = 0; i < levelQuestions.length; i++) {
     if (i < results.length) stars += results[i] ? "⭐" : "❌";
     else stars += "⚪";
   }
   progressEl.textContent = stars;
 }
 
-function startLevel() {
-  current = 0;
-  results = [];
+function showPot(justWon) {
+  if (pot === 0) {
+    potEl.textContent = "Each right answer = " + level().coins + " coins!";
+  } else {
+    potEl.innerHTML = 'This level: <span class="coin">Q</span> <span class="' + (justWon ? "pop" : "") + '">' + pot + "</span> (get all 3 right to bank it!)";
+  }
+}
+
+function newGame() {
+  lives = LIVES;
+  bank = 0;
+  levelIndex = 0;
   startScreen.classList.add("hidden");
-  endScreen.classList.add("hidden");
-  showQuestion();
+  startLevel();
   hostSaysEl.textContent = pick(HELLO_SAYS);
 }
 
+function startLevel() {
+  pot = 0;
+  current = 0;
+  results = [];
+  levelQuestions = pickQuestions(level().key, QUESTIONS_PER_LEVEL);
+  endScreen.classList.add("hidden");
+  showHud();
+  showQuestion();
+}
+
 function showQuestion() {
-  const q = QUESTIONS[current];
-  themeEl.textContent = q.theme + "  •  Question " + (current + 1) + " of " + QUESTIONS_PER_LEVEL;
+  const q = levelQuestions[current];
+  themeEl.textContent = q.theme + "  •  Question " + (current + 1) + " of " + levelQuestions.length;
   questionEl.textContent = q.question;
   answersEl.innerHTML = "";
   nextBtn.classList.add("hidden");
@@ -70,6 +130,7 @@ function showQuestion() {
   effectEl.textContent = "";
   hostSaysEl.textContent = pick(ASK_SAYS);
   showProgress();
+  showPot(false);
 
   q.answers.forEach((text, i) => {
     const btn = document.createElement("button");
@@ -82,17 +143,20 @@ function showQuestion() {
 }
 
 function chooseAnswer(i) {
-  const q = QUESTIONS[current];
+  const q = levelQuestions[current];
   const buttons = answersEl.querySelectorAll(".answer");
   buttons.forEach(b => b.disabled = true);
   buttons[q.right].classList.add("right");
 
   if (i === q.right) {
     results.push(true);
-    hostSaysEl.textContent = pick(RIGHT_SAYS);
+    pot += level().coins;
+    hostSaysEl.textContent = pick(RIGHT_SAYS) + " +" + level().coins + " coins!";
     dogEl.className = "happy";
+    showPot(true);
   } else {
     results.push(false);
+    lives--;
     buttons[i].classList.add("wrong");
     const oops = pick(NAUGHTY_THINGS);
     hostSaysEl.textContent = pick(WRONG_SAYS) + " " + oops.says;
@@ -101,28 +165,71 @@ function chooseAnswer(i) {
     effectEl.className = oops.how;
   }
 
+  showHud();
   showProgress();
-  nextBtn.textContent = current + 1 < QUESTIONS_PER_LEVEL ? "Next question ▶" : "See results ★";
+  if (lives === 0) nextBtn.textContent = "Uh-oh... ▶";
+  else if (current + 1 < levelQuestions.length) nextBtn.textContent = "Next question ▶";
+  else nextBtn.textContent = "See results ★";
   nextBtn.classList.remove("hidden");
 }
 
-function endLevel() {
-  const right = results.filter(r => r).length;
+// Show the end screen. "quit" = show the quit button too.
+function showEnd(title, text, mainLabel, mainAction, quit) {
+  document.getElementById("end-title").textContent = title;
+  document.getElementById("end-text").textContent = text;
   document.getElementById("end-stars").textContent = progressEl.textContent;
-  if (right === QUESTIONS_PER_LEVEL) {
-    document.getElementById("end-title").textContent = "LEVEL PASSED!";
-    document.getElementById("end-text").textContent = "All " + right + " right! Your pup is SO proud! 🐶💖";
-  } else {
-    document.getElementById("end-title").textContent = "SO CLOSE!";
-    document.getElementById("end-text").textContent = "You got " + right + " out of " + QUESTIONS_PER_LEVEL + ". Get all 3 to pass the level!";
-  }
+  document.getElementById("end-coins-num").textContent = bank;
+  endMainBtn.textContent = mainLabel;
+  afterEnd = mainAction;
+  endQuitBtn.classList.toggle("hidden", !quit);
   endScreen.classList.remove("hidden");
 }
 
+function endLevel() {
+  const allRight = results.every(r => r);
+
+  if (!allRight) {
+    showEnd("SO CLOSE!",
+      "Get all 3 right to bank the coins. Try " + level().name + " again?",
+      "Try again ↺", startLevel, true);
+    return;
+  }
+
+  bank += pot;
+  showHud();
+  bankNumEl.className = "bump";
+
+  if (levelIndex === LEVELS.length - 1) {
+    showEnd("YOU WIN!!!",
+      "You beat HARD level! Your pup is doing the happiest dance EVER! 🐶💃",
+      "Play again ↺", newGame, false);
+    return;
+  }
+
+  const nextLevel = LEVELS[levelIndex + 1];
+  showEnd("LEVEL PASSED!",
+    pot + " coins banked! Your pup is SO proud! Ready for " + nextLevel.name + "?",
+    "Next: " + nextLevel.name + " ▶", () => { levelIndex++; startLevel(); }, true);
+}
+
+function gameOver() {
+  showEnd("GAME OVER",
+    "Out of lives! The pup needs a nap. You keep your banked coins.",
+    "Play again ↺", newGame, false);
+}
+
+function quitGame() {
+  showEnd("SEE YOU NEXT TIME!",
+    "Smart move! You walk away with all your banked coins.",
+    "Play again ↺", newGame, false);
+}
+
 nextBtn.addEventListener("click", () => {
+  if (lives === 0) return gameOver();
   current++;
-  if (current < QUESTIONS_PER_LEVEL) showQuestion();
+  if (current < levelQuestions.length) showQuestion();
   else endLevel();
 });
-document.getElementById("start").addEventListener("click", startLevel);
-document.getElementById("again").addEventListener("click", startLevel);
+document.getElementById("start").addEventListener("click", newGame);
+endMainBtn.addEventListener("click", () => afterEnd());
+endQuitBtn.addEventListener("click", quitGame);

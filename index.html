@@ -13,12 +13,19 @@
 
     <h1 id="title">QUIZ PUP</h1>
 
+    <div id="hud">
+      <div id="lives"></div>
+      <div id="level-name"></div>
+      <div id="bank"><span class="coin">Q</span> <span id="bank-num">0</span></div>
+    </div>
+
     <div id="host">
       <div id="host-face">🕺<span id="mic">🎤</span></div>
       <div id="host-says">Welcome to Quiz Pup!</div>
     </div>
 
     <div id="progress"></div>
+    <div id="pot"></div>
 
     <div id="question-box">
       <div id="theme"></div>
@@ -48,7 +55,11 @@
       <h1 id="end-title" class="overlay-title"></h1>
       <div id="end-stars"></div>
       <p id="end-text"></p>
-      <button id="again" class="big-button">Play again ↺</button>
+      <div id="end-coins"><span class="coin big">Q</span> <span id="end-coins-num">0</span></div>
+      <div class="end-buttons">
+        <button id="end-main" class="big-button"></button>
+        <button id="end-quit" class="big-button quit">Quit &amp; keep my coins</button>
+      </div>
     </div>
   </div>
 

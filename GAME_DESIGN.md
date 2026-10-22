@@ -32,7 +32,11 @@ That is 6 themes x 3 levels x 3 questions = 54 questions minimum (more = less re
 - Easy: 100 coins per right answer
 - Medium: 250 coins per right answer
 - Hard: 500 coins per right answer
-- Each coin shows the first letter of the game's name (once we pick the name!)
+- Each coin shows the first letter of the game's name: "Q"
+- Coins won during a level sit in "the pot". Get all 3 right and the pot is banked.
+  Miss one and the pot is lost, and you try that level again with new random questions.
+- After passing a level you choose: go on to the next level, or quit and keep your banked coins.
+- A perfect game banks 300 + 750 + 1500 = 2550 coins.
 
 ## Lives
 - 3 lives for the whole game (wrong answer = lose a life; details TBD)
