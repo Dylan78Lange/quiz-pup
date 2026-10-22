@@ -46,8 +46,9 @@ Each theme has 5 questions per level (90 questions in all). Each level picks 3 o
 
 ## Winning and the scoreboard
 - Win by beating Hard level.
-- Save your coins on the Top Score Board with your initials.
-- Scoreboard is saved only on this computer (no online, no personal info).
+- When the game ends (win, game over, or quit) with coins banked, type up to 3 initials to save to the Top Score Board.
+- The board keeps the top 10, with 🥇🥈🥉 for the top 3. Open it from the start screen with "🏆 Top Scores".
+- Scoreboard is saved only in this browser on this computer (no online, no personal info - initials only).
 
 ## Shop
 - Spend coins on treats, toys and emote tricks.

@@ -48,6 +48,14 @@
       <div class="overlay-dog">🐶</div>
       <p>The quiz show where your pup is the star!</p>
       <button id="start" class="big-button">★ START THE SHOW ★</button>
+      <button id="show-scores" class="big-button quit">🏆 Top Scores</button>
+    </div>
+
+    <!-- Top Score Board -->
+    <div id="scores-screen" class="overlay hidden">
+      <h1 class="overlay-title small">TOP SCORES</h1>
+      <ol id="scores-list"></ol>
+      <button id="scores-play" class="big-button">Let's play! ▶</button>
     </div>
 
     <!-- Pick a theme screen -->
@@ -63,6 +71,11 @@
       <div id="end-stars"></div>
       <p id="end-text"></p>
       <div id="end-coins"><span class="coin big">Q</span> <span id="end-coins-num">0</span></div>
+      <div id="save-score" class="hidden">
+        <p>Type your initials for the Top Score Board!</p>
+        <input id="initials" maxlength="3" placeholder="AAA" autocomplete="off" spellcheck="false">
+        <button id="save-btn" class="big-button">Save 🏆</button>
+      </div>
       <div class="end-buttons">
         <button id="end-main" class="big-button"></button>
         <button id="end-quit" class="big-button quit">Quit &amp; keep my coins</button>

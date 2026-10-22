@@ -29,6 +29,8 @@ const NAUGHTY_THINGS = [
 ];
 
 const LETTERS = ["A", "B", "C", "D"];
+const MAX_SCORES = 10;               // how many players fit on the Top Score Board
+const SCORES_KEY = "quiz-pup-scores"; // where scores are saved in the browser
 
 const questionEl = document.getElementById("question");
 const themeEl = document.getElementById("theme");
@@ -57,6 +59,7 @@ let levelQuestions = [];
 let current = 0;
 let results = [];    // true for a right answer, false for wrong
 let afterEnd = null; // what the big button on the end screen does
+let memoryScores = []; // backup in case the browser can't save
 
 function pick(list) {
   return list[Math.floor(Math.random() * list.length)];
@@ -203,7 +206,11 @@ function chooseAnswer(i) {
 }
 
 // Show the end screen. "quit" = show the quit button too.
-function showEnd(title, text, mainLabel, mainAction, quit) {
+// "canSave" = the game is over, so let the player save their score.
+function showEnd(title, text, mainLabel, mainAction, quit, canSave) {
+  const saveBox = document.getElementById("save-score");
+  saveBox.classList.toggle("hidden", !(canSave && bank > 0));
+  document.getElementById("initials").value = "";
   document.getElementById("end-title").textContent = title;
   document.getElementById("end-text").textContent = text;
   document.getElementById("end-stars").textContent = progressEl.textContent;
@@ -231,7 +238,7 @@ function endLevel() {
   if (levelIndex === LEVELS.length - 1) {
     showEnd("YOU WIN!!!",
       "You beat HARD level! Your pup is doing the happiest dance EVER! 🐶💃",
-      "Play again ↺", newGame, false);
+      "Play again ↺", newGame, false, true);
     return;
   }
 
@@ -244,14 +251,81 @@ function endLevel() {
 function gameOver() {
   showEnd("GAME OVER",
     "Out of lives! The pup needs a nap. You keep your banked coins.",
-    "Play again ↺", newGame, false);
+    "Play again ↺", newGame, false, true);
 }
 
 function quitGame() {
   showEnd("SEE YOU NEXT TIME!",
     "Smart move! You walk away with all your banked coins.",
-    "Play again ↺", newGame, false);
+    "Play again ↺", newGame, false, true);
 }
+
+// ---------- Top Score Board ----------
+// Scores are saved only in this browser, on this computer.
+function loadScores() {
+  try {
+    return JSON.parse(localStorage.getItem(SCORES_KEY)) || memoryScores;
+  } catch (e) {
+    return memoryScores;
+  }
+}
+
+function storeScores(scores) {
+  memoryScores = scores;
+  try {
+    localStorage.setItem(SCORES_KEY, JSON.stringify(scores));
+  } catch (e) {
+    // can't save in this browser - the scores still last until the page closes
+  }
+}
+
+function saveScore() {
+  const input = document.getElementById("initials");
+  const initials = input.value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 3);
+  if (initials === "") {
+    input.classList.remove("oops");
+    void input.offsetWidth; // restart the wobble
+    input.classList.add("oops");
+    return;
+  }
+  const entry = { initials: initials, coins: bank, when: Date.now() };
+  const scores = loadScores();
+  scores.push(entry);
+  scores.sort((a, b) => b.coins - a.coins);
+  storeScores(scores.slice(0, MAX_SCORES));
+  showScores(entry.when);
+}
+
+// "newOne" = highlight the score that was just saved
+function showScores(newOne) {
+  const list = document.getElementById("scores-list");
+  const medals = ["🥇", "🥈", "🥉"];
+  list.innerHTML = "";
+  const scores = loadScores();
+  if (scores.length === 0) {
+    list.innerHTML = '<li class="empty">No scores yet - be the first!</li>';
+  }
+  scores.forEach((s, i) => {
+    const li = document.createElement("li");
+    if (s.when === newOne) li.className = "new";
+    li.innerHTML = "<span>" + (medals[i] || (i + 1) + ".") + " " + s.initials + "</span>" +
+      '<span class="score-coins"><span class="coin">Q</span> ' + s.coins + "</span>";
+    list.appendChild(li);
+  });
+  startScreen.classList.add("hidden");
+  endScreen.classList.add("hidden");
+  document.getElementById("scores-screen").classList.remove("hidden");
+}
+
+document.getElementById("save-btn").addEventListener("click", saveScore);
+document.getElementById("initials").addEventListener("keydown", e => {
+  if (e.key === "Enter") saveScore();
+});
+document.getElementById("show-scores").addEventListener("click", () => showScores());
+document.getElementById("scores-play").addEventListener("click", () => {
+  document.getElementById("scores-screen").classList.add("hidden");
+  newGame();
+});
 
 nextBtn.addEventListener("click", () => {
   if (lives === 0) return gameOver();

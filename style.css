@@ -254,6 +254,46 @@ body {
 .end-buttons { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
 .big-button.quit { background: #3a2a8a; }
 
+/* Typing your initials */
+#save-score p { font-size: 18px; margin: 10px 0 6px; }
+#initials {
+  width: 140px;
+  font-family: "Courier New", monospace;
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 8px;
+  background: black;
+  color: var(--gold);
+  border: 3px solid var(--gold);
+  border-radius: 8px;
+  padding: 4px;
+}
+#initials.oops { animation: shake 0.15s linear 3; border-color: var(--red); }
+#save-btn { vertical-align: top; margin-left: 8px; }
+
+/* Top Score Board */
+#scores-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  width: 100%;
+  max-width: 360px;
+  font-family: "Courier New", monospace;
+  font-size: 24px;
+  font-weight: bold;
+}
+#scores-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 12px;
+  border-bottom: 2px dashed #3a2a8a;
+}
+#scores-list li.new { background: var(--pink); border-radius: 8px; animation: pop 0.6s ease-out; }
+#scores-list .empty { justify-content: center; color: #aaa; border: none; }
+.score-coins { color: var(--gold); }
+
 /* Theme picker */
 .overlay-title.small { font-size: 44px; }
 #theme-buttons {
