@@ -6,7 +6,7 @@ pup dance (or get up to mischief when you're wrong).
 **▶ Play it here: https://dylan78lange.github.io/quiz-pup/**
 
 - 1 to 4 players taking turns on one computer
-- 6 themes and 300 questions: Geography, Video Games, Kids' Movies, Food, Brand Icons and Famous People
+- 6 themes and 330 questions: Geography, Video Games, Kids' Movies, Food, Brand Icons (with 60 real logos) and Famous People
 - Easy, Medium and Hard levels - beat Hard in 3 different themes to win
 - 3 lives, and coins to bank or spend in the Pup Shop
 - Pick your pup (Shiba Inu, Pug, Husky, Poodle or Dalmatian) and your host (human or robot)

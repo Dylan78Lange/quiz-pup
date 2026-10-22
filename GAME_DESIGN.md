@@ -29,11 +29,12 @@ Right answers make the dog happy; wrong answers cost lives. Win coins, spend the
 5. Brand icons
 6. Famous people
 
-Brand Icons also has 30 "whose logo is this?" picture questions (10 per level) that show a real
-logo on the question board, in its brand color. The logos come from Simple Icons and live in
-`logos.js`. Only logos without the brand name written in them are used.
+Brand Icons also has 60 "whose logo is this?" picture questions (20 per level) that show a real
+logo on the question board, in its brand color. Every Brand Icons level has at least 2 logo
+questions out of 3 (LOGO_QUESTIONS_PER_LEVEL in game.js). The logos come from Simple Icons and
+live in `logos.js`. Only logos without the brand name written in them are used.
 
-Each theme has at least 15 questions per level (300 questions in all). Each level picks 3 at random.
+Each theme has at least 15 questions per level (330 questions in all). Each level picks 3 at random.
 A player won't get the same question twice in one game (until a pool runs out).
 
 ## Coins

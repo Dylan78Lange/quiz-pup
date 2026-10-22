@@ -27,7 +27,7 @@ This is a child's first game project. The person chatting with you may be a kid.
 - `questions/themes.js` - the list of themes
 - `questions/<theme>.js` - one file of questions per theme (easy to add your own)
 - `dogs.js` - the 5 dog breeds and how each one is drawn
-- `logos.js` - 30 brand logo shapes from Simple Icons (CC0), used by "whose logo is this?" questions
+- `logos.js` - 60 brand logo shapes from Simple Icons (CC0), used by "whose logo is this?" questions
 - `sound.js` - sound effects and the hip hop music, all made with code
 - `game.js` - the game code (players, turns, levels, scores)
 - `shop.js` - the Pup Shop: things to buy and how buying works

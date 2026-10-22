@@ -6,6 +6,7 @@
 const LIVES = 3;
 const QUESTIONS_PER_LEVEL = 3;
 const HARD_ROUNDS = 3; // to win, beat Hard in this many different themes
+const LOGO_QUESTIONS_PER_LEVEL = 2; // in Brand Icons, at least this many questions show a real logo
 const LEVELS = [
   { key: "easy",   name: "EASY",   coins: 100 },
   { key: "medium", name: "MEDIUM", coins: 250 },
@@ -374,9 +375,21 @@ function showPot(justWon) {
 }
 
 // ---------- Themes and questions ----------
-// Pick some random questions, skipping any in "avoid" (unless there aren't enough left)
-function pickQuestions(themeName, levelKey, howMany, avoid) {
-  const all = QUESTIONS.filter(q => q.theme === themeName && q.level === levelKey);
+// The questions for a new level. If the theme has logo questions, some are always logos.
+function pickLevelQuestions(themeName, levelKey, avoid) {
+  const logos = pickQuestions(themeName, levelKey, LOGO_QUESTIONS_PER_LEVEL, avoid, q => q.logo);
+  const rest = pickQuestions(themeName, levelKey, QUESTIONS_PER_LEVEL - logos.length, avoid.concat(logos));
+  return shuffle(logos.concat(rest));
+}
+
+function shuffle(list) {
+  return list.map(item => [Math.random(), item]).sort((a, b) => a[0] - b[0]).map(pair => pair[1]);
+}
+
+// Pick some random questions, skipping any in "avoid" (unless there aren't enough left).
+// "only" can limit it to some questions, like only logo ones.
+function pickQuestions(themeName, levelKey, howMany, avoid, only = () => true) {
+  const all = QUESTIONS.filter(q => q.theme === themeName && q.level === levelKey && only(q));
   let pool = all.filter(q => !avoid.includes(q));
   if (pool.length < howMany) pool = all;
   const chosen = [];
@@ -425,7 +438,7 @@ function startLevel(themeName) {
   p.pot = 0;
   p.current = 0;
   p.results = [];
-  p.levelQuestions = pickQuestions(themeName, level().key, QUESTIONS_PER_LEVEL, p.seen);
+  p.levelQuestions = pickLevelQuestions(themeName, level().key, p.seen);
   p.seen.push(...p.levelQuestions);
   showOverlay(null);
   showStage();
