@@ -28,46 +28,261 @@ const NAUGHTY_THINGS = [
   { says: "The pup is chasing its own tail!", effect: "🌀🌀🌀", how: "pop" },
 ];
 
+const PUP_NAMES = ["Biscuit", "Waffles", "Peanut", "Noodle"]; // if you don't name your pup
 const LETTERS = ["A", "B", "C", "D"];
 const MAX_SCORES = 10;               // how many players fit on the Top Score Board
 const SCORES_KEY = "quiz-pup-scores"; // where scores are saved in the browser
 
-const questionEl = document.getElementById("question");
-const themeEl = document.getElementById("theme");
-const answersEl = document.getElementById("answers");
-const hostSaysEl = document.getElementById("host-says");
-const dogEl = document.getElementById("dog");
-const effectEl = document.getElementById("effect");
-const progressEl = document.getElementById("progress");
-const potEl = document.getElementById("pot");
-const livesEl = document.getElementById("lives");
-const levelNameEl = document.getElementById("level-name");
-const bankNumEl = document.getElementById("bank-num");
-const nextBtn = document.getElementById("next");
-const startScreen = document.getElementById("start-screen");
-const themeScreen = document.getElementById("theme-screen");
-const endScreen = document.getElementById("end-screen");
-const endMainBtn = document.getElementById("end-main");
-const endQuitBtn = document.getElementById("end-quit");
+const $ = id => document.getElementById(id);
+const questionEl = $("question");
+const themeEl = $("theme");
+const answersEl = $("answers");
+const hostSaysEl = $("host-says");
+const dogEl = $("dog");
+const effectEl = $("effect");
+const progressEl = $("progress");
+const potEl = $("pot");
+const livesEl = $("lives");
+const levelNameEl = $("level-name");
+const bankNumEl = $("bank-num");
+const nextBtn = $("next");
+const passBtn = $("pass");
 
-let lives = LIVES;
-let bank = 0;        // coins saved forever (banked)
-let pot = 0;         // coins won this level, not banked yet
-let levelIndex = 0;  // 0 = easy, 1 = medium, 2 = hard
-let theme = "";      // the theme picked for this level
-let levelQuestions = [];
-let current = 0;
-let results = [];    // true for a right answer, false for wrong
-let afterEnd = null; // what the big button on the end screen does
+let players = [];     // everyone playing (see makePlayer)
+let turn = 0;         // whose turn it is (0 = player 1)
+let setupIndex = 0;   // which player is filling in their name
+let chosenBreed = BREEDS[0].key;
+let lastWrong = false;
+let afterEnd = null;  // what the big button on the end screen does
+let savedIds = [];    // scores saved at the end of the last game
 let memoryScores = []; // backup in case the browser can't save
+
+function makePlayer(number) {
+  return {
+    name: "P" + number,
+    dogName: "Biscuit",
+    breed: BREEDS[0].key,
+    lives: LIVES,
+    bank: 0,          // coins saved forever (banked)
+    pot: 0,           // coins won this level, not banked yet
+    levelIndex: 0,    // 0 = easy, 1 = medium, 2 = hard
+    theme: "",
+    levelQuestions: [], // empty = needs to pick a theme for a new level
+    current: 0,
+    results: [],      // true for a right answer, false for wrong
+    owned: { toys: [], wear: "", tricks: [] }, // things from the Pup Shop
+    done: false,      // finished playing (won, quit or out of lives)
+    ending: "",       // "won", "quit" or "out"
+  };
+}
 
 function pick(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
-// Pick some random questions for this level
-function pickQuestions(themeName, levelKey, howMany) {
-  const pool = QUESTIONS.filter(q => q.theme === themeName && q.level === levelKey);
+function me() {
+  return players[turn];
+}
+
+function level() {
+  return LEVELS[me().levelIndex];
+}
+
+function stillPlaying() {
+  return players.filter(p => !p.done);
+}
+
+function showOverlay(id) {
+  document.querySelectorAll(".overlay").forEach(o => o.classList.add("hidden"));
+  if (id) $(id).classList.remove("hidden");
+}
+
+// A pup picture with its hat on
+function pupHtml(p) {
+  return '<span class="hat">' + p.owned.wear + "</span>" + dogSvg(p.breed);
+}
+
+// ---------- Setup ----------
+function newGame() {
+  $("setup-count").classList.remove("hidden");
+  $("setup-player").classList.add("hidden");
+  showOverlay("setup-screen");
+}
+
+function chooseCount(howMany) {
+  players = [];
+  for (let i = 1; i <= howMany; i++) players.push(makePlayer(i));
+  setupIndex = 0;
+  $("setup-count").classList.add("hidden");
+  $("setup-player").classList.remove("hidden");
+  showPlayerForm();
+}
+
+function showPlayerForm() {
+  $("setup-title").textContent = players.length > 1 ? "PLAYER " + (setupIndex + 1) : "WHO'S PLAYING?";
+  $("player-name").value = "";
+  $("pup-name").value = "";
+  $("pup-name").placeholder = PUP_NAMES[setupIndex];
+  chosenBreed = BREEDS[setupIndex % BREEDS.length].key;
+  showBreedButtons();
+  $("setup-next").textContent = setupIndex + 1 < players.length ? "Next player ▶" : "Let's go! ★";
+  $("player-name").focus();
+}
+
+function showBreedButtons() {
+  const el = $("breed-buttons");
+  el.innerHTML = "";
+  BREEDS.forEach(b => {
+    const btn = document.createElement("button");
+    btn.className = "breed-button" + (b.key === chosenBreed ? " chosen" : "");
+    btn.innerHTML = dogSvg(b.key) + "<span>" + b.name + "</span>";
+    btn.addEventListener("click", () => { chosenBreed = b.key; showBreedButtons(); });
+    el.appendChild(btn);
+  });
+}
+
+function savePlayerForm() {
+  const p = players[setupIndex];
+  // Names are letters only, like an arcade game
+  p.name = $("player-name").value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 8) || "P" + (setupIndex + 1);
+  p.dogName = $("pup-name").value.trim().slice(0, 12) || PUP_NAMES[setupIndex];
+  p.breed = chosenBreed;
+  setupIndex++;
+  if (setupIndex < players.length) {
+    showPlayerForm();
+  } else {
+    turn = 0;
+    startTurn();
+  }
+}
+
+// ---------- Turns ----------
+function startTurn() {
+  showStage();
+  if (players.length > 1) {
+    const p = me();
+    $("turn-dog").innerHTML = pupHtml(p);
+    $("turn-title").textContent = p.name + "'S TURN!";
+    $("turn-text").textContent = "Pass the laptop to " + p.name + ". " + p.dogName + " is ready!";
+    showOverlay("turn-screen");
+  } else {
+    continueTurn();
+  }
+}
+
+function continueTurn() {
+  showOverlay(null);
+  showStage();
+  if (me().levelQuestions.length === 0) {
+    showThemePicker();
+  } else {
+    showQuestion();
+    if (players.length > 1) hostSaysEl.textContent = "Welcome back, " + me().name + "! " + hostSaysEl.textContent;
+  }
+}
+
+// Move on to the next player who is still playing
+function endTurn() {
+  if (stillPlaying().length === 0) return showFinal();
+  do {
+    turn = (turn + 1) % players.length;
+  } while (me().done);
+  startTurn();
+}
+
+// Pass: hand over to the next player. You get a different question when it's your turn again.
+function passTurn() {
+  const p = me();
+  const fresh = pickQuestions(p.theme, level().key, 1, p.levelQuestions);
+  if (fresh.length > 0) p.levelQuestions[p.current] = fresh[0];
+  endTurn();
+}
+
+// ---------- Stage ----------
+function showHud() {
+  const p = me();
+  livesEl.textContent = "❤️".repeat(p.lives) + "🖤".repeat(Math.max(0, LIVES - p.lives));
+  levelNameEl.textContent = (players.length > 1 ? p.name + " • " : "") + level().name;
+  levelNameEl.className = level().key;
+  bankNumEl.textContent = p.bank;
+}
+
+function showStage() {
+  const p = me();
+  showHud();
+  dogEl.innerHTML = pupHtml(p);
+  $("toys").textContent = p.owned.toys.join(" ");
+  $("dog-name").textContent = p.dogName;
+  showTricks();
+  showPlayersStrip();
+}
+
+// The row of players at the bottom (only with 2+ players)
+function showPlayersStrip() {
+  const strip = $("players-strip");
+  strip.innerHTML = "";
+  if (players.length < 2) return;
+
+  players.forEach((p, i) => {
+    const card = document.createElement("div");
+    card.className = "player-card" + (i === turn ? " now" : "") + (p.done ? " done" : "");
+
+    const pup = document.createElement("div");
+    pup.className = "pup mini";
+    pup.innerHTML = pupHtml(p);
+
+    const name = document.createElement("div");
+    name.className = "player-name";
+    name.textContent = p.name;
+
+    const info = document.createElement("div");
+    info.className = "player-info";
+    info.innerHTML = "❤️" + p.lives + ' <span class="coin">Q</span> ' + p.bank;
+
+    card.append(pup, name, info);
+
+    // Other players can tease with tricks they bought!
+    if (i !== turn && p.owned.tricks.length > 0) {
+      const teases = document.createElement("div");
+      teases.className = "teases";
+      p.owned.tricks.forEach(trick => {
+        const btn = document.createElement("button");
+        btn.className = "tease-button";
+        btn.textContent = trick.emoji;
+        btn.title = "Tease with " + trick.name;
+        btn.addEventListener("click", () => tease(p, trick, pup));
+        teases.appendChild(btn);
+      });
+      card.appendChild(teases);
+    }
+    strip.appendChild(card);
+  });
+}
+
+// Stars under the host: ⭐ right, ❌ wrong, ⚪ not answered yet
+function showProgress() {
+  const p = me();
+  let stars = "";
+  for (let i = 0; i < QUESTIONS_PER_LEVEL; i++) {
+    if (i < p.results.length) stars += p.results[i] ? "⭐" : "❌";
+    else stars += "⚪";
+  }
+  progressEl.textContent = stars;
+}
+
+function showPot(justWon) {
+  const p = me();
+  if (p.pot === 0) {
+    potEl.textContent = "Each right answer = " + level().coins + " coins!";
+  } else {
+    potEl.innerHTML = 'This level: <span class="coin">Q</span> <span class="' + (justWon ? "pop" : "") + '">' + p.pot + "</span> (get all 3 right to bank it!)";
+  }
+}
+
+// ---------- Themes and questions ----------
+// Pick some random questions, skipping any in "avoid"
+function pickQuestions(themeName, levelKey, howMany, avoid) {
+  const pool = QUESTIONS.filter(q => q.theme === themeName && q.level === levelKey && !avoid.includes(q));
   const chosen = [];
   while (chosen.length < howMany && pool.length > 0) {
     const i = Math.floor(Math.random() * pool.length);
@@ -76,50 +291,11 @@ function pickQuestions(themeName, levelKey, howMany) {
   return chosen;
 }
 
-function level() {
-  return LEVELS[levelIndex];
-}
-
-function showHud() {
-  livesEl.textContent = "❤️".repeat(lives) + "🖤".repeat(LIVES - lives);
-  levelNameEl.textContent = level().name;
-  levelNameEl.className = level().key;
-  bankNumEl.textContent = bank;
-}
-
-// Stars under the host: ⭐ right, ❌ wrong, ⚪ not answered yet
-function showProgress() {
-  let stars = "";
-  for (let i = 0; i < levelQuestions.length; i++) {
-    if (i < results.length) stars += results[i] ? "⭐" : "❌";
-    else stars += "⚪";
-  }
-  progressEl.textContent = stars;
-}
-
-function showPot(justWon) {
-  if (pot === 0) {
-    potEl.textContent = "Each right answer = " + level().coins + " coins!";
-  } else {
-    potEl.innerHTML = 'This level: <span class="coin">Q</span> <span class="' + (justWon ? "pop" : "") + '">' + pot + "</span> (get all 3 right to bank it!)";
-  }
-}
-
-function newGame() {
-  lives = LIVES;
-  bank = 0;
-  levelIndex = 0;
-  resetShop();
-  startScreen.classList.add("hidden");
-  showThemePicker();
-}
-
 // Show a big button for every theme, plus a surprise button
 function showThemePicker() {
-  endScreen.classList.add("hidden");
-  document.getElementById("theme-level").textContent =
+  $("theme-level").textContent = (players.length > 1 ? me().name + "  •  " : "") +
     level().name + " level  •  each right answer = " + level().coins + " coins!";
-  const buttonsEl = document.getElementById("theme-buttons");
+  const buttonsEl = $("theme-buttons");
   buttonsEl.innerHTML = "";
 
   THEMES.forEach(t => {
@@ -137,28 +313,32 @@ function showThemePicker() {
   surprise.addEventListener("click", () => startLevel(pick(THEMES).name));
   buttonsEl.appendChild(surprise);
 
-  themeScreen.classList.remove("hidden");
+  showOverlay("theme-screen");
 }
 
 function startLevel(themeName) {
-  theme = themeName;
-  pot = 0;
-  current = 0;
-  results = [];
-  levelQuestions = pickQuestions(theme, level().key, QUESTIONS_PER_LEVEL);
-  themeScreen.classList.add("hidden");
-  showHud();
+  const p = me();
+  p.theme = themeName;
+  p.pot = 0;
+  p.current = 0;
+  p.results = [];
+  p.levelQuestions = pickQuestions(themeName, level().key, QUESTIONS_PER_LEVEL, []);
+  showOverlay(null);
+  showStage();
   showQuestion();
-  hostSaysEl.textContent = pick(HELLO_SAYS) + " Tonight's theme: " + theme + "!";
+  hostSaysEl.textContent = pick(HELLO_SAYS) + " Tonight's theme: " + themeName + "!";
 }
 
 function showQuestion() {
-  const q = levelQuestions[current];
-  themeEl.textContent = q.theme + "  •  Question " + (current + 1) + " of " + levelQuestions.length;
+  const p = me();
+  const q = p.levelQuestions[p.current];
+  lastWrong = false;
+  themeEl.textContent = q.theme + "  •  Question " + (p.current + 1) + " of " + p.levelQuestions.length;
   questionEl.textContent = q.question;
   answersEl.innerHTML = "";
   nextBtn.classList.add("hidden");
-  dogEl.className = "";
+  passBtn.classList.toggle("hidden", stillPlaying().length < 2);
+  dogEl.className = "pup";
   effectEl.className = "";
   effectEl.textContent = "";
   hostSaysEl.textContent = pick(ASK_SAYS);
@@ -176,90 +356,145 @@ function showQuestion() {
 }
 
 function chooseAnswer(i) {
-  const q = levelQuestions[current];
+  const p = me();
+  const q = p.levelQuestions[p.current];
   const buttons = answersEl.querySelectorAll(".answer");
   buttons.forEach(b => b.disabled = true);
   buttons[q.right].classList.add("right");
+  passBtn.classList.add("hidden");
 
   if (i === q.right) {
-    results.push(true);
-    pot += level().coins;
+    p.results.push(true);
+    p.pot += level().coins;
     hostSaysEl.textContent = pick(RIGHT_SAYS) + " +" + level().coins + " coins!";
-    dogEl.className = "happy";
+    dogEl.className = "pup happy";
     showPot(true);
+    nextBtn.textContent = p.current + 1 < p.levelQuestions.length ? "Next question ▶" : "See results ★";
   } else {
-    results.push(false);
-    lives--;
+    // A wrong answer costs a life and ends the level (you need all 3 right to pass)
+    p.results.push(false);
+    p.lives--;
+    lastWrong = true;
     buttons[i].classList.add("wrong");
     const oops = pick(NAUGHTY_THINGS);
-    hostSaysEl.textContent = pick(WRONG_SAYS) + " " + oops.says;
-    dogEl.className = "naughty";
+    hostSaysEl.textContent = pick(WRONG_SAYS) + " " + oops.says.replace("The pup", p.dogName).replace("the pup", p.dogName);
+    dogEl.className = "pup naughty";
     effectEl.textContent = oops.effect;
     effectEl.className = oops.how;
+    nextBtn.textContent = "Oh no... ▶";
   }
 
   showHud();
   showProgress();
-  if (lives === 0) nextBtn.textContent = "Uh-oh... ▶";
-  else if (current + 1 < levelQuestions.length) nextBtn.textContent = "Next question ▶";
-  else nextBtn.textContent = "See results ★";
+  showPlayersStrip();
   nextBtn.classList.remove("hidden");
 }
 
-// Show the end screen. "quit" = show the quit button too.
-// "canSave" = the game is over, so let the player save their score.
-function showEnd(title, text, mainLabel, mainAction, quit, canSave) {
-  const saveBox = document.getElementById("save-score");
-  saveBox.classList.toggle("hidden", !(canSave && bank > 0));
-  document.getElementById("initials").value = "";
-  document.getElementById("end-title").textContent = title;
-  document.getElementById("end-text").textContent = text;
-  document.getElementById("end-stars").textContent = progressEl.textContent;
-  document.getElementById("end-coins-num").textContent = bank;
-  endMainBtn.textContent = mainLabel;
+// ---------- End of a level ----------
+// "between" = between levels, so show the shop and quit buttons
+function showEnd(title, text, mainLabel, mainAction, between) {
+  $("end-title").textContent = title;
+  $("end-text").textContent = text;
+  $("end-stars").textContent = progressEl.textContent;
+  $("end-coins-num").textContent = me().bank;
+  $("end-main").textContent = mainLabel;
   afterEnd = mainAction;
-  endQuitBtn.classList.toggle("hidden", !quit);
-  document.getElementById("end-shop").classList.toggle("hidden", !quit); // shop is open between levels
-  endScreen.classList.remove("hidden");
+  $("end-quit").classList.toggle("hidden", !between);
+  $("end-shop").classList.toggle("hidden", !between);
+  showOverlay("end-screen");
 }
 
-function endLevel() {
-  const allRight = results.every(r => r);
+// What the button says after someone finishes for good
+function finishLabel() {
+  return stillPlaying().length === 0 ? "See final scores ★" : "Next player ▶";
+}
 
-  if (!allRight) {
-    showEnd("SO CLOSE!",
-      "Get all 3 right to bank the coins. Try " + level().name + " again?",
-      "Try again ↺", showThemePicker, true);
+function levelFailed() {
+  const p = me();
+  p.levelQuestions = [];
+  p.pot = 0;
+
+  if (p.lives === 0) {
+    p.done = true;
+    p.ending = "out";
+    showEnd("GAME OVER",
+      "Out of lives! " + p.dogName + " needs a nap. You keep your " + p.bank + " banked coins.",
+      finishLabel(), endTurn, false);
     return;
   }
 
-  bank += pot;
+  showEnd("SO CLOSE!",
+    "You need all 3 right to bank the coins. " +
+    (players.length > 1 ? "Next turn, try " : "Try ") + level().name + " again!",
+    players.length > 1 ? "Next player ▶" : "Try again ↺", endTurn, true);
+}
+
+function levelPassed() {
+  const p = me();
+  p.bank += p.pot;
+  const won = p.pot;
+  p.pot = 0;
+  p.levelQuestions = [];
   showHud();
-  bankNumEl.className = "bump";
 
-  if (levelIndex === LEVELS.length - 1) {
+  if (p.levelIndex === LEVELS.length - 1) {
+    p.done = true;
+    p.ending = "won";
     showEnd("YOU WIN!!!",
-      "You beat HARD level! Your pup is doing the happiest dance EVER! 🐶💃",
-      "Play again ↺", newGame, false, true);
+      "You beat HARD level! " + p.dogName + " is doing the happiest dance EVER! 🐶💃",
+      finishLabel(), endTurn, false);
     return;
   }
 
-  const nextLevel = LEVELS[levelIndex + 1];
+  p.levelIndex++;
+  // A right answer means you keep your turn, so carry straight on
   showEnd("LEVEL PASSED!",
-    pot + " coins banked! Your pup is SO proud! Ready for " + nextLevel.name + "?",
-    "Next: " + nextLevel.name + " ▶", () => { levelIndex++; showThemePicker(); }, true);
-}
-
-function gameOver() {
-  showEnd("GAME OVER",
-    "Out of lives! The pup needs a nap. You keep your banked coins.",
-    "Play again ↺", newGame, false, true);
+    won + " coins banked! " + p.dogName + " is SO proud! Ready for " + level().name + "?",
+    "Next: " + level().name + " ▶", continueTurn, true);
 }
 
 function quitGame() {
+  const p = me();
+  p.done = true;
+  p.ending = "quit";
+  p.levelQuestions = [];
   showEnd("SEE YOU NEXT TIME!",
-    "Smart move! You walk away with all your banked coins.",
-    "Play again ↺", newGame, false, true);
+    "Smart move, " + p.name + "! You walk away with all " + p.bank + " banked coins.",
+    finishLabel(), endTurn, false);
+}
+
+// ---------- Final results ----------
+function showFinal() {
+  saveAllScores();
+  const ranked = [...players].sort((a, b) => b.bank - a.bank);
+  const icons = { won: "🏆", quit: "👋", out: "💤" };
+
+  if (players.length === 1) {
+    $("final-title").textContent = "FINAL SCORE";
+  } else if (ranked[0].bank > 0 && ranked[0].bank === ranked[1].bank) {
+    $("final-title").textContent = "IT'S A TIE!";
+  } else {
+    $("final-title").textContent = ranked[0].name + " WINS!";
+  }
+
+  const list = $("final-list");
+  list.innerHTML = "";
+  ranked.forEach((p, i) => {
+    const li = document.createElement("li");
+    if (i === 0 && players.length > 1) li.className = "winner";
+    const pup = document.createElement("span");
+    pup.className = "pup mini";
+    pup.innerHTML = pupHtml(p);
+    const who = document.createElement("span");
+    who.className = "final-who";
+    who.textContent = p.name + " & " + p.dogName + " " + icons[p.ending];
+    const coins = document.createElement("span");
+    coins.className = "score-coins";
+    coins.innerHTML = '<span class="coin">Q</span> ' + p.bank;
+    li.append(pup, who, coins);
+    list.appendChild(li);
+  });
+  showOverlay("final-screen");
 }
 
 // ---------- Top Score Board ----------
@@ -281,26 +516,23 @@ function storeScores(scores) {
   }
 }
 
-function saveScore() {
-  const input = document.getElementById("initials");
-  const initials = input.value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 3);
-  if (initials === "") {
-    input.classList.remove("oops");
-    void input.offsetWidth; // restart the wobble
-    input.classList.add("oops");
-    return;
-  }
-  const entry = { initials: initials, coins: bank, when: Date.now() };
+function saveAllScores() {
   const scores = loadScores();
-  scores.push(entry);
+  const now = Date.now();
+  savedIds = [];
+  players.forEach((p, i) => {
+    if (p.bank > 0) {
+      scores.push({ initials: p.name, coins: p.bank, when: now + i });
+      savedIds.push(now + i);
+    }
+  });
   scores.sort((a, b) => b.coins - a.coins);
   storeScores(scores.slice(0, MAX_SCORES));
-  showScores(entry.when);
 }
 
-// "newOne" = highlight the score that was just saved
-function showScores(newOne) {
-  const list = document.getElementById("scores-list");
+// "newOnes" = highlight scores that were just saved
+function showScores(newOnes) {
+  const list = $("scores-list");
   const medals = ["🥇", "🥈", "🥉"];
   list.innerHTML = "";
   const scores = loadScores();
@@ -309,32 +541,38 @@ function showScores(newOne) {
   }
   scores.forEach((s, i) => {
     const li = document.createElement("li");
-    if (s.when === newOne) li.className = "new";
-    li.innerHTML = "<span>" + (medals[i] || (i + 1) + ".") + " " + s.initials + "</span>" +
-      '<span class="score-coins"><span class="coin">Q</span> ' + s.coins + "</span>";
+    if (newOnes.includes(s.when)) li.className = "new";
+    const who = document.createElement("span");
+    who.textContent = (medals[i] || (i + 1) + ".") + " " + s.initials;
+    const coins = document.createElement("span");
+    coins.className = "score-coins";
+    coins.innerHTML = '<span class="coin">Q</span> ' + s.coins;
+    li.append(who, coins);
     list.appendChild(li);
   });
-  startScreen.classList.add("hidden");
-  endScreen.classList.add("hidden");
-  document.getElementById("scores-screen").classList.remove("hidden");
+  showOverlay("scores-screen");
 }
 
-document.getElementById("save-btn").addEventListener("click", saveScore);
-document.getElementById("initials").addEventListener("keydown", e => {
-  if (e.key === "Enter") saveScore();
-});
-document.getElementById("show-scores").addEventListener("click", () => showScores());
-document.getElementById("scores-play").addEventListener("click", () => {
-  document.getElementById("scores-screen").classList.add("hidden");
-  newGame();
-});
-
+// ---------- Buttons ----------
 nextBtn.addEventListener("click", () => {
-  if (lives === 0) return gameOver();
-  current++;
-  if (current < levelQuestions.length) showQuestion();
-  else endLevel();
+  if (lastWrong) return levelFailed();
+  const p = me();
+  p.current++;
+  if (p.current < p.levelQuestions.length) showQuestion();
+  else levelPassed();
 });
-document.getElementById("start").addEventListener("click", newGame);
-endMainBtn.addEventListener("click", () => afterEnd());
-endQuitBtn.addEventListener("click", quitGame);
+passBtn.addEventListener("click", passTurn);
+$("start").addEventListener("click", newGame);
+document.querySelectorAll(".count-button").forEach(btn =>
+  btn.addEventListener("click", () => chooseCount(Number(btn.dataset.count))));
+$("setup-next").addEventListener("click", savePlayerForm);
+$("pup-name").addEventListener("keydown", e => { if (e.key === "Enter") savePlayerForm(); });
+$("turn-go").addEventListener("click", continueTurn);
+$("end-main").addEventListener("click", () => afterEnd());
+$("end-quit").addEventListener("click", quitGame);
+$("final-again").addEventListener("click", newGame);
+$("final-scores").addEventListener("click", () => showScores(savedIds));
+$("show-scores").addEventListener("click", () => showScores([]));
+$("scores-play").addEventListener("click", newGame);
+
+$("start-dog").innerHTML = '<div class="pup">' + dogSvg("shiba") + "</div>";

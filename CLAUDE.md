@@ -24,5 +24,6 @@ This is a child's first game project. The person chatting with you may be a kid.
 - `style.css` - colors and looks
 - `questions/themes.js` - the list of themes
 - `questions/<theme>.js` - one file of questions per theme (easy to add your own)
-- `game.js` - the game code
+- `dogs.js` - the 5 dog breeds and how each one is drawn
+- `game.js` - the game code (players, turns, levels, scores)
 - `shop.js` - the Pup Shop: things to buy and how buying works

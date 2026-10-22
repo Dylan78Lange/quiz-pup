@@ -3,12 +3,13 @@
 //  type:  "treat" - the pup eats it right away
 //         "toy"   - sits next to the pup on stage
 //         "wear"  - the pup wears it on its head (one at a time)
-//         "trick" - a button you can press to make the pup do it
+//         "trick" - a button you can press to make the pup do it,
+//                   or to tease the other players!
 //  price: how many coins it costs
 // ============================================
 const SHOP_ITEMS = [
   // Treats
-  { type: "treat", emoji: "🦴", name: "Bone",        price: 50,  says: "Crunch crunch! The pup LOVES it!" },
+  { type: "treat", emoji: "🦴", name: "Bone",        price: 50,  says: "Crunch crunch! Your pup LOVES it!" },
   { type: "treat", emoji: "🧁", name: "Pupcake",     price: 150, says: "Sprinkles everywhere! Happiest pup ever!" },
   { type: "treat", emoji: "🥩", name: "Super Steak", price: 500, says: "POWER UP! +1 life!", life: true },
 
@@ -24,11 +25,16 @@ const SHOP_ITEMS = [
   { type: "wear", emoji: "👑", name: "Crown",   price: 400 },
 
   // Tricks (emotes)
-  { type: "trick", emoji: "🗣️", name: "Bark",      price: 50,  move: "naughty", effect: "WOOF! WOOF!", says: "The pup barks: WOOF WOOF!" },
-  { type: "trick", emoji: "🌀", name: "Spin",      price: 100, move: "spin",    effect: "",            says: "Wheee! The pup spins around!" },
-  { type: "trick", emoji: "🔄", name: "Roll Over", price: 150, move: "roll",    effect: "",            says: "The pup rolls over! Good pup!" },
-  { type: "trick", emoji: "💃", name: "Dance",     price: 200, move: "happy",   effect: "🎵🎶🎵",       says: "Drop the beat! The pup is dancing!" },
-  { type: "trick", emoji: "😜", name: "Raspberry", price: 300, move: "naughty", effect: "Pthhhbt! 😜",  says: "The pup blows a raspberry! Pthhhbt!" },
+  { type: "trick", emoji: "🗣️", name: "Bark",      price: 50,  move: "naughty", effect: "WOOF! WOOF!",
+    says: "barks: WOOF WOOF!",          tease: "barks at" },
+  { type: "trick", emoji: "🌀", name: "Spin",      price: 100, move: "spin",    effect: "",
+    says: "spins around! Wheee!",       tease: "spins around showing off to" },
+  { type: "trick", emoji: "🔄", name: "Roll Over", price: 150, move: "roll",    effect: "",
+    says: "rolls over! Good pup!",      tease: "rolls over laughing at" },
+  { type: "trick", emoji: "💃", name: "Dance",     price: 200, move: "happy",   effect: "🎵🎶🎵",
+    says: "drops the beat and DANCES!", tease: "does a victory dance in front of" },
+  { type: "trick", emoji: "😜", name: "Raspberry", price: 300, move: "naughty", effect: "Pthhhbt! 😜",
+    says: "blows a raspberry! Pthhhbt!", tease: "blows a raspberry at" },
 ];
 
 const SHOP_SECTIONS = [
@@ -38,32 +44,21 @@ const SHOP_SECTIONS = [
   { type: "trick", title: "⭐ Tricks" },
 ];
 
-// What the pup has this game
-let owned = { toys: [], wear: "", tricks: [] };
+const shopScreen = $("shop-screen");
+const shopSaysEl = $("shop-says");
 
-const shopScreen = document.getElementById("shop-screen");
-const shopSaysEl = document.getElementById("shop-says");
-
-function resetShop() {
-  owned = { toys: [], wear: "", tricks: [] };
-  showPupStuff();
-}
-
-function hasItem(item) {
-  if (item.type === "toy") return owned.toys.includes(item.emoji);
-  if (item.type === "wear") return owned.wear === item.emoji;
-  if (item.type === "trick") return owned.tricks.includes(item);
+function hasItem(p, item) {
+  if (item.type === "toy") return p.owned.toys.includes(item.emoji);
+  if (item.type === "wear") return p.owned.wear === item.emoji;
+  if (item.type === "trick") return p.owned.tricks.includes(item);
   return false;
 }
 
-// Put the hat, toys and trick buttons on the stage
-function showPupStuff() {
-  document.getElementById("hat").textContent = owned.wear;
-  document.getElementById("shop-hat").textContent = owned.wear;
-  document.getElementById("toys").textContent = owned.toys.join(" ");
-  const tricksEl = document.getElementById("tricks");
+// Trick buttons under the pup on stage
+function showTricks() {
+  const tricksEl = $("tricks");
   tricksEl.innerHTML = "";
-  owned.tricks.forEach(trick => {
+  me().owned.tricks.forEach(trick => {
     const btn = document.createElement("button");
     btn.className = "trick-button";
     btn.textContent = trick.emoji + " " + trick.name;
@@ -72,26 +67,44 @@ function showPupStuff() {
   });
 }
 
-function doTrick(trick) {
-  dogEl.className = "";
-  void dogEl.offsetWidth; // restart the animation
-  dogEl.className = trick.move;
+// Make a pup picture move, starting the animation again if it's already going
+function animate(el, move) {
+  el.classList.remove("happy", "naughty", "spin", "roll");
+  void el.offsetWidth;
+  el.classList.add(move);
+}
+
+function popEffect(text) {
   effectEl.className = "";
   void effectEl.offsetWidth;
-  effectEl.textContent = trick.effect;
+  effectEl.textContent = text;
   effectEl.className = "pop";
-  hostSaysEl.textContent = trick.says;
+}
+
+function doTrick(trick) {
+  animate(dogEl, trick.move);
+  popEffect(trick.effect);
+  hostSaysEl.textContent = me().dogName + " " + trick.says;
+}
+
+// Another player's pup teases the player whose turn it is
+function tease(owner, trick, pupEl) {
+  animate(pupEl, trick.move);
+  popEffect(trick.effect || trick.emoji);
+  hostSaysEl.textContent = owner.dogName + " " + trick.tease + " " + me().name + "! " + trick.emoji;
 }
 
 function openShop() {
-  shopSaysEl.textContent = "Welcome to the Pup Shop! What would you like?";
+  shopSaysEl.textContent = "Welcome to the Pup Shop, " + me().name + "! What would you like?";
   showShop();
   shopScreen.classList.remove("hidden");
 }
 
 function showShop() {
-  document.getElementById("shop-coins").textContent = bank;
-  const itemsEl = document.getElementById("shop-items");
+  const p = me();
+  $("shop-coins").textContent = p.bank;
+  $("shop-dog").innerHTML = pupHtml(p);
+  const itemsEl = $("shop-items");
   itemsEl.innerHTML = "";
 
   SHOP_SECTIONS.forEach(section => {
@@ -109,15 +122,15 @@ function showShop() {
 
       const btn = document.createElement("button");
       btn.className = "buy-button";
-      if (hasItem(item)) {
+      if (hasItem(p, item)) {
         btn.textContent = item.type === "wear" ? "Wearing ✓" : "Got it ✓";
         btn.disabled = true;
-      } else if (item.life && lives >= LIVES) {
+      } else if (item.life && p.lives >= LIVES) {
         btn.textContent = "Lives full";
         btn.disabled = true;
       } else {
         btn.innerHTML = '<span class="coin">Q</span> ' + item.price;
-        btn.disabled = bank < item.price;
+        btn.disabled = p.bank < item.price;
         btn.addEventListener("click", () => buy(item));
       }
       card.appendChild(btn);
@@ -128,32 +141,33 @@ function showShop() {
 }
 
 function buy(item) {
-  bank -= item.price;
+  const p = me();
+  p.bank -= item.price;
 
   if (item.type === "treat") {
-    if (item.life) lives++;
+    if (item.life) p.lives++;
     shopSaysEl.textContent = item.emoji + " " + item.says;
   } else if (item.type === "toy") {
-    owned.toys.push(item.emoji);
-    shopSaysEl.textContent = item.emoji + " A new " + item.name + "! Your pup will keep it on stage.";
+    p.owned.toys.push(item.emoji);
+    shopSaysEl.textContent = item.emoji + " A new " + item.name + "! " + p.dogName + " will keep it on stage.";
   } else if (item.type === "wear") {
-    owned.wear = item.emoji;
-    shopSaysEl.textContent = item.emoji + " Looking fancy! Your pup is wearing the " + item.name + ".";
+    p.owned.wear = item.emoji;
+    shopSaysEl.textContent = item.emoji + " Looking fancy! " + p.dogName + " is wearing the " + item.name + ".";
   } else if (item.type === "trick") {
-    owned.tricks.push(item);
-    shopSaysEl.textContent = item.emoji + " Your pup learned " + item.name + "! Press the button on stage to show it off.";
+    p.owned.tricks.push(item);
+    shopSaysEl.textContent = item.emoji + " " + p.dogName + " learned " + item.name + "! Press the button on stage to show it off" +
+      (players.length > 1 ? " - or to tease the other players!" : ".");
   }
 
-  const shopDog = document.getElementById("shop-dog");
-  shopDog.className = "";
-  void shopDog.offsetWidth;
-  shopDog.className = "happy";
-
-  showHud();
-  showPupStuff();
   showShop();
-  document.getElementById("end-coins-num").textContent = bank;
+  animate($("shop-dog"), "happy");
+  const wallet = $("shop-coins");
+  wallet.classList.remove("bump");
+  void wallet.offsetWidth;
+  wallet.classList.add("bump");
+  showStage();
+  $("end-coins-num").textContent = p.bank;
 }
 
-document.getElementById("end-shop").addEventListener("click", openShop);
-document.getElementById("shop-close").addEventListener("click", () => shopScreen.classList.add("hidden"));
+$("end-shop").addEventListener("click", openShop);
+$("shop-close").addEventListener("click", () => shopScreen.classList.add("hidden"));

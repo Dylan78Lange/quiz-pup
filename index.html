@@ -38,28 +38,57 @@
       <div id="effect"></div>
       <div id="pup-row">
         <span id="toys"></span>
-        <div id="dog"><span id="hat"></span>🐶</div>
+        <div id="dog" class="pup"></div>
       </div>
-      <div id="dog-name">Biscuit</div>
+      <div id="dog-name"></div>
       <div id="tricks"></div>
     </div>
 
-    <button id="next" class="big-button hidden">Next question ▶</button>
+    <div class="end-buttons">
+      <button id="next" class="big-button hidden">Next question ▶</button>
+      <button id="pass" class="big-button quit hidden">Pass ➜ next player</button>
+    </div>
+
+    <div id="players-strip"></div>
 
     <!-- Start screen -->
     <div id="start-screen" class="overlay">
       <h1 class="overlay-title">QUIZ PUP</h1>
-      <div class="overlay-dog">🐶</div>
+      <div class="overlay-dog" id="start-dog"></div>
       <p>The quiz show where your pup is the star!</p>
       <button id="start" class="big-button">★ START THE SHOW ★</button>
       <button id="show-scores" class="big-button quit">🏆 Top Scores</button>
     </div>
 
-    <!-- Top Score Board -->
-    <div id="scores-screen" class="overlay hidden">
-      <h1 class="overlay-title small">TOP SCORES</h1>
-      <ol id="scores-list"></ol>
-      <button id="scores-play" class="big-button">Let's play! ▶</button>
+    <!-- Setup: how many players, then each player's name and pup -->
+    <div id="setup-screen" class="overlay hidden">
+      <div id="setup-count">
+        <h1 class="overlay-title small">HOW MANY PLAYERS?</h1>
+        <div id="count-buttons">
+          <button class="big-button count-button" data-count="1">1</button>
+          <button class="big-button count-button" data-count="2">2</button>
+          <button class="big-button count-button" data-count="3">3</button>
+          <button class="big-button count-button" data-count="4">4</button>
+        </div>
+      </div>
+      <div id="setup-player" class="hidden">
+        <h1 id="setup-title" class="overlay-title small">PLAYER 1</h1>
+        <div class="setup-fields">
+          <label>Your name <input id="player-name" maxlength="8" placeholder="SKY" autocomplete="off" spellcheck="false"></label>
+          <label>Your pup's name <input id="pup-name" maxlength="12" placeholder="Biscuit" autocomplete="off" spellcheck="false"></label>
+        </div>
+        <p>Pick your pup:</p>
+        <div id="breed-buttons"></div>
+        <button id="setup-next" class="big-button">Next ▶</button>
+      </div>
+    </div>
+
+    <!-- Whose turn is it? -->
+    <div id="turn-screen" class="overlay hidden">
+      <div id="turn-dog" class="pup"></div>
+      <h1 id="turn-title" class="overlay-title small"></h1>
+      <p id="turn-text"></p>
+      <button id="turn-go" class="big-button">I'm ready! ▶</button>
     </div>
 
     <!-- Pick a theme screen -->
@@ -75,11 +104,6 @@
       <div id="end-stars"></div>
       <p id="end-text"></p>
       <div id="end-coins"><span class="coin big">Q</span> <span id="end-coins-num">0</span></div>
-      <div id="save-score" class="hidden">
-        <p>Type your initials for the Top Score Board!</p>
-        <input id="initials" maxlength="3" placeholder="AAA" autocomplete="off" spellcheck="false">
-        <button id="save-btn" class="big-button">Save 🏆</button>
-      </div>
       <div class="end-buttons">
         <button id="end-main" class="big-button"></button>
         <button id="end-shop" class="big-button shop">🛒 Pup Shop</button>
@@ -87,12 +111,33 @@
       </div>
     </div>
 
+    <!-- Final results -->
+    <div id="final-screen" class="overlay hidden">
+      <h1 id="final-title" class="overlay-title small">FINAL SCORES</h1>
+      <ol id="final-list"></ol>
+      <p>Scores saved to the Top Score Board! 🏆</p>
+      <div class="end-buttons">
+        <button id="final-scores" class="big-button quit">🏆 Top Scores</button>
+        <button id="final-again" class="big-button">Play again ↺</button>
+      </div>
+    </div>
+
+    <!-- Top Score Board -->
+    <div id="scores-screen" class="overlay hidden">
+      <h1 class="overlay-title small">TOP SCORES</h1>
+      <ol id="scores-list"></ol>
+      <button id="scores-play" class="big-button">Let's play! ▶</button>
+    </div>
+
     <!-- Pup Shop (opens on top of the end screen) -->
     <div id="shop-screen" class="overlay hidden">
       <h1 class="overlay-title small">PUP SHOP</h1>
       <div id="shop-top">
-        <div id="shop-dog"><span id="shop-hat"></span>🐶</div>
-        <div>Your coins: <span class="coin">Q</span> <span id="shop-coins">0</span></div>
+        <div id="shop-dog" class="pup"></div>
+        <div id="shop-wallet">
+          <div class="wallet-label">COINS TO SPEND</div>
+          <div class="wallet-amount"><span class="coin big">Q</span> <span id="shop-coins">0</span></div>
+        </div>
       </div>
       <p id="shop-says"></p>
       <div id="shop-items"></div>
@@ -100,6 +145,7 @@
     </div>
   </div>
 
+  <script src="dogs.js"></script>
   <script src="questions/themes.js"></script>
   <script src="questions/geography.js"></script>
   <script src="questions/video-games.js"></script>

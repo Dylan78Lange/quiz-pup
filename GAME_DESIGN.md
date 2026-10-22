@@ -16,7 +16,8 @@ Right answers make the dog happy; wrong answers cost lives. Win coins, spend the
 1. Levels go in order: Easy, then Medium, then Hard.
 2. Before every level (and every retry) you pick a theme, or hit "Surprise me!" for a random one.
 3. Host asks 3 random questions from that theme and level, one at a time.
-4. Answer all 3 right to pass the level.
+4. Answer all 3 right to pass the level. A wrong answer ends the level straight away (you can't
+   pass it any more) - you lose a life and the pot, and retry that level next turn.
 
 ## Themes (3 levels each, 3 questions per level)
 1. Geography: countries, capitals, currency, languages
@@ -39,25 +40,39 @@ Each theme has 5 questions per level (90 questions in all). Each level picks 3 o
 - A perfect game banks 300 + 750 + 1500 = 2550 coins.
 
 ## Lives
-- 3 lives for the whole game (wrong answer = lose a life; details TBD)
+- Each player has 3 lives for the whole game. A wrong answer costs one.
+- Out of lives = you're out, but you keep your banked coins.
 
 ## Players
-- 1 player to start; up to 4 players taking turns on one laptop, each with their own dog.
+- 1 to 4 players on one laptop. Each player types a name (letters only, up to 8),
+  names their pup, and picks a breed. Skip the pup name and you get Biscuit, Waffles, Peanut or Noodle.
+- Everyone has their own lives, coins, level and shop stuff.
+- Turns:
+  - Right answer: you keep going (and after passing a level you carry straight on to the next).
+  - Wrong answer: lose a life and it's the next player's turn.
+  - Pass: hand over to the next player before answering. No life lost, you keep your pot,
+    and you get a different question when your turn comes back.
+- A "PLAYER'S TURN!" screen shows who should take the laptop.
+- A strip at the bottom shows every player's pup, lives and coins.
+- Teasing: if you've bought tricks, your trick buttons show on your card in the strip during
+  other players' turns - press them to tease whoever is playing.
+- The game ends when everyone has won, quit or run out of lives. The final screen ranks everyone.
 
 ## Winning and the scoreboard
 - Win by beating Hard level.
-- When the game ends (win, game over, or quit) with coins banked, type up to 3 initials to save to the Top Score Board.
+- When the game ends, every player with banked coins is saved to the Top Score Board under their name automatically.
 - The board keeps the top 10, with 🥇🥈🥉 for the top 3. Open it from the start screen with "🏆 Top Scores".
-- Scoreboard is saved only in this browser on this computer (no online, no personal info - initials only).
+- Scoreboard is saved only in this browser on this computer (no online, no personal info - first names or initials only).
 
 ## Shop
 - The Pup Shop opens between levels (the "🛒 Pup Shop" button on the end-of-level screen).
+- A big gold "COINS TO SPEND" wallet at the top shows how many coins you have.
 - Spending uses your banked coins, so it lowers your Top Score Board score - spend or save?
 - Treats: the pup eats them right away. Super Steak (500) gives +1 life (up to 3).
 - Toys: sit next to the pup on stage.
 - Dress-up: one hat at a time on the pup's head (bow, cap, top hat, crown).
 - Tricks (emotes): buttons under the pup - bark, spin, roll over, dance, raspberry.
-  In multiplayer these will be for teasing the other players (keep it silly and friendly).
+  In multiplayer they're also for teasing the other players (keep it silly and friendly).
 - Everything you buy lasts for one game.
 - Items live in `shop.js` - easy to add more.
 
