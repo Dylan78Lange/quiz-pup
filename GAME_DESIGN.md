@@ -13,7 +13,9 @@ Right answers make the dog happy; wrong answers cost lives. Win coins, spend the
 - Retro chunky fonts and colors, drawn with simple shapes/emoji (no downloads).
 
 ## How a round works
-1. Levels go in order: Easy, then Medium, then Hard.
+1. Levels go in order: Easy, then Medium, then Hard. Hard has to be beaten 3 times, each in a
+   different theme (HARD 1 of 3, 2 of 3, 3 of 3). Beaten themes get a ✅ and can't be picked again.
+   Change HARD_ROUNDS at the top of game.js to make it easier or harder.
 2. Before every level (and every retry) you pick a theme, or hit "Surprise me!" for a random one.
 3. Host asks 3 random questions from that theme and level, one at a time.
 4. Answer all 3 right to pass the level. A wrong answer ends the level straight away (you can't
@@ -42,7 +44,7 @@ A player won't get the same question twice in one game (until a pool runs out).
 - Coins won during a level sit in "the pot". Get all 3 right and the pot is banked.
   Miss one and the pot is lost, and you try that level again with new random questions.
 - After passing a level you choose: go on to the next level, or quit and keep your banked coins.
-- A perfect game banks 300 + 750 + 1500 = 2550 coins.
+- A perfect game banks 300 + 750 + 1500 + 1500 + 1500 = 5550 coins.
 
 ## Lives
 - Each player has 3 lives for the whole game. A wrong answer costs one.
@@ -66,7 +68,7 @@ A player won't get the same question twice in one game (until a pool runs out).
 - The game ends when everyone has won, quit or run out of lives. The final screen ranks everyone.
 
 ## Winning and the scoreboard
-- Win by beating Hard level.
+- Win by beating Hard in 3 different themes.
 - When the game ends, every player with banked coins is saved to the Top Score Board under their name automatically.
 - The board keeps the top 10, with 🥇🥈🥉 for the top 3. Open it from the start screen with "🏆 Top Scores".
 - Scoreboard is saved only in this browser on this computer (no online, no personal info - first names or initials only).

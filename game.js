@@ -5,6 +5,7 @@
 // Game settings - try changing these!
 const LIVES = 3;
 const QUESTIONS_PER_LEVEL = 3;
+const HARD_ROUNDS = 3; // to win, beat Hard in this many different themes
 const LEVELS = [
   { key: "easy",   name: "EASY",   coins: 100 },
   { key: "medium", name: "MEDIUM", coins: 250 },
@@ -126,6 +127,7 @@ function makePlayer(number) {
     bank: 0,          // coins saved forever (banked)
     pot: 0,           // coins won this level, not banked yet
     levelIndex: 0,    // 0 = easy, 1 = medium, 2 = hard
+    hardWins: [],     // themes this player has beaten on Hard
     theme: "",
     levelQuestions: [], // empty = needs to pick a theme for a new level
     seen: [],         // questions already asked this game (so they don't come back)
@@ -147,6 +149,17 @@ function me() {
 
 function level() {
   return LEVELS[me().levelIndex];
+}
+
+function onHard(p) {
+  return p.levelIndex === LEVELS.length - 1;
+}
+
+// "EASY", "MEDIUM", or "HARD 2 of 3" on the last level
+function levelLabel() {
+  const p = me();
+  if (!onHard(p)) return level().name;
+  return level().name + " " + Math.min(p.hardWins.length + 1, HARD_ROUNDS) + " of " + HARD_ROUNDS;
 }
 
 function stillPlaying() {
@@ -283,7 +296,7 @@ function passTurn() {
 function showHud() {
   const p = me();
   livesEl.textContent = "❤️".repeat(p.lives) + "🖤".repeat(Math.max(0, LIVES - p.lives));
-  levelNameEl.textContent = (players.length > 1 ? p.name + " • " : "") + level().name;
+  levelNameEl.textContent = (players.length > 1 ? p.name + " • " : "") + levelLabel();
   levelNameEl.className = level().key;
   bankNumEl.textContent = p.bank;
 }
@@ -377,15 +390,22 @@ function pickQuestions(themeName, levelKey, howMany, avoid) {
 // Show a big button for every theme, plus a surprise button
 function showThemePicker() {
   $("theme-level").textContent = (players.length > 1 ? me().name + "  •  " : "") +
-    level().name + " level  •  each right answer = " + level().coins + " coins!";
+    levelLabel() + "  •  each right answer = " + level().coins + " coins!" +
+    (onHard(me()) ? "  •  Beat HARD in " + HARD_ROUNDS + " different themes to win!" : "");
   const buttonsEl = $("theme-buttons");
   buttonsEl.innerHTML = "";
 
+  // On Hard, themes you've already beaten are ticked and can't be picked again
+  const beaten = onHard(me()) ? me().hardWins : [];
   THEMES.forEach(t => {
     const btn = document.createElement("button");
     btn.className = "theme-button";
-    btn.innerHTML = '<span class="theme-emoji">' + t.emoji + "</span>";
+    btn.innerHTML = '<span class="theme-emoji">' + (beaten.includes(t.name) ? "✅" : t.emoji) + "</span>";
     btn.append(t.name);
+    if (beaten.includes(t.name)) {
+      btn.disabled = true;
+      btn.title = "You already beat HARD " + t.name + "!";
+    }
     btn.addEventListener("click", () => startLevel(t.name));
     buttonsEl.appendChild(btn);
   });
@@ -393,7 +413,7 @@ function showThemePicker() {
   const surprise = document.createElement("button");
   surprise.className = "theme-button surprise";
   surprise.innerHTML = '<span class="theme-emoji">🎲</span>Surprise me!';
-  surprise.addEventListener("click", () => startLevel(pick(THEMES).name));
+  surprise.addEventListener("click", () => startLevel(pick(THEMES.filter(t => !beaten.includes(t.name))).name));
   buttonsEl.appendChild(surprise);
 
   showOverlay("theme-screen");
@@ -520,7 +540,7 @@ function levelFailed() {
 
   showEnd("SO CLOSE!",
     "You need all 3 right to bank the coins. " +
-    (players.length > 1 ? "Next turn, try " : "Try ") + level().name + " again!",
+    (players.length > 1 ? "Next turn, try " : "Try ") + levelLabel() + " again!",
     players.length > 1 ? "Next player ▶" : "Try again ↺", endTurn, true);
 }
 
@@ -532,14 +552,25 @@ function levelPassed() {
   p.levelQuestions = [];
   showHud();
 
-  if (p.levelIndex === LEVELS.length - 1) {
-    p.done = true;
-    p.ending = "won";
-    showEnd("YOU WIN!!!",
-      "You beat HARD level! " + p.dogName + " is doing the happiest dance EVER! 🐶💃",
-      finishLabel(), endTurn, false);
-    sfx.win();
-    confetti(80);
+  if (onHard(p)) {
+    p.hardWins.push(p.theme);
+    if (p.hardWins.length >= HARD_ROUNDS) {
+      p.done = true;
+      p.ending = "won";
+      showEnd("YOU WIN!!!",
+        "You beat HARD in " + HARD_ROUNDS + " themes! " + p.dogName + " is doing the happiest dance EVER! 🐶💃",
+        finishLabel(), endTurn, false);
+      sfx.win();
+      confetti(80);
+      return;
+    }
+    sfx.fanfare();
+    confetti(30);
+    // Stay on Hard, but next time it has to be a different theme
+    showEnd("HARD " + p.hardWins.length + " OF " + HARD_ROUNDS + " DONE!",
+      won + " coins banked! You beat HARD " + p.theme + ". Beat HARD in " +
+      (HARD_ROUNDS - p.hardWins.length) + " more theme" + (HARD_ROUNDS - p.hardWins.length > 1 ? "s" : "") + " to win!",
+      "Next: " + levelLabel() + " ▶", continueTurn, true);
     return;
   }
   sfx.fanfare();
@@ -548,8 +579,8 @@ function levelPassed() {
   p.levelIndex++;
   // A right answer means you keep your turn, so carry straight on
   showEnd("LEVEL PASSED!",
-    won + " coins banked! " + p.dogName + " is SO proud! Ready for " + level().name + "?",
-    "Next: " + level().name + " ▶", continueTurn, true);
+    won + " coins banked! " + p.dogName + " is SO proud! Ready for " + levelLabel() + "?",
+    "Next: " + levelLabel() + " ▶", continueTurn, true);
 }
 
 function quitGame() {

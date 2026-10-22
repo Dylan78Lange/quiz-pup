@@ -553,7 +553,8 @@ body {
   box-shadow: 4px 4px 0 var(--pink);
 }
 .theme-button .theme-emoji { display: block; font-size: 40px; }
-.theme-button:hover { background: #3a2a8a; transform: translate(-2px, -2px) rotate(-1deg); }
+.theme-button:hover:not(:disabled) { background: #3a2a8a; transform: translate(-2px, -2px) rotate(-1deg); }
+.theme-button:disabled { opacity: 0.45; cursor: default; box-shadow: none; border-color: var(--green); }
 .theme-button.surprise { grid-column: 1 / -1; border-color: var(--pink); box-shadow: 4px 4px 0 var(--gold); }
 
 .hidden { display: none !important; }
