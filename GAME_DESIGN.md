@@ -8,7 +8,8 @@ Right answers make the dog happy; wrong answers cost lives. Win coins, spend the
 - Question across the top of the screen, 3-4 answers in boxes underneath, pick one.
 - Each player has a dog at the bottom of the screen that reacts:
   - Right answer: wagging tail, jumping for joy
-  - Wrong answer: droopy ears, sad dog
+  - Wrong answer: the pup does something naughty and random (pees on your leg, poops on the stage,
+    growls and barks, knocks over a vase...). Silly cartoon fun, never scary.
 - Retro chunky fonts and colors, drawn with simple shapes/emoji (no downloads).
 
 ## How a round works

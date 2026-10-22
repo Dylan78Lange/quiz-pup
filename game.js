@@ -4,12 +4,24 @@
 const RIGHT_SAYS = ["That's... CORRECT!", "Fan-DOG-tastic!", "You're on fire!", "Woof-derful!"];
 const WRONG_SAYS = ["Oooh, so close!", "Not quite, superstar!", "Ruh-roh!", "Better luck next time!"];
 
-const questionEl = document.getElementById("question");
+// Naughty things the pup does when you get one wrong - add your own!
+// "effect" is what shows up, "how" is the animation: "drop" falls from above, "pop" bursts in
+const NAUGHTY_THINGS = [
+  { says: "Uh-oh... the pup is peeing on your leg!", effect: "💦💦💦", how: "pop" },
+  { says: "Ewww! The pup pooped on the stage!", effect: "💩", how: "drop" },
+  { says: "GRRR! The pup is growling at you!", effect: "💢 GRRR! WOOF!", how: "pop" },
+  { says: "CRASH! The pup knocked over the vase!", effect: "🏺💥", how: "drop" },
+  { says: "The pup ate the host's homework... and burped!", effect: "📄💨", how: "pop" },
+  { says: "The pup is chasing its own tail!", effect: "🌀🌀🌀", how: "pop" },
+];
+
+const questionEl =document.getElementById("question");
 const themeEl = document.getElementById("theme");
 const answersEl = document.getElementById("answers");
 const hostSaysEl = document.getElementById("host-says");
 const dogEl = document.getElementById("dog");
 const nextBtn = document.getElementById("next");
+const effectEl = document.getElementById("effect");
 
 let current = 0;
 
@@ -24,6 +36,8 @@ function showQuestion() {
   answersEl.innerHTML = "";
   nextBtn.classList.add("hidden");
   dogEl.className = "";
+  effectEl.className = "";
+  effectEl.textContent = "";
   hostSaysEl.textContent = "Here comes your question...";
 
   q.answers.forEach((text, i) => {
@@ -46,8 +60,11 @@ function chooseAnswer(i) {
     dogEl.className = "happy";
   } else {
     buttons[i].classList.add("wrong");
-    hostSaysEl.textContent = pick(WRONG_SAYS);
-    dogEl.className = "sad";
+    const oops = pick(NAUGHTY_THINGS);
+    hostSaysEl.textContent = pick(WRONG_SAYS) + " " + oops.says;
+    dogEl.className = "naughty";
+    effectEl.textContent = oops.effect;
+    effectEl.className = oops.how;
   }
 
   nextBtn.textContent = current + 1 < QUESTIONS.length ? "Next question ▶" : "Play again ↺";

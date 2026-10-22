@@ -82,7 +82,26 @@ body {
 #dog-name { font-weight: bold; color: #1a1040; }
 
 #dog.happy { animation: jump 0.5s ease-in-out 3; }
-#dog.sad { animation: droop 1s ease-in-out forwards; }
+#dog.naughty { animation: shake 0.15s linear 8; }
+
+#effect { font-size: 44px; min-height: 52px; }
+#effect.drop { animation: dropdown 0.8s ease-in; }
+#effect.pop { animation: pop 0.5s ease-out; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  25% { transform: translateX(-8px) rotate(-6deg); }
+  75% { transform: translateX(8px) rotate(6deg); }
+}
+@keyframes dropdown {
+  0% { transform: translateY(-120px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes pop {
+  0% { transform: scale(0.2); opacity: 0; }
+  70% { transform: scale(1.4); opacity: 1; }
+  100% { transform: scale(1); }
+}
 
 @keyframes jump {
   0%, 100% { transform: translateY(0) rotate(0); }
