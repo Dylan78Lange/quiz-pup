@@ -254,4 +254,29 @@ body {
 .end-buttons { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
 .big-button.quit { background: #3a2a8a; }
 
+/* Theme picker */
+.overlay-title.small { font-size: 44px; }
+#theme-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 620px;
+}
+.theme-button {
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 14px 10px;
+  background: var(--night);
+  color: white;
+  border: 3px solid var(--gold);
+  border-radius: 16px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--pink);
+}
+.theme-button .theme-emoji { display: block; font-size: 40px; }
+.theme-button:hover { background: #3a2a8a; transform: translate(-2px, -2px) rotate(-1deg); }
+.theme-button.surprise { grid-column: 1 / -1; border-color: var(--pink); box-shadow: 4px 4px 0 var(--gold); }
+
 .hidden { display: none !important; }

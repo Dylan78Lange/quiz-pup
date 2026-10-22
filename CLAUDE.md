@@ -22,5 +22,6 @@ This is a child's first game project. The person chatting with you may be a kid.
 - `GAME_DESIGN.md` - the plan for Quiz Pup (read this first!)
 - `index.html` - the page that holds the game
 - `style.css` - colors and looks
-- `questions.js` - all the quiz questions (easy to add your own)
+- `questions/themes.js` - the list of themes
+- `questions/<theme>.js` - one file of questions per theme (easy to add your own)
 - `game.js` - the game code

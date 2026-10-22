@@ -43,6 +43,7 @@ const levelNameEl = document.getElementById("level-name");
 const bankNumEl = document.getElementById("bank-num");
 const nextBtn = document.getElementById("next");
 const startScreen = document.getElementById("start-screen");
+const themeScreen = document.getElementById("theme-screen");
 const endScreen = document.getElementById("end-screen");
 const endMainBtn = document.getElementById("end-main");
 const endQuitBtn = document.getElementById("end-quit");
@@ -51,6 +52,7 @@ let lives = LIVES;
 let bank = 0;        // coins saved forever (banked)
 let pot = 0;         // coins won this level, not banked yet
 let levelIndex = 0;  // 0 = easy, 1 = medium, 2 = hard
+let theme = "";      // the theme picked for this level
 let levelQuestions = [];
 let current = 0;
 let results = [];    // true for a right answer, false for wrong
@@ -61,8 +63,8 @@ function pick(list) {
 }
 
 // Pick some random questions for this level
-function pickQuestions(levelKey, howMany) {
-  const pool = QUESTIONS.filter(q => q.level === levelKey);
+function pickQuestions(themeName, levelKey, howMany) {
+  const pool = QUESTIONS.filter(q => q.theme === themeName && q.level === levelKey);
   const chosen = [];
   while (chosen.length < howMany && pool.length > 0) {
     const i = Math.floor(Math.random() * pool.length);
@@ -105,18 +107,45 @@ function newGame() {
   bank = 0;
   levelIndex = 0;
   startScreen.classList.add("hidden");
-  startLevel();
-  hostSaysEl.textContent = pick(HELLO_SAYS);
+  showThemePicker();
 }
 
-function startLevel() {
+// Show a big button for every theme, plus a surprise button
+function showThemePicker() {
+  endScreen.classList.add("hidden");
+  document.getElementById("theme-level").textContent =
+    level().name + " level  •  each right answer = " + level().coins + " coins!";
+  const buttonsEl = document.getElementById("theme-buttons");
+  buttonsEl.innerHTML = "";
+
+  THEMES.forEach(t => {
+    const btn = document.createElement("button");
+    btn.className = "theme-button";
+    btn.innerHTML = '<span class="theme-emoji">' + t.emoji + "</span>";
+    btn.append(t.name);
+    btn.addEventListener("click", () => startLevel(t.name));
+    buttonsEl.appendChild(btn);
+  });
+
+  const surprise = document.createElement("button");
+  surprise.className = "theme-button surprise";
+  surprise.innerHTML = '<span class="theme-emoji">🎲</span>Surprise me!';
+  surprise.addEventListener("click", () => startLevel(pick(THEMES).name));
+  buttonsEl.appendChild(surprise);
+
+  themeScreen.classList.remove("hidden");
+}
+
+function startLevel(themeName) {
+  theme = themeName;
   pot = 0;
   current = 0;
   results = [];
-  levelQuestions = pickQuestions(level().key, QUESTIONS_PER_LEVEL);
-  endScreen.classList.add("hidden");
+  levelQuestions = pickQuestions(theme, level().key, QUESTIONS_PER_LEVEL);
+  themeScreen.classList.add("hidden");
   showHud();
   showQuestion();
+  hostSaysEl.textContent = pick(HELLO_SAYS) + " Tonight's theme: " + theme + "!";
 }
 
 function showQuestion() {
@@ -191,7 +220,7 @@ function endLevel() {
   if (!allRight) {
     showEnd("SO CLOSE!",
       "Get all 3 right to bank the coins. Try " + level().name + " again?",
-      "Try again ↺", startLevel, true);
+      "Try again ↺", showThemePicker, true);
     return;
   }
 
@@ -209,7 +238,7 @@ function endLevel() {
   const nextLevel = LEVELS[levelIndex + 1];
   showEnd("LEVEL PASSED!",
     pot + " coins banked! Your pup is SO proud! Ready for " + nextLevel.name + "?",
-    "Next: " + nextLevel.name + " ▶", () => { levelIndex++; startLevel(); }, true);
+    "Next: " + nextLevel.name + " ▶", () => { levelIndex++; showThemePicker(); }, true);
 }
 
 function gameOver() {

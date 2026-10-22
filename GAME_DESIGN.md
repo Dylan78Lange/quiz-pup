@@ -13,9 +13,9 @@ Right answers make the dog happy; wrong answers cost lives. Win coins, spend the
 - Retro chunky fonts and colors, drawn with simple shapes/emoji (no downloads).
 
 ## How a round works
-1. Pick a theme.
-2. Pick a level: Easy, Medium or Hard.
-3. Host asks 3 questions, one at a time.
+1. Levels go in order: Easy, then Medium, then Hard.
+2. Before every level (and every retry) you pick a theme, or hit "Surprise me!" for a random one.
+3. Host asks 3 random questions from that theme and level, one at a time.
 4. Answer all 3 right to pass the level.
 
 ## Themes (3 levels each, 3 questions per level)
@@ -26,7 +26,7 @@ Right answers make the dog happy; wrong answers cost lives. Win coins, spend the
 5. Brand icons
 6. Famous people
 
-That is 6 themes x 3 levels x 3 questions = 54 questions minimum (more = less repeating).
+Each theme has 5 questions per level (90 questions in all). Each level picks 3 of the 5 at random.
 
 ## Coins
 - Easy: 100 coins per right answer
