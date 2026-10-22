@@ -70,7 +70,7 @@ function showTricks() {
 
 // Make a pup picture move, starting the animation again if it's already going
 function animate(el, move) {
-  el.classList.remove("happy", "naughty", "spin", "roll");
+  el.classList.remove("happy", "naughty", "spin", "roll", "pee");
   void el.offsetWidth;
   el.classList.add(move);
 }

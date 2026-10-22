@@ -36,7 +36,8 @@ const HOST_KEY = "quiz-pup-host"; // remembers which host you picked
 // "effect" is what shows up, "how" is the animation: "drop" falls from above, "pop" bursts in
 // "sound" is one of the sounds in sound.js
 const NAUGHTY_THINGS = [
-  { says: "Uh-oh... the pup is peeing on your leg!", effect: "💦💦💦", how: "pop", sound: "hiss" },
+  // "move" is an animation the full-body pup does itself (see the pee styles in style.css)
+  { says: "Uh-oh... the pup is peeing on the stage!", effect: "", how: "", move: "pee", sound: "hiss" },
   { says: "Ewww! The pup pooped on the stage!", effect: "💩", how: "drop", sound: "splat" },
   { says: "GRRR! The pup is growling at you!", effect: "💢 GRRR! WOOF!", how: "pop", sound: "bark" },
   { says: "CRASH! The pup knocked over the vase!", effect: "🏺💥", how: "drop", sound: "crash" },
@@ -172,9 +173,9 @@ function showOverlay(id) {
   if (id) $(id).classList.remove("hidden");
 }
 
-// A pup picture with its hat on
-function pupHtml(p) {
-  return '<span class="hat">' + p.owned.wear + "</span>" + dogSvg(p.breed);
+// A pup picture with its hat on. "full" = the big full-body pup for the stage.
+function pupHtml(p, full) {
+  return '<span class="hat">' + p.owned.wear + "</span>" + (full ? dogBodySvg(p.breed) : dogSvg(p.breed));
 }
 
 // ---------- Setup ----------
@@ -305,7 +306,7 @@ function showHud() {
 function showStage() {
   const p = me();
   showHud();
-  dogEl.innerHTML = pupHtml(p);
+  dogEl.innerHTML = pupHtml(p, true);
   $("toys").textContent = p.owned.toys.join(" ");
   $("dog-name").textContent = p.dogName;
   showTricks();
@@ -456,7 +457,7 @@ function showQuestion() {
   answersEl.innerHTML = "";
   nextBtn.classList.add("hidden");
   passBtn.classList.toggle("hidden", stillPlaying().length < 2);
-  dogEl.className = "pup";
+  dogEl.className = "pup full";
   effectEl.className = "";
   effectEl.textContent = "";
   hostSaysEl.textContent = pick(host().ask);
@@ -492,7 +493,7 @@ function chooseAnswer(i) {
     p.results.push(true);
     p.pot += level().coins;
     hostSaysEl.textContent = pick(host().right) + " +" + level().coins + " coins!";
-    dogEl.className = "pup happy";
+    dogEl.className = "pup full happy";
     showPot(true);
     sfx.right();
     nextBtn.textContent = p.current + 1 < p.levelQuestions.length ? "Next question ▶" : "See results ★";
@@ -504,7 +505,7 @@ function chooseAnswer(i) {
     buttons[i].classList.add("wrong");
     const oops = pick(NAUGHTY_THINGS);
     hostSaysEl.textContent = pick(host().wrong) + " " + oops.says.replace("The pup", p.dogName).replace("the pup", p.dogName);
-    dogEl.className = "pup naughty";
+    dogEl.className = "pup full " + (oops.move || "naughty");
     effectEl.textContent = oops.effect;
     effectEl.className = oops.how;
     nextBtn.textContent = "Oh no... ▶";
