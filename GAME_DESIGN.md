@@ -94,12 +94,13 @@ A player won't get the same question twice in one game (until a pool runs out).
 - The Pup Shop opens between levels (the "🛒 Pup Shop" button on the end-of-level screen).
 - A big gold "COINS TO SPEND" wallet at the top shows how many coins you have.
 - Spending uses your banked coins, so it lowers your Top Score Board score - spend or save?
-- Treats: the pup eats them right away. Super Steak (500) gives +1 life (up to 3).
+- Treats: the pup eats them right away. Super Steak (1000) gives +1 life (up to 3).
 - Toys: sit next to the pup on stage.
 - Dress-up: one hat at a time on the pup's head (bow, cap, top hat, crown).
 - Tricks (emotes): buttons under the pup - bark, spin, roll over, dance, raspberry.
   In multiplayer they're also for teasing the other players (keep it silly and friendly).
 - Everything you buy lasts for one game.
+- Prices were doubled so you have to win a few right answers before you can shop.
 - Items live in `shop.js` - easy to add more.
 
 ## Sound and music

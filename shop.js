@@ -9,32 +9,32 @@
 // ============================================
 const SHOP_ITEMS = [
   // Treats
-  { type: "treat", emoji: "🦴", name: "Bone",        price: 50,  says: "Crunch crunch! Your pup LOVES it!" },
-  { type: "treat", emoji: "🧁", name: "Pupcake",     price: 150, says: "Sprinkles everywhere! Happiest pup ever!" },
-  { type: "treat", emoji: "🥩", name: "Super Steak", price: 500, says: "POWER UP! +1 life!", life: true },
+  { type: "treat", emoji: "🦴", name: "Bone",        price: 100,  says: "Crunch crunch! Your pup LOVES it!" },
+  { type: "treat", emoji: "🧁", name: "Pupcake",     price: 300, says: "Sprinkles everywhere! Happiest pup ever!" },
+  { type: "treat", emoji: "🥩", name: "Super Steak", price: 1000, says: "POWER UP! +1 life!", life: true },
 
   // Toys
-  { type: "toy", emoji: "🎾", name: "Tennis Ball", price: 100 },
-  { type: "toy", emoji: "🥏", name: "Frisbee",     price: 150 },
-  { type: "toy", emoji: "🧸", name: "Teddy",       price: 200 },
+  { type: "toy", emoji: "🎾", name: "Tennis Ball", price: 200 },
+  { type: "toy", emoji: "🥏", name: "Frisbee",     price: 300 },
+  { type: "toy", emoji: "🧸", name: "Teddy",       price: 400 },
 
   // Dress-up
-  { type: "wear", emoji: "🎀", name: "Bow",     price: 100 },
-  { type: "wear", emoji: "🧢", name: "Cap",     price: 150 },
-  { type: "wear", emoji: "🎩", name: "Top Hat", price: 250 },
-  { type: "wear", emoji: "👑", name: "Crown",   price: 400 },
+  { type: "wear", emoji: "🎀", name: "Bow",     price: 200 },
+  { type: "wear", emoji: "🧢", name: "Cap",     price: 300 },
+  { type: "wear", emoji: "🎩", name: "Top Hat", price: 500 },
+  { type: "wear", emoji: "👑", name: "Crown",   price: 800 },
 
   // Tricks (emotes)
   // "sound" is one of the sounds in sound.js
-  { type: "trick", emoji: "🗣️", name: "Bark",      price: 50,  move: "naughty", effect: "WOOF! WOOF!", sound: "bark",
+  { type: "trick", emoji: "🗣️", name: "Bark",      price: 100,  move: "naughty", effect: "WOOF! WOOF!", sound: "bark",
     says: "barks: WOOF WOOF!",          tease: "barks at" },
-  { type: "trick", emoji: "🌀", name: "Spin",      price: 100, move: "spin",    effect: "",            sound: "boing",
+  { type: "trick", emoji: "🌀", name: "Spin",      price: 200, move: "spin",    effect: "",            sound: "boing",
     says: "spins around! Wheee!",       tease: "spins around showing off to" },
-  { type: "trick", emoji: "🔄", name: "Roll Over", price: 150, move: "roll",    effect: "",            sound: "boing",
+  { type: "trick", emoji: "🔄", name: "Roll Over", price: 300, move: "roll",    effect: "",            sound: "boing",
     says: "rolls over! Good pup!",      tease: "rolls over laughing at" },
-  { type: "trick", emoji: "💃", name: "Dance",     price: 200, move: "happy",   effect: "🎵🎶🎵",       sound: "fanfare",
+  { type: "trick", emoji: "💃", name: "Dance",     price: 400, move: "happy",   effect: "🎵🎶🎵",       sound: "fanfare",
     says: "drops the beat and DANCES!", tease: "does a victory dance in front of" },
-  { type: "trick", emoji: "😜", name: "Raspberry", price: 300, move: "naughty", effect: "Pthhhbt! 😜",  sound: "raspberry",
+  { type: "trick", emoji: "😜", name: "Raspberry", price: 600, move: "naughty", effect: "Pthhhbt! 😜",  sound: "raspberry",
     says: "blows a raspberry! Pthhhbt!", tease: "blows a raspberry at" },
 ];
 
