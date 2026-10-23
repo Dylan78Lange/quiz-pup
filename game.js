@@ -333,6 +333,7 @@ function passTurn() {
   if (fresh.length > 0) {
     p.levelQuestions[p.current] = fresh[0];
     p.seen.push(fresh[0]);
+    rememberAsked(fresh);
   }
   endTurn();
 }
@@ -436,12 +437,50 @@ function pickQuestions(themeName, levelKey, howMany, avoid, only = () => true) {
   const all = QUESTIONS.filter(q => q.theme === themeName && q.level === levelKey && only(q));
   let pool = all.filter(q => !avoid.includes(q));
   if (pool.length < howMany) pool = all;
+  // Skip questions from the last few games too, if there are enough others
+  const notRecent = pool.filter(q => !recentAsked.includes(questionKey(q)));
+  if (notRecent.length >= howMany) pool = notRecent;
   const chosen = [];
   while (chosen.length < howMany && pool.length > 0) {
     const i = Math.floor(Math.random() * pool.length);
     chosen.push(pool.splice(i, 1)[0]);
   }
   return chosen;
+}
+
+// ---------- Remember questions from the last few games ----------
+// Saved in this browser only, so a new game picks different questions first.
+const RECENT_KEY = "quizpup-recent-questions";
+const RECENT_MAX = 150; // how many asked questions to remember
+let recentAsked = loadRecent();
+
+// Logo questions all say "Whose logo is this?", so the logo is part of the key
+function questionKey(q) {
+  return (q.logo || "") + "|" + q.question;
+}
+
+function loadRecent() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(RECENT_KEY));
+    if (!Array.isArray(saved)) return [];
+    return saved.filter(k => typeof k === "string" && k.length < 300).slice(-RECENT_MAX);
+  } catch (e) {
+    return [];
+  }
+}
+
+function rememberAsked(list) {
+  list.forEach(q => {
+    const key = questionKey(q);
+    recentAsked = recentAsked.filter(k => k !== key);
+    recentAsked.push(key);
+  });
+  recentAsked = recentAsked.slice(-RECENT_MAX);
+  try {
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recentAsked));
+  } catch (e) {
+    // can't save in this browser - it still works for this game
+  }
 }
 
 // Show a big button for every theme, plus a surprise button
@@ -484,6 +523,7 @@ function startLevel(themeName) {
   p.results = [];
   p.levelQuestions = pickLevelQuestions(themeName, level().key, p.seen);
   p.seen.push(...p.levelQuestions);
+  rememberAsked(p.levelQuestions);
   showOverlay(null);
   showStage();
   showQuestion();
