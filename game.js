@@ -805,3 +805,34 @@ $("scores-play").addEventListener("click", newGame);
 
 $("start-dog").innerHTML = '<div class="pup">' + dogSvg("shiba") + "</div>";
 showHost();
+
+// ---------- Fit on small phones ----------
+// If the game is still taller than a phone screen, shrink the whole stage a little
+// so nobody has to scroll. On bigger screens it stays full size.
+const PHONE_WIDTH = 520; // same as the phone size in style.css
+const stageEl = $("stage");
+function fitToScreen() {
+  let zoom = "";
+  if (window.innerWidth <= PHONE_WIDTH) {
+    stageEl.style.zoom = "";
+    // Find the bottom of the lowest thing on the stage (not the pop-up screens or lights)
+    let bottom = 0;
+    for (const el of stageEl.children) {
+      if (el.offsetHeight && getComputedStyle(el).position === "static") {
+        bottom = Math.max(bottom, el.getBoundingClientRect().bottom + window.scrollY);
+      }
+    }
+    bottom += 12;
+    if (bottom > window.innerHeight) zoom = String(window.innerHeight / bottom);
+  }
+  if (stageEl.style.zoom !== zoom) stageEl.style.zoom = zoom;
+}
+let fitWaiting = false;
+function fitSoon() {
+  if (fitWaiting) return;
+  fitWaiting = true;
+  requestAnimationFrame(() => { fitWaiting = false; fitToScreen(); });
+}
+new MutationObserver(fitSoon).observe(stageEl, { childList: true, subtree: true, attributeFilter: ["class"] });
+window.addEventListener("resize", fitSoon);
+fitSoon();

@@ -896,3 +896,77 @@ body {
 .theme-button.surprise { grid-column: 1 / -1; border-color: var(--pink); box-shadow: 4px 4px 0 var(--gold); }
 
 .hidden { display: none !important; }
+
+/* ============================================
+   PHONES (like an iPhone) - squish everything so the whole
+   game fits on the screen without scrolling or cut-off sides.
+   ============================================ */
+@media (max-width: 520px) {
+  body { align-items: flex-start; min-height: 100dvh; }
+  #stage {
+    min-height: 100dvh;
+    padding: 6px 10px;
+    border-width: 5px;
+    border-radius: 10px;
+  }
+  #title { font-size: 28px; letter-spacing: 3px; margin: 2px 0 6px; text-shadow: 2px 2px 0 var(--night), 4px 4px 0 var(--gold); }
+  #sound-buttons { top: 6px; right: 6px; gap: 4px; }
+  #sound-buttons button { width: 32px; height: 32px; font-size: 16px; border-width: 2px; }
+
+  #hud { font-size: 16px; padding: 4px 12px; margin-bottom: 4px; }
+  #lives { font-size: 18px; }
+  .coin { width: 22px; height: 22px; font-size: 13px; }
+
+  #host { gap: 8px; margin-bottom: 4px; }
+  .host-svg { width: 70px; height: 84px; }
+  #host-says { max-width: calc(100% - 80px); font-size: 14px; padding: 6px 10px; }
+
+  #progress { font-size: 18px; letter-spacing: 4px; margin: 0; }
+  #pot { min-height: 20px; margin-bottom: 4px; font-size: 14px; }
+
+  #question-box { padding: 8px 10px; margin-bottom: 8px; border-width: 3px; }
+  #theme { font-size: 12px; }
+  #question { font-size: 18px; }
+  #logo-card { padding: 8px; margin-top: 4px; }
+  #logo svg { width: 58px; height: 58px; }
+
+  #answers { gap: 6px; }
+  .answer { font-size: 15px; padding: 10px 18px; }
+  .answer .letter { margin-right: 4px; }
+
+  #floor { margin: 8px -10px 0; padding-top: 10px; position: relative; }
+  /* The pop-up emoji floats next to the pup instead of taking up its own row */
+  #effect { font-size: 30px; min-height: 0; position: absolute; top: 8px; left: calc(50% - 110px); }
+  #dog { font-size: 56px; }
+  #toys { font-size: 28px; }
+  .big-button { font-size: 17px; padding: 10px 18px; margin-top: 6px; }
+  .end-buttons { gap: 8px; margin-top: 4px; }
+
+  #players-strip { gap: 4px; margin-top: 6px; }
+  .player-card { min-width: 0; flex: 1 1 0; padding: 2px 4px; border-width: 2px; }
+  .pup.mini { font-size: 22px; margin: 0 auto; }
+  .player-name { font-size: 13px; letter-spacing: 1px; }
+  .player-info { font-size: 12px; }
+
+  /* Start, setup, turn, shop and end screens */
+  .overlay { padding: 16px 12px; }
+  .overlay-title { font-size: 38px; letter-spacing: 3px; text-shadow: 3px 3px 0 var(--gold); }
+  .overlay-title.small { font-size: 30px; }
+  .overlay-dog { font-size: 80px; }
+  .overlay p { font-size: 18px; }
+  #count-buttons { gap: 10px; }
+  .count-button { font-size: 30px; width: 64px; height: 64px; }
+  .setup-fields { gap: 10px; }
+  .setup-fields input { width: 190px; font-size: 22px; }
+  #breed-buttons { gap: 6px; }
+  .breed-button { width: 96px; padding: 6px; font-size: 13px; }
+  .breed-button .dog-svg { width: 52px; height: 52px; }
+  #turn-dog { font-size: 100px; }
+  #theme-buttons { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .theme-button { font-size: 16px; padding: 10px 6px; }
+  .theme-button .theme-emoji { font-size: 30px; }
+  #shop-top { gap: 10px; }
+  #shop-dog { font-size: 50px; }
+  .wallet-amount { font-size: 32px; }
+  .shop-row { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; }
+}

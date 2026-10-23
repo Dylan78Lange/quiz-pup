@@ -107,6 +107,9 @@ A player won't get the same question twice in one game (until a pool runs out).
 ## Polish
 - Confetti when you pass a level, and lots more when you win.
 - Keyboard: A/B/C/D or 1/2/3/4 to answer, Enter or Space for the next question.
+- Phones (like an iPhone): everything gets smaller so the whole game fits on the screen with no
+  scrolling and nothing cut off at the sides. If it's still too tall (lots of players, a logo
+  question), the stage shrinks a little more to fit (fitToScreen at the bottom of game.js).
 
 ## Build order (each step is playable)
 1. One theme, one question, answers, right/wrong, dog reacts
