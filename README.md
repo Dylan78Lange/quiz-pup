@@ -9,7 +9,7 @@ pup dance (or get up to mischief when you're wrong).
 - 6 themes and 330 questions: Geography, Video Games, Kids' Movies, Food, Brand Icons (with 60 real logos) and Famous People
 - Easy, Medium and Hard levels - beat Hard in 3 different themes to win
 - 3 lives, and coins to bank or spend in the Pup Shop
-- Pick your pup (Shiba Inu, Pug, Husky, Poodle or Dalmatian) and your host (human or robot)
+- Pick your pup (Shiba Inu, Pug, Husky, Poodle, Dalmatian or Border Collie) and your host (human, robot or alien)
 - Hip hop beat and sound effects, all made with code
 
 Made by a kid learning to code, with help from Claude Code.

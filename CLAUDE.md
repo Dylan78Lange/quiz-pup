@@ -33,8 +33,8 @@ This is a child's first game project. The person chatting with you may be a kid.
 - `style.css` - colors and looks
 - `questions/themes.js` - the list of themes
 - `questions/<theme>.js` - one file of questions per theme (easy to add your own)
-- `dogs.js` - the 5 dog breeds and how each one is drawn
-- `hosts.js` - how the human and robot hosts are drawn (animated in style.css)
+- `dogs.js` - the 6 dog breeds and how each one is drawn
+- `hosts.js` - how the human, robot and alien hosts are drawn (animated in style.css)
 - `logos.js` - 60 brand logo shapes from Simple Icons (CC0), used by "whose logo is this?" questions
 - `sound.js` - sound effects and the hip hop music, all made with code
 - `game.js` - the game code (players, turns, levels, scores)

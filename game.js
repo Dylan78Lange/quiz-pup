@@ -29,6 +29,13 @@ const HOSTS = [
     right: ["CORRECT! DOES NOT COMPUTE... YOU ARE TOO SMART!", "BEEP BEEP! WOOF-DERFUL!", "SUCCESS! MY LIGHTS ARE FLASHING!", "100% CORRECT. HIGH FIVE, HUMAN!"],
     wrong: ["ERROR! ERROR! WRONG ANSWER!", "BZZZT! NOT QUITE!", "SYSTEM SAYS: SO CLOSE!", "OOPS. RECALCULATING..."],
   },
+  {
+    key: "alien", name: "Alien",
+    hello: ["Greetings, Earthling! Welcome to Quiz Pup!", "Blorp! My spaceship landed just in time for the show!", "Zeep zorp! Take me to your pup!"],
+    ask:   ["Scanning your brain... here is your question!", "On my planet this one is easy. Hee hee!", "Zorp... think with all your brains!", "Final answer, Earthling?"],
+    right: ["COSMIC! That's correct!", "Out of this world! Woof-tastic!", "Blorp blorp! You're a superstar!", "My antennae are wiggling! Correct!"],
+    wrong: ["Uh-oh, space fudge! Not quite!", "Zorp... wrong planet!", "Houston, we have a problem!", "Meep! So close, Earthling!"],
+  },
 ];
 const HOST_KEY = "quiz-pup-host"; // remembers which host you picked
 
@@ -145,6 +152,7 @@ function say(text, gesture) {
   face.classList.add("talking");
   talkingTimer = setTimeout(() => face.classList.remove("talking"), Math.max(600, text.length * 18));
   if (host().key === "robot") sfx.robotTalk();
+  if (host().key === "alien") sfx.alienTalk();
 
   if (gesture) {
     face.classList.remove("wave", "point", "cheer", "facepalm");

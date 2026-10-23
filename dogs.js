@@ -1,5 +1,5 @@
 // ============================================
-//  QUIZ PUP DOGS  -  the 5 breeds and how they're drawn
+//  QUIZ PUP DOGS  -  the 6 breeds and how they're drawn
 //  Try changing the colors in DOG_LOOKS!
 // ============================================
 const BREEDS = [
@@ -8,6 +8,7 @@ const BREEDS = [
   { key: "husky",     name: "Husky" },
   { key: "poodle",    name: "Poodle" },
   { key: "dalmatian", name: "Dalmatian" },
+  { key: "collie",    name: "Border Collie" },
 ];
 
 const DOG_LOOKS = {
@@ -16,6 +17,7 @@ const DOG_LOOKS = {
   husky:     { fur: "#8a9bb0", ears: "pointy", earColor: "#8a9bb0", eyes: "#3fa9f5" },
   poodle:    { fur: "#f5d7b0", ears: "fluffy", earColor: "#f5d7b0", eyes: "#2b1a0f" },
   dalmatian: { fur: "#ffffff", ears: "floppy", earColor: "#222222", eyes: "#2b1a0f" },
+  collie:    { fur: "#2b2b36", ears: "small",  earColor: "#2b2b36", eyes: "#c98a3a" },
 };
 
 const LINE = 'stroke="#1a1040" stroke-width="2.5" stroke-linejoin="round"';
@@ -57,6 +59,9 @@ function dogFace(breed) {
     s += '<circle cx="33" cy="40" r="4.5" fill="#222"/><circle cx="67" cy="37" r="3.5" fill="#222"/>';
     s += '<circle cx="75" cy="61" r="4" fill="#222"/><circle cx="26" cy="64" r="3" fill="#222"/>';
     s += '<circle cx="56" cy="44" r="2.2" fill="#222"/>';
+  } else if (breed === "collie") {
+    // White stripe down the middle of the face, and a white muzzle
+    s += '<path d="M50 27 Q45 40 45 56 Q30 60 26 72 Q34 86 50 86 Q66 86 74 72 Q70 60 55 56 Q55 40 50 27 Z" fill="#ffffff"/>';
   }
 
   // Floppy and fluffy ears hang over the side of the head
@@ -93,6 +98,7 @@ const BODY_LOOKS = {
   husky:     { chest: "#ffffff", tail: "bushy" },
   poodle:    { chest: "#fffaf2", tail: "pom" },
   dalmatian: { chest: "#ffffff", tail: "thin" },
+  collie:    { chest: "#ffffff", tail: "bushy" },
 };
 
 // The big full-body pup on stage. Every part has a class so CSS can animate it:
@@ -120,6 +126,7 @@ function dogBodySvg(breed) {
   s += '<path d="' + tailPath + '" fill="none" stroke="#1a1040" stroke-width="' + (tailWidth + 5) + '" stroke-linecap="round"/>';
   s += '<path d="' + tailPath + '" fill="none" stroke="' + d.fur + '" stroke-width="' + tailWidth + '" stroke-linecap="round"/>';
   if (b.tail === "pom") s += '<circle cx="118" cy="90" r="9" ' + fur + "/>";
+  if (breed === "collie") s += '<circle cx="122" cy="85" r="5" fill="#ffffff"/>'; // white tail tip
   s += "</g>";
 
   // Body, then the back legs (haunches) on top - the right one can lift up

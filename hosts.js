@@ -1,14 +1,16 @@
 // ============================================
-//  QUIZ PUP HOSTS  -  how the two hosts are drawn
+//  QUIZ PUP HOSTS  -  how the three hosts are drawn
 //  Every moving part has a class so style.css can animate it:
 //    .eyes blink, .mouth-open / .mouth-closed swap while talking,
 //    .arm-right waves, points, cheers and facepalms.
-//  Both hosts are drawn on a 100 x 120 grid.
+//  All hosts are drawn on a 100 x 120 grid.
 // ============================================
 const HOST_LINE = 'stroke="#1a1040" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"';
 
 function hostSvg(key) {
-  return key === "robot" ? robotHostSvg() : humanHostSvg();
+  if (key === "robot") return robotHostSvg();
+  if (key === "alien") return alienHostSvg();
+  return humanHostSvg();
 }
 
 // A cool 90s game-show presenter: big hair, shiny purple suit, bow tie and a mic
@@ -107,6 +109,66 @@ function robotHostSvg() {
   s += '<path d="M73 66 L82 92" stroke="#78909c" stroke-width="6" stroke-linecap="round"/>';
   s += '<path d="M78 94 L80 101 M86 94 L84 101" stroke="#1a1040" stroke-width="3.5" stroke-linecap="round"/>';
   s += '<circle cx="82" cy="93" r="4" fill="#ffd23f" ' + HOST_LINE + "/>";
+  s += "</g>";
+
+  return s + "</svg>";
+}
+
+// A friendly green alien: three big eyes, wiggly antennae, and a little flying saucer
+function alienHostSvg() {
+  const skin = "#7ee05a";
+  const suit = "#5b3fd1";
+  let s = '<svg class="host-svg alien" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">';
+
+  // Space suit with a star badge
+  s += '<path d="M28 104 L31 80 Q50 70 69 80 L72 104 Z" fill="' + suit + '" ' + HOST_LINE + "/>";
+  s += '<path d="M50 84 l2.4 5 l5.4 .6 l-4 3.7 l1.1 5.3 l-4.9 -2.7 l-4.9 2.7 l1.1 -5.3 l-4 -3.7 l5.4 -.6 z" fill="#ffd23f" stroke="#1a1040" stroke-width="1.2"/>';
+
+  // Flying saucer the alien rides in, with blinking lights
+  s += '<ellipse cx="50" cy="106" rx="40" ry="10" fill="#b0bec5" ' + HOST_LINE + "/>";
+  s += '<ellipse cx="50" cy="102" rx="26" ry="5" fill="#cfd8dc"/>';
+  s += '<circle class="light l1" cx="24" cy="108" r="3" fill="#ff5252"/><circle class="light l2" cx="50" cy="112" r="3" fill="#ffd23f"/>';
+  s += '<circle class="light l3" cx="76" cy="108" r="3" fill="#39ff14"/>';
+
+  // Neck and head
+  s += '<rect x="45" y="62" width="10" height="12" fill="' + skin + '" ' + HOST_LINE + "/>";
+  s += '<g class="host-head">';
+
+  // Wiggly antennae with bobbles on top
+  s += '<g class="antennae" fill="none" stroke="#1a1040" stroke-width="2.5" stroke-linecap="round">';
+  s += '<path d="M40 24 Q34 14 30 6"/><path d="M60 24 Q66 14 70 6"/></g>';
+  s += '<circle class="antenna-light" cx="30" cy="6" r="4" fill="#ff3b8d" ' + HOST_LINE + "/>";
+  s += '<circle class="antenna-light" cx="70" cy="6" r="4" fill="#ff3b8d" ' + HOST_LINE + "/>";
+
+  // Big round head, wider at the top
+  s += '<path d="M50 20 Q74 20 74 44 Q74 64 50 68 Q26 64 26 44 Q26 20 50 20 Z" fill="' + skin + '" ' + HOST_LINE + "/>";
+
+  // Three big shiny eyes and a happy "eyebrow" line
+  s += '<g class="brows" stroke="#2e7d32" stroke-width="2" stroke-linecap="round"><path d="M33 33 L41 32"/><path d="M59 32 L67 33"/></g>';
+  s += '<g class="eyes">';
+  s += '<ellipse cx="37" cy="42" rx="6" ry="7" fill="#1a1040"/><ellipse cx="63" cy="42" rx="6" ry="7" fill="#1a1040"/>';
+  s += '<ellipse cx="50" cy="31" rx="4.5" ry="5" fill="#1a1040"/>';
+  s += '<circle cx="39" cy="39" r="2" fill="#fff"/><circle cx="65" cy="39" r="2" fill="#fff"/><circle cx="51.5" cy="29.5" r="1.5" fill="#fff"/>';
+  s += "</g>";
+  s += '<circle cx="31" cy="53" r="3" fill="#ff9aa2" opacity="0.6"/><circle cx="69" cy="53" r="3" fill="#ff9aa2" opacity="0.6"/>';
+
+  // Mouth: a little smile, and a round "ooo" mouth for talking
+  s += '<path class="mouth-closed" d="M43 55 Q50 61 57 55" fill="none" stroke="#1a1040" stroke-width="2.5" stroke-linecap="round"/>';
+  s += '<g class="mouth-open"><ellipse cx="50" cy="57" rx="4.5" ry="5" fill="#2e1a47" ' + HOST_LINE + "/></g>";
+  s += "</g>";
+
+  // Left arm holding the microphone (it stays put)
+  s += '<path d="M31 84 L22 96 L34 72" fill="none" stroke="#1a1040" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>';
+  s += '<path d="M31 84 L22 96 L34 72" fill="none" stroke="' + suit + '" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>';
+  s += '<path d="M35 70 L39 62" stroke="#333" stroke-width="4" stroke-linecap="round"/>';
+  s += '<circle cx="40" cy="59" r="4.5" fill="#9e9e9e" ' + HOST_LINE + "/>";
+  s += '<circle cx="34" cy="72" r="4" fill="' + skin + '" ' + HOST_LINE + "/>";
+
+  // Right arm: this one does the gestures (it turns around the shoulder at 69, 82)
+  s += '<g class="arm-right">';
+  s += '<path d="M69 82 L77 100" stroke="#1a1040" stroke-width="11" stroke-linecap="round"/>';
+  s += '<path d="M69 82 L77 100" stroke="' + suit + '" stroke-width="6" stroke-linecap="round"/>';
+  s += '<circle cx="78" cy="102" r="4.5" fill="' + skin + '" ' + HOST_LINE + "/>";
   s += "</g>";
 
   return s + "</svg>";

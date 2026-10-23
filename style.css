@@ -110,6 +110,7 @@ body {
 .host-svg .arm-right { transform-box: view-box; }
 .host-svg.human .arm-right { transform-origin: 70px 86px; }
 .host-svg.robot .arm-right { transform-origin: 73px 66px; }
+.host-svg.alien .arm-right { transform-origin: 69px 82px; }
 
 /* Talking: the mouth flaps and the head bobs */
 #host-face.talking .mouth-open { animation: mouth-flap 0.22s steps(1) infinite; }
@@ -195,6 +196,24 @@ body {
 @keyframes robot-bob {
   0% { transform: translateY(0) rotate(-2deg); }
   100% { transform: translateY(-4px) rotate(2deg); }
+}
+
+/* Alien host: floats up and down, wiggly antennae, and a space-purple speech bubble */
+#host.alien #host-face { animation: alien-float 2.66s ease-in-out infinite; }
+#host.alien #host-says {
+  background: #2a0f4a;
+  color: #b9ff66;
+  border-color: #b9ff66;
+  border-radius: 22px;
+}
+.host-svg .antennae { transform-box: fill-box; transform-origin: 50% 100%; animation: antennae 1.33s ease-in-out infinite; }
+@keyframes alien-float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+@keyframes antennae {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(1.15); }
 }
 
 /* Host picker on the start screen */

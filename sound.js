@@ -178,6 +178,12 @@ const sfx = {
     for (let i = 0; i < 4; i++) tone(300 + Math.random() * 600, t + i * 0.07, 0.06, "square", 0.05, out);
   }),
 
+  // Alien host talking: a wobbly spaceship woo-oo
+  alienTalk: () => play((t, out) => {
+    tone(500, t, 0.15, "sine", 0.06, out, 950);
+    tone(950, t + 0.15, 0.2, "sine", 0.06, out, 400);
+  }),
+
   // A new player's turn
   turn: () => play((t, out) => {
     piano(67, t, 0.2, 0.3, out);
