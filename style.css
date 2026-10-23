@@ -111,6 +111,9 @@ body {
 .host-svg.human .arm-right { transform-origin: 70px 86px; }
 .host-svg.robot .arm-right { transform-origin: 73px 66px; }
 .host-svg.alien .arm-right { transform-origin: 69px 82px; }
+.host-svg.pirate .arm-right { transform-origin: 70px 86px; }
+.host-svg.mermaid .arm-right { transform-origin: 69px 84px; }
+.host-svg.brick .arm-right { transform-origin: 64px 68px; }
 
 /* Talking: the mouth flaps and the head bobs */
 #host-face.talking .mouth-open { animation: mouth-flap 0.22s steps(1) infinite; }
@@ -216,10 +219,47 @@ body {
   50% { transform: scaleX(1.15); }
 }
 
+/* Pirate host: rocks like a ship, and talks on an old treasure map */
+#host.pirate #host-face { animation: ship-rock 2.66s ease-in-out infinite; }
+#host.pirate #host-says {
+  background: #f3e2b3;
+  color: #4a2a12;
+  border-color: #6d3f1e;
+  border-radius: 6px;
+  font-style: italic;
+}
+@keyframes ship-rock {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* Mermaid host: floats like she's swimming, with bubbles floating up, and an ocean-blue bubble */
+#host.mermaid #host-face { animation: alien-float 2.66s ease-in-out infinite; }
+#host.mermaid #host-says {
+  background: #d9f6ff;
+  color: #00597a;
+  border-color: #00a6c8;
+  border-radius: 22px;
+}
+.host-svg .bubbles { animation: bubbles-up 2s ease-in infinite; }
+@keyframes bubbles-up {
+  0% { transform: translateY(8px); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(-14px); opacity: 0; }
+}
+
+/* Brick Man: jerky toy moves and a bright yellow bubble */
+#host.brick #host-face { animation: robot-bob 0.67s steps(2) infinite; }
+#host.brick #host-says {
+  background: #ffd23f;
+  color: var(--night);
+  border-radius: 4px;
+}
+
 /* Host picker on the start screen */
 #host-picker { margin-bottom: 8px; }
 .host-picker-label { font-weight: bold; color: var(--gold); margin-bottom: 6px; }
-#host-buttons { display: flex; gap: 8px; justify-content: center; }
+#host-buttons { display: grid; grid-template-columns: repeat(3, auto); gap: 8px; justify-content: center; }
 .host-button {
   font-family: inherit;
   font-size: 12px;

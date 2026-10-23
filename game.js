@@ -14,6 +14,7 @@ const LEVELS = [
 ];
 
 // The hosts and the things they say - add your own lines (or a whole new host!)
+// "sound" is the noise they make when they talk (from sound.js) - leave it out for none
 const HOSTS = [
   {
     key: "human", name: "Human", // drawn in hosts.js
@@ -23,18 +24,39 @@ const HOSTS = [
     wrong: ["Oooh, so close!", "Not quite, superstar!", "Ruh-roh!", "Better luck next time!"],
   },
   {
-    key: "robot", name: "Robot",
+    key: "robot", name: "Robot", sound: "robotTalk",
     hello: ["BEEP BOOP! WELCOME, HUMAN, TO QUIZ PUP!", "SHOWTIME MODE: ACTIVATED!", "GREETINGS, PUP OWNER. PREPARE TO QUIZ!"],
     ask:   ["COMPUTING QUESTION... BEEP!", "THIS ONE MAKES MY CIRCUITS TINGLE.", "PROCESSING... PLEASE ANSWER.", "FINAL ANSWER? BLEEP BLOOP?"],
     right: ["CORRECT! DOES NOT COMPUTE... YOU ARE TOO SMART!", "BEEP BEEP! WOOF-DERFUL!", "SUCCESS! MY LIGHTS ARE FLASHING!", "100% CORRECT. HIGH FIVE, HUMAN!"],
     wrong: ["ERROR! ERROR! WRONG ANSWER!", "BZZZT! NOT QUITE!", "SYSTEM SAYS: SO CLOSE!", "OOPS. RECALCULATING..."],
   },
   {
-    key: "alien", name: "Alien",
+    key: "alien", name: "Alien", sound: "alienTalk",
     hello: ["Greetings, Earthling! Welcome to Quiz Pup!", "Blorp! My spaceship landed just in time for the show!", "Zeep zorp! Take me to your pup!"],
     ask:   ["Scanning your brain... here is your question!", "On my planet this one is easy. Hee hee!", "Zorp... think with all your brains!", "Final answer, Earthling?"],
     right: ["COSMIC! That's correct!", "Out of this world! Woof-tastic!", "Blorp blorp! You're a superstar!", "My antennae are wiggling! Correct!"],
     wrong: ["Uh-oh, space fudge! Not quite!", "Zorp... wrong planet!", "Houston, we have a problem!", "Meep! So close, Earthling!"],
+  },
+  {
+    key: "pirate", name: "Pirate",
+    hello: ["Ahoy, matey! Welcome aboard Quiz Pup!", "Arrr! Ready to hunt for treasure?", "Yo ho ho! The show sets sail!"],
+    ask:   ["Here be yer question...", "Shiver me timbers, this one's tricky!", "Think hard, ye clever sailor!", "Is that yer final answer, matey?"],
+    right: ["Arrr! That be CORRECT!", "Treasure for you, matey!", "Yo ho ho! Woof-tastic!", "My parrot says: SQUAWK! Correct!"],
+    wrong: ["Barnacles! Not quite!", "Blimey! That be wrong!", "Arrr, so close, matey!", "Shiver me timbers... wrong one!"],
+  },
+  {
+    key: "mermaid", name: "Mermaid", sound: "mermaidTalk",
+    hello: ["Hello from under the sea! Welcome to Quiz Pup!", "Splish splash, it's showtime!", "Let's make some waves!"],
+    ask:   ["Here comes a question, fresh from the ocean!", "Hmm, this one is deep!", "Take a deep breath... and answer!", "Final answer, my little starfish?"],
+    right: ["Fin-tastic! That's correct!", "You're o-fish-ally a genius!", "Splash-tastic!", "Correct! The fish are cheering!"],
+    wrong: ["Oh, bubbles! Not quite!", "Whale, that's not it!", "Oh no, a wave of wrong!", "So close, sea star!"],
+  },
+  {
+    key: "brick", name: "Brick Man", sound: "brickTalk",
+    hello: ["Click! Clack! Welcome to Quiz Pup!", "Let's build a show, brick by brick!", "Snap your brains together, it's showtime!"],
+    ask:   ["Here's a question, fresh out of the box!", "Let's build an answer!", "Click clack... think hard!", "Is that your final brick... I mean answer?"],
+    right: ["Correct! That one clicks!", "Brick-tastic!", "You built that perfectly!", "Click! A perfect fit!"],
+    wrong: ["Oops! That brick doesn't fit!", "Ouch, I stepped on a brick! Wrong!", "Not quite! Let's rebuild!", "Crumble crash! So close!"],
   },
 ];
 const HOST_KEY = "quiz-pup-host"; // remembers which host you picked
@@ -151,8 +173,7 @@ function say(text, gesture) {
   // Talk for as long as the typing takes
   face.classList.add("talking");
   talkingTimer = setTimeout(() => face.classList.remove("talking"), Math.max(600, text.length * 18));
-  if (host().key === "robot") sfx.robotTalk();
-  if (host().key === "alien") sfx.alienTalk();
+  if (host().sound) sfx[host().sound]();
 
   if (gesture) {
     face.classList.remove("wave", "point", "cheer", "facepalm");

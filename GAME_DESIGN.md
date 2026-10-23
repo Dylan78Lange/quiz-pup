@@ -135,11 +135,17 @@ questions you haven't seen lately first. RECENT_MAX in game.js sets how many it 
 ## Open questions
 - DECIDED - Game name: Quiz Pup. Coins show the letter "Q".
 - DECIDED - Dogs: each player names their dog and picks from 6 breeds: Shiba Inu, Pug, Husky, Poodle, Dalmatian, Border Collie. No color choice.
-- DECIDED - Host: pick on the start screen between
+- DECIDED - Host: pick on the home screen between
   - 🕺 Human: a cool, funny 90s game-show presenter (big hair, shiny suit, cheesy jokes)
   - 🤖 Robot: beeps and boops, talks in CAPITALS in a green computer-screen bubble
   - 👽 Alien: green, three big eyes, wiggly antennae, floats in a little flying saucer. Says
     "Greetings, Earthling!" in a space-purple bubble and makes a wobbly woo-oo sound when it talks.
+  - 🏴‍☠️ Pirate: red coat, pointy hat with a skull and crossbones, eye patch, big beard and a parrot
+    on his hat. Rocks like a ship and says "Ahoy, matey!" on an old treasure-map bubble.
+  - 🧜‍♀️ Mermaid: long red hair with a starfish clip, shell top and a sparkly tail, with bubbles
+    floating up. Says "Fin-tastic!" in an ocean-blue bubble, with little bubble-pop sounds.
+  - 🧱 Brick Man: a toy brick figure with a yellow head and a stud on top. Moves in a jerky toy way,
+    talks in a yellow bubble and goes click-clack.
   The game remembers your pick. Hosts and their lines live in `HOSTS` at the top of game.js.
   Both are drawn characters (hosts.js) that bob to the beat and blink. When they talk the words
   type out in the bubble and the mouth moves (the robot has a bouncing equalizer mouth). They wave

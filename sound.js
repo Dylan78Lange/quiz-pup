@@ -184,6 +184,17 @@ const sfx = {
     tone(950, t + 0.15, 0.2, "sine", 0.06, out, 400);
   }),
 
+  // Mermaid host talking: little bubble pops
+  mermaidTalk: () => play((t, out) => {
+    [0, 0.08, 0.17].forEach(at => tone(500 + Math.random() * 400, t + at, 0.07, "sine", 0.06, out, 1400));
+  }),
+
+  // Brick Man talking: click clack
+  brickTalk: () => play((t, out) => {
+    noise(t, 0.03, 0.25, out, "bandpass", 2500);
+    noise(t + 0.12, 0.03, 0.25, out, "bandpass", 1800);
+  }),
+
   // A new player's turn
   turn: () => play((t, out) => {
     piano(67, t, 0.2, 0.3, out);
