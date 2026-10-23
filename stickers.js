@@ -114,8 +114,15 @@ function showStickerPicker() {
   list.innerHTML = "";
   $("sticker-empty").classList.toggle("hidden", names.length > 0);
   $("sticker-grid").innerHTML = "";
-  $("sticker-who").textContent = names.length ? "Whose sticker book?" : "";
+  $("sticker-who").textContent = names.length ? "Whose sticker book? (To delete one: swipe it left, or double-click it on a laptop)" : "";
   names.forEach(name => {
+    // Each name sits on a red "delete" strip that shows when you swipe the name to the left
+    const row = document.createElement("div");
+    row.className = "swipe-row";
+    const trash = document.createElement("div");
+    trash.className = "swipe-trash";
+    trash.textContent = "🗑️ Delete";
+    trash.setAttribute("aria-hidden", "true");
     const btn = document.createElement("button");
     btn.className = "piggy-button";
     const who = document.createElement("span");
@@ -124,10 +131,73 @@ function showStickerPicker() {
     count.className = "score-coins";
     count.textContent = books[name].length + " / " + STICKERS.length;
     btn.append(who, count);
-    btn.addEventListener("click", () => showStickerBook(name));
-    list.appendChild(btn);
+    addSwipeToDelete(btn, () => showStickerBook(name), () => deleteStickerBook(name));
+    row.append(trash, btn);
+    list.appendChild(row);
   });
   $("sticker-screen").classList.remove("hidden");
+}
+
+// On a phone: tap to open, swipe left far enough to delete.
+// On a laptop: click to open, double-click to delete.
+// (Either way it asks "are you sure?" before deleting.)
+const SWIPE_DISTANCE = 90;     // how far you have to swipe, in pixels
+const DOUBLE_CLICK_WAIT = 300; // a click waits this long (milliseconds) in case it's a double-click
+function addSwipeToDelete(btn, onOpen, onDelete) {
+  let startX = null;
+  let moved = 0;
+  let usingMouse = false;
+  let clickTimer = null;
+
+  btn.addEventListener("click", () => {
+    if (btn.dataset.swiped) return; // a swipe isn't a tap
+    if (!usingMouse) return onOpen();
+    clearTimeout(clickTimer);
+    clickTimer = setTimeout(onOpen, DOUBLE_CLICK_WAIT);
+  });
+  btn.addEventListener("dblclick", () => {
+    if (!usingMouse) return;
+    clearTimeout(clickTimer);
+    onDelete();
+  });
+
+  btn.addEventListener("pointerdown", e => {
+    usingMouse = e.pointerType === "mouse";
+    delete btn.dataset.swiped;
+    if (usingMouse) return; // swiping is for fingers
+    startX = e.clientX;
+    moved = 0;
+    btn.classList.add("dragging");
+    btn.setPointerCapture(e.pointerId);
+  });
+  btn.addEventListener("pointermove", e => {
+    if (startX === null) return;
+    moved = Math.min(0, e.clientX - startX); // only to the left
+    btn.style.transform = "translateX(" + moved + "px)";
+    btn.classList.toggle("swiped-far", moved < -SWIPE_DISTANCE);
+  });
+  const letGo = () => {
+    if (startX === null) return;
+    startX = null;
+    if (moved < -10) btn.dataset.swiped = "yes"; // a swipe isn't a tap
+    btn.style.transform = "";
+    btn.classList.remove("swiped-far", "dragging");
+    if (moved < -SWIPE_DISTANCE) onDelete();
+  };
+  btn.addEventListener("pointerup", letGo);
+  btn.addEventListener("pointercancel", letGo);
+}
+
+function deleteStickerBook(name) {
+  if (!confirm("Delete " + name + "'s sticker book? All their stickers will be gone for good!")) return;
+  const books = loadStickerBooks();
+  delete books[name];
+  try {
+    localStorage.setItem(STICKER_KEY, JSON.stringify(books));
+  } catch (e) {
+    // can't save in this browser
+  }
+  showStickerPicker();
 }
 
 function showStickerBook(name) {

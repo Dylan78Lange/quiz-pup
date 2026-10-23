@@ -1120,6 +1120,23 @@ body {
 #sticker-screen { justify-content: flex-start; z-index: 6; }
 #sticker-names { display: grid; gap: 8px; width: 100%; max-width: 360px; }
 #sticker-names:empty { display: none; }
+/* Swipe a name left to show the red delete strip underneath */
+.swipe-row { position: relative; border-radius: 14px; overflow: hidden; }
+.swipe-row .piggy-button { position: relative; width: 100%; touch-action: pan-y; transition: transform 0.2s; }
+.swipe-row .piggy-button.dragging { transition: none; } /* follow your finger while swiping */
+.swipe-row .piggy-button.swiped-far { border-color: var(--red); }
+.swipe-trash {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 16px;
+  background: var(--red);
+  color: white;
+  font-weight: bold;
+  border-radius: 14px;
+}
 #sticker-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));

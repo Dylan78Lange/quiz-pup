@@ -75,6 +75,8 @@ questions you haven't seen lately first. RECENT_MAX in game.js sets how many it 
   shopping, buying the Crown, 1,000 coins in your piggy bank, playing with friends, and never giving up.
 - A "NEW STICKER!" pops up when you win one. Every name has its own sticker book (saved in this browser).
 - Open it with the 📒 button on the home screen. Stickers you don't have yet are grey with a hint.
+- To delete a sticker book: swipe the name to the left on a phone, or double-click it on a laptop.
+  It asks first!
 - The stickers live in `stickers.js`.
 
 ## Coins
