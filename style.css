@@ -219,19 +219,19 @@ body {
 /* Host picker on the start screen */
 #host-picker { margin-bottom: 8px; }
 .host-picker-label { font-weight: bold; color: var(--gold); margin-bottom: 6px; }
-#host-buttons { display: flex; gap: 12px; justify-content: center; }
+#host-buttons { display: flex; gap: 8px; justify-content: center; }
 .host-button {
   font-family: inherit;
-  font-size: 18px;
+  font-size: 12px;
   font-weight: bold;
   color: white;
   background: var(--night);
-  border: 3px solid #3a2a8a;
-  border-radius: 14px;
-  padding: 8px 18px;
+  border: 2px solid #3a2a8a;
+  border-radius: 10px;
+  padding: 4px 9px;
   cursor: pointer;
 }
-.host-button .host-mini .host-svg { width: 54px; height: 65px; margin: 0 auto 4px; }
+.host-button .host-mini .host-svg { width: 27px; height: 33px; margin: 0 auto 2px; }
 .host-button.chosen { border-color: var(--gold); background: #3a2a8a; box-shadow: 0 0 14px var(--gold); }
 
 /* Top bar: lives, level, coins */
