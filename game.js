@@ -8,9 +8,9 @@ const QUESTIONS_PER_LEVEL = 3;
 const HARD_ROUNDS = 3; // to win, beat Hard in this many different themes
 const LOGO_QUESTIONS_PER_LEVEL = 2; // in Brand Icons, at least this many questions show a real logo
 const LEVELS = [
-  { key: "easy",   name: "EASY",   coins: 100 },
-  { key: "medium", name: "MEDIUM", coins: 250 },
-  { key: "hard",   name: "HARD",   coins: 500 },
+  { key: "easy",   name: "EASY",   coins: 100, emoji: "🟢" },
+  { key: "medium", name: "MEDIUM", coins: 250, emoji: "🟡" },
+  { key: "hard",   name: "HARD",   coins: 500, emoji: "🔴" },
 ];
 
 // The hosts and the things they say - add your own lines (or a whole new host!)
@@ -191,6 +191,7 @@ function makePlayer(number) {
     bank: 0,          // coins saved forever (banked)
     pot: 0,           // coins won this level, not banked yet
     levelIndex: 0,    // 0 = easy, 1 = medium, 2 = hard
+    pickedLevel: false, // picked where to start (Easy, Medium or Hard) yet?
     hardWins: [],     // themes this player has beaten on Hard
     theme: "",
     levelQuestions: [], // empty = needs to pick a theme for a new level
@@ -338,7 +339,9 @@ function startTurn() {
 function continueTurn() {
   showOverlay(null);
   showStage();
-  if (me().levelQuestions.length === 0) {
+  if (!me().pickedLevel) {
+    showLevelPicker();
+  } else if (me().levelQuestions.length === 0) {
     showThemePicker();
   } else {
     showQuestion();
@@ -510,6 +513,31 @@ function rememberAsked(list) {
   } catch (e) {
     // can't save in this browser - it still works for this game
   }
+}
+
+// At the start of the game each player picks where to start. Then they go up as usual.
+function showLevelPicker() {
+  const p = me();
+  $("level-who").textContent = (players.length > 1 ? p.name + ", where" : "Where") + " do you want to start?";
+  const buttonsEl = $("level-buttons");
+  buttonsEl.innerHTML = "";
+  LEVELS.forEach((lvl, i) => {
+    const btn = document.createElement("button");
+    btn.className = "theme-button level-" + lvl.key;
+    btn.innerHTML = '<span class="theme-emoji">' + lvl.emoji + "</span>" + lvl.name;
+    const coins = document.createElement("span");
+    coins.className = "level-coins";
+    coins.textContent = lvl.coins + " coins for each right answer";
+    btn.append(coins);
+    btn.addEventListener("click", () => {
+      p.levelIndex = i;
+      p.pickedLevel = true;
+      showStage();
+      showThemePicker();
+    });
+    buttonsEl.appendChild(btn);
+  });
+  showOverlay("level-screen");
 }
 
 // Show a big button for every theme, plus a surprise button

@@ -998,6 +998,13 @@ body {
 .theme-button:disabled { opacity: 0.45; cursor: default; box-shadow: none; border-color: var(--green); }
 .theme-button.surprise { grid-column: 1 / -1; border-color: var(--pink); box-shadow: 4px 4px 0 var(--gold); }
 
+/* Level picker: one big button per level, colored like the level names */
+#level-buttons { display: grid; gap: 12px; width: 100%; max-width: 420px; }
+.theme-button .level-coins { display: block; font-size: 14px; color: var(--gold); margin-top: 2px; }
+.theme-button.level-easy { border-color: var(--green); }
+.theme-button.level-medium { border-color: var(--gold); }
+.theme-button.level-hard { border-color: var(--red); }
+
 .hidden { display: none !important; }
 
 /* ============================================
