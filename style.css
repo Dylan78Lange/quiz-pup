@@ -675,6 +675,49 @@ body {
 
 .big-button.shop { background: var(--green); color: var(--night); }
 
+/* Home screen: big round Start Quiz button and the shopping cart, at the bottom */
+#start-dog { margin-top: 32px; font-size: 90px; } /* room for the pup to jump without bumping the title */
+#start-screen p { margin: 6px 0 10px; }
+#home-bottom {
+  margin-top: auto;
+  padding-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+.circle-button {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  line-height: 1.2;
+  color: white;
+  background: radial-gradient(circle at 35% 30%, #ff7ab5, var(--pink) 60%, #c4155f);
+  border: 5px solid var(--gold);
+  box-shadow: 0 6px 0 var(--night), 0 0 22px var(--gold);
+  cursor: pointer;
+  padding: 0;
+  animation: throb 1.33s ease-in-out infinite; /* pulses to the music */
+}
+.circle-button:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--night); }
+.circle-button.cart,
+.circle-button.trophy {
+  width: 76px;
+  height: 76px;
+  font-size: 38px;
+  background: radial-gradient(circle at 35% 30%, #7dff9a, var(--green) 60%, #1a8a2a);
+  animation: none;
+}
+.circle-button.trophy { background: radial-gradient(circle at 35% 30%, #7a6ad8, #3a2a8a 60%, var(--night)); }
+@keyframes throb {
+  0%, 100% { scale: 1; }
+  50% { scale: 1.06; }
+}
+
 /* Pup Shop */
 #shop-screen { justify-content: flex-start; overflow-y: auto; z-index: 6; }
 #shop-top { display: flex; align-items: center; gap: 20px; }
@@ -718,6 +761,7 @@ body {
 .buy-button .coin { width: 18px; height: 18px; font-size: 11px; }
 .buy-button:disabled { background: #444; border-color: #666; color: #bbb; cursor: default; }
 #shop-close { margin: 14px 0 8px; }
+#shop-screen.peek #shop-wallet { display: none; }
 
 /* Music and sound on/off buttons - always on top, top right corner */
 #sound-buttons {
@@ -909,7 +953,7 @@ body {
     border-width: 5px;
     border-radius: 10px;
   }
-  #title { font-size: 28px; letter-spacing: 3px; margin: 2px 0 6px; text-shadow: 2px 2px 0 var(--night), 4px 4px 0 var(--gold); }
+  #title { text-align: left; padding-left: 6px; font-size: 28px; letter-spacing: 3px; margin: 2px 0 6px; text-shadow: 2px 2px 0 var(--night), 4px 4px 0 var(--gold); }
   #sound-buttons { top: 6px; right: 6px; gap: 4px; }
   #sound-buttons button { width: 32px; height: 32px; font-size: 16px; border-width: 2px; }
 
@@ -954,6 +998,9 @@ body {
   .overlay-title.small { font-size: 30px; }
   .overlay-dog { font-size: 80px; }
   .overlay p { font-size: 18px; }
+  .circle-button { width: 110px; height: 110px; font-size: 20px; }
+  .circle-button.cart, .circle-button.trophy { width: 64px; height: 64px; font-size: 32px; }
+  #home-bottom { gap: 12px; }
   #count-buttons { gap: 10px; }
   .count-button { font-size: 30px; width: 64px; height: 64px; }
   .setup-fields { gap: 10px; }

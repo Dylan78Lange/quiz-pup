@@ -98,15 +98,31 @@ function tease(owner, trick, pupEl) {
 }
 
 function openShop() {
+  shopScreen.classList.remove("peek");
   shopSaysEl.textContent = "Welcome to the Pup Shop, " + me().name + "! What would you like?";
+  $("shop-close").textContent = "Back to the show ▶";
+  showShop();
+  shopScreen.classList.remove("hidden");
+}
+
+// From the cart on the home screen: look at everything, but nobody has coins yet
+function peekShop() {
+  shopScreen.classList.add("peek");
+  shopSaysEl.textContent = "Have a look around! Win coins in the quiz to buy treats for your pup.";
+  $("shop-close").textContent = "Back home 🏠";
   showShop();
   shopScreen.classList.remove("hidden");
 }
 
 function showShop() {
-  const p = me();
-  $("shop-coins").textContent = p.bank;
-  $("shop-dog").innerHTML = pupHtml(p);
+  const peeking = shopScreen.classList.contains("peek");
+  const p = peeking ? null : me();
+  if (p) {
+    $("shop-coins").textContent = p.bank;
+    $("shop-dog").innerHTML = pupHtml(p);
+  } else {
+    $("shop-dog").innerHTML = dogSvg("shiba");
+  }
   const itemsEl = $("shop-items");
   itemsEl.innerHTML = "";
 
@@ -125,7 +141,10 @@ function showShop() {
 
       const btn = document.createElement("button");
       btn.className = "buy-button";
-      if (hasItem(p, item)) {
+      if (!p) {
+        btn.innerHTML = '<span class="coin">Q</span> ' + item.price;
+        btn.disabled = true;
+      } else if (hasItem(p, item)) {
         btn.textContent = item.type === "wear" ? "Wearing ✓" : "Got it ✓";
         btn.disabled = true;
       } else if (item.life && p.lives >= LIVES) {
@@ -174,4 +193,5 @@ function buy(item) {
 }
 
 $("end-shop").addEventListener("click", openShop);
+$("home-shop").addEventListener("click", peekShop);
 $("shop-close").addEventListener("click", () => shopScreen.classList.add("hidden"));

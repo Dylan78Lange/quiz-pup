@@ -204,6 +204,16 @@ function stillPlaying() {
 function showOverlay(id) {
   document.querySelectorAll(".overlay").forEach(o => o.classList.add("hidden"));
   if (id) $(id).classList.remove("hidden");
+  $("go-home").classList.toggle("hidden", id === "start-screen"); // no home button on the home screen
+}
+
+// The 🏠 button: go back to the home screen (asks first if a game is still going)
+function goHome() {
+  const playing = players.length > 0 && stillPlaying().length > 0;
+  if (playing && !confirm("Go back to the home screen? This game will end.")) return;
+  players = [];
+  turn = 0;
+  showOverlay("start-screen");
 }
 
 // A pup picture with its hat on. "full" = the big full-body pup for the stage.
@@ -791,6 +801,7 @@ nextBtn.addEventListener("click", () => {
 });
 passBtn.addEventListener("click", passTurn);
 $("start").addEventListener("click", newGame);
+$("go-home").addEventListener("click", goHome);
 document.querySelectorAll(".count-button").forEach(btn =>
   btn.addEventListener("click", () => chooseCount(Number(btn.dataset.count))));
 $("setup-next").addEventListener("click", savePlayerForm);

@@ -15,6 +15,7 @@
     <div class="spotlight right"></div>
 
     <div id="sound-buttons">
+      <button id="go-home" class="hidden" title="Home screen">🏠</button>
       <button id="toggle-music" title="Music">🎵</button>
       <button id="toggle-sound" title="Sound effects">🔊</button>
     </div>
@@ -60,7 +61,7 @@
 
     <div id="players-strip"></div>
 
-    <!-- Start screen -->
+    <!-- Home screen -->
     <div id="start-screen" class="overlay">
       <h1 class="overlay-title">QUIZ PUP</h1>
       <div class="overlay-dog" id="start-dog"></div>
@@ -69,8 +70,12 @@
         <div class="host-picker-label">Pick your host:</div>
         <div id="host-buttons"></div>
       </div>
-      <button id="start" class="big-button">★ START THE SHOW ★</button>
-      <button id="show-scores" class="big-button quit">🏆 Top Scores</button>
+      <!-- Top Scores, the big round Start Quiz button and the shopping cart, at the bottom -->
+      <div id="home-bottom">
+        <button id="show-scores" class="circle-button trophy" title="Top Scores">🏆</button>
+        <button id="start" class="circle-button">START<br>QUIZ</button>
+        <button id="home-shop" class="circle-button cart" title="Pup Shop">🛒</button>
+      </div>
     </div>
 
     <!-- Setup: how many players, then each player's name and pup -->
@@ -152,7 +157,7 @@
       <button id="scores-play" class="big-button">Let's play! ▶</button>
     </div>
 
-    <!-- Pup Shop (opens on top of the end screen) -->
+    <!-- Pup Shop (opens on top of the end screen, or from the cart on the home screen) -->
     <div id="shop-screen" class="overlay hidden">
       <h1 class="overlay-title small">PUP SHOP</h1>
       <div id="shop-top">
