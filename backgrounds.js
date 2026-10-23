@@ -23,6 +23,7 @@ const BACKGROUNDS = [
   { key: "house",   name: "House",         colors: ["#fdf0d5", "#f2d6a2"], sprinkle: ["🖼️", "🪴", "🛋️"] },
   { key: "star",    name: "Movie Star",    colors: ["#2a0845", "#b3001b"], sprinkle: ["⭐", "📸", "🌟"], dark: true },
   { key: "sports",  name: "Sports",        colors: ["#a8e063", "#2e8b2e"], sprinkle: ["🏅", "⚽", "🏀", "🥇"] },
+  { key: "australia", name: "Australia",    colors: ["#ffd9a0", "#e2703a"], sprinkle: ["🦘", "🐨", "☀️", "🦎", "🪃"] },
 
   // Plain colors
   { key: "pink",    name: "Pink",    plain: true, colors: ["#ffd6ec", "#ff8cc6"] },
