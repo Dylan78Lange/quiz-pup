@@ -63,6 +63,11 @@ A player won't get the same question twice in one game (until a pool runs out).
 The game also remembers the last 150 questions asked (in this browser only), so a new game picks
 questions you haven't seen lately first. RECENT_MAX in game.js sets how many it remembers.
 
+## Ask the Pup
+- Once per level, press "🐶 Ask the Pup" before you answer. Your pup sniffs around and barks at an
+  answer (it gets a purple glow and a 🐾). But the pup is only right about half the time - it's a gamble!
+- PUP_RIGHT_CHANCE at the top of game.js sets how often the pup is right (0.5 = half, 1 = always).
+
 ## Coins
 - Easy: 100 coins per right answer
 - Medium: 250 coins per right answer

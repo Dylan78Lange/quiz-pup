@@ -362,6 +362,14 @@ body {
 .answer.right { background: var(--green); color: var(--night); }
 .answer.right .letter { color: var(--night); }
 .answer.wrong { background: var(--red); }
+/* The answer your pup barked at with Ask the Pup */
+.answer.pup-pick { background: #5b3fd1; animation: pup-pick 0.5s ease-in-out 3; }
+.answer.pup-pick::after { content: " 🐾"; }
+@keyframes pup-pick {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+.big-button.pup-button { background: var(--gold); color: var(--night); }
 
 /* Checkered dance floor where the pup stands */
 #floor {

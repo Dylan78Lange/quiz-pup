@@ -7,6 +7,7 @@ const LIVES = 3;
 const QUESTIONS_PER_LEVEL = 3;
 const HARD_ROUNDS = 3; // to win, beat Hard in this many different themes
 const LOGO_QUESTIONS_PER_LEVEL = 2; // in Brand Icons, at least this many questions show a real logo
+const PUP_RIGHT_CHANCE = 0.5; // how often Ask the Pup picks the right answer (0.5 = half the time, 1 = always)
 const LEVELS = [
   { key: "easy",   name: "EASY",   coins: 100, emoji: "😊" },
   { key: "medium", name: "MEDIUM", coins: 250, emoji: "😬" },
@@ -101,6 +102,7 @@ const levelNameEl = $("level-name");
 const bankNumEl = $("bank-num");
 const nextBtn = $("next");
 const passBtn = $("pass");
+const askPupBtn = $("ask-pup");
 
 let players = [];     // everyone playing (see makePlayer)
 let turn = 0;         // whose turn it is (0 = player 1)
@@ -193,6 +195,7 @@ function makePlayer(number) {
     pot: 0,           // coins won this level, not banked yet
     levelIndex: 0,    // 0 = easy, 1 = medium, 2 = hard
     pickedLevel: false, // picked where to start (Easy, Medium or Hard) yet?
+    askedPup: false,  // used Ask the Pup on this level yet?
     hardWins: [],     // themes this player has beaten on Hard
     theme: "",
     levelQuestions: [], // empty = needs to pick a theme for a new level
@@ -579,6 +582,7 @@ function startLevel(themeName) {
   p.pot = 0;
   p.current = 0;
   p.results = [];
+  p.askedPup = false;
   p.levelQuestions = pickLevelQuestions(themeName, level().key, p.seen);
   p.seen.push(...p.levelQuestions);
   rememberAsked(p.levelQuestions);
@@ -598,6 +602,7 @@ function showQuestion() {
   answersEl.innerHTML = "";
   nextBtn.classList.add("hidden");
   passBtn.classList.toggle("hidden", stillPlaying().length < 2);
+  askPupBtn.classList.toggle("hidden", p.askedPup);
   dogEl.className = "pup full";
   effectEl.className = "";
   effectEl.textContent = "";
@@ -629,6 +634,7 @@ function chooseAnswer(i) {
   buttons.forEach(b => b.disabled = true);
   buttons[q.right].classList.add("right");
   passBtn.classList.add("hidden");
+  askPupBtn.classList.add("hidden");
 
   if (i === q.right) {
     p.results.push(true);
@@ -853,6 +859,23 @@ function showScores(newOnes) {
   showOverlay("scores-screen");
 }
 
+// ---------- Ask the Pup ----------
+// Once per level, your pup sniffs the answers and barks at one. It's only right some of the time!
+function askThePup() {
+  const p = me();
+  const q = p.levelQuestions[p.current];
+  p.askedPup = true;
+  askPupBtn.classList.add("hidden");
+  let choice = q.right;
+  if (Math.random() >= PUP_RIGHT_CHANCE) {
+    choice = pick(q.answers.map((a, i) => i).filter(i => i !== q.right));
+  }
+  animate(dogEl, "happy");
+  sfx.bark();
+  answersEl.children[choice].classList.add("pup-pick");
+  say(p.dogName + " sniffs around... and barks at " + LETTERS[choice] + "! Woof woof!");
+}
+
 // ---------- Screen lick ----------
 // A giant tongue swooshes up over the whole screen and leaves slobber drips that slide down
 const TONGUE_SVG = '<svg viewBox="0 0 120 160" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">' +
@@ -926,6 +949,7 @@ nextBtn.addEventListener("click", () => {
   else levelPassed();
 });
 passBtn.addEventListener("click", passTurn);
+askPupBtn.addEventListener("click", askThePup);
 $("start").addEventListener("click", newGame);
 $("go-home").addEventListener("click", goHome);
 document.querySelectorAll(".count-button").forEach(btn =>
