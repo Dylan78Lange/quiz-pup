@@ -205,6 +205,9 @@ function buy(item) {
       (players.length > 1 ? " - or to tease the other players!" : ".");
   }
 
+  giveSticker(p, "shopper");
+  if (item.name === "Crown") giveSticker(p, "royal");
+
   // Toys, hats and tricks are kept forever, so save them (and the piggy bank coins at home)
   saveToPiggy(p, atHome ? p.bank : piggyFor(p.name).coins);
 
@@ -323,6 +326,7 @@ function piggyShopper(name) {
 function fillPiggyBanks() {
   return players.map(p => {
     const pig = saveToPiggy(p, piggyFor(p.name).coins + p.bank);
+    if (pig && pig.coins >= 1000) giveSticker(p, "piggy-rich");
     return { name: p.name, added: p.bank, total: pig ? pig.coins : p.bank };
   });
 }

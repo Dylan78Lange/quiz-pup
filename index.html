@@ -8,7 +8,7 @@
         content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'">
   <title>Quiz Pup</title>
   <!-- The ?v= number makes phones fetch the newest files. Make it bigger when you publish changes! -->
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
   <div id="stage">
@@ -66,6 +66,7 @@
     <!-- Home screen -->
     <div id="start-screen" class="overlay">
       <button id="home-background" title="Pick a background">🎨</button>
+      <button id="home-stickers" title="Sticker book">📒</button>
       <h1 class="overlay-title">QUIZ PUP</h1>
       <div class="overlay-dog" id="start-dog"></div>
       <p>The quiz show where your pup is the star!</p>
@@ -178,6 +179,16 @@
       <button id="background-done" class="big-button">Back home 🏠</button>
     </div>
 
+    <!-- Sticker book (opens from the 📒 button on the home screen) -->
+    <div id="sticker-screen" class="overlay hidden">
+      <h1 class="overlay-title small">STICKER BOOK</h1>
+      <p id="sticker-empty">No stickers yet! 🏅 Play a game to win your first one.</p>
+      <p id="sticker-who"></p>
+      <div id="sticker-names"></div>
+      <div id="sticker-grid"></div>
+      <button id="sticker-back" class="big-button">Back home 🏠</button>
+    </div>
+
     <!-- Who's shopping? Opens from the 🛒 cart on the home screen -->
     <div id="piggy-screen" class="overlay hidden">
       <h1 class="overlay-title small">WHO'S SHOPPING?</h1>
@@ -205,20 +216,21 @@
     </div>
   </div>
 
-  <script src="dogs.js?v=6"></script>
-  <script src="hosts.js?v=6"></script>
-  <script src="sound.js?v=6"></script>
-  <script src="logos.js?v=6"></script>
-  <script src="questions/themes.js?v=6"></script>
-  <script src="questions/geography.js?v=6"></script>
-  <script src="questions/video-games.js?v=6"></script>
-  <script src="questions/kids-movies.js?v=6"></script>
-  <script src="questions/food.js?v=6"></script>
-  <script src="questions/brand-icons.js?v=6"></script>
-  <script src="questions/famous-people.js?v=6"></script>
-  <script src="questions/animals.js?v=6"></script>
-  <script src="game.js?v=6"></script>
-  <script src="shop.js?v=6"></script>
-  <script src="backgrounds.js?v=6"></script>
+  <script src="dogs.js?v=7"></script>
+  <script src="hosts.js?v=7"></script>
+  <script src="sound.js?v=7"></script>
+  <script src="logos.js?v=7"></script>
+  <script src="questions/themes.js?v=7"></script>
+  <script src="questions/geography.js?v=7"></script>
+  <script src="questions/video-games.js?v=7"></script>
+  <script src="questions/kids-movies.js?v=7"></script>
+  <script src="questions/food.js?v=7"></script>
+  <script src="questions/brand-icons.js?v=7"></script>
+  <script src="questions/famous-people.js?v=7"></script>
+  <script src="questions/animals.js?v=7"></script>
+  <script src="game.js?v=7"></script>
+  <script src="shop.js?v=7"></script>
+  <script src="backgrounds.js?v=7"></script>
+  <script src="stickers.js?v=7"></script>
 </body>
 </html>

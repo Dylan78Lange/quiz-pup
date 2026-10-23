@@ -196,6 +196,9 @@ function makePlayer(number) {
     levelIndex: 0,    // 0 = easy, 1 = medium, 2 = hard
     pickedLevel: false, // picked where to start (Easy, Medium or Hard) yet?
     askedPup: false,  // used Ask the Pup on this level yet?
+    streak: 0,        // right answers in a row (for the On Fire sticker)
+    rightThisGame: 0, // right answers this game (for the Big Brain sticker)
+    themesPlayed: [], // themes played this game (for the Explorer sticker)
     hardWins: [],     // themes this player has beaten on Hard
     theme: "",
     levelQuestions: [], // empty = needs to pick a theme for a new level
@@ -321,6 +324,7 @@ function savePlayerForm() {
   if (setupIndex < players.length) {
     showPlayerForm();
   } else {
+    if (players.length > 1) players.forEach(pl => giveSticker(pl, "party"));
     turn = 0;
     startTurn();
   }
@@ -584,6 +588,8 @@ function startLevel(themeName) {
   p.current = 0;
   p.results = [];
   p.askedPup = false;
+  if (!p.themesPlayed.includes(themeName)) p.themesPlayed.push(themeName);
+  if (p.themesPlayed.length >= 3) giveSticker(p, "explorer");
   p.levelQuestions = pickLevelQuestions(themeName, level().key, p.seen);
   p.seen.push(...p.levelQuestions);
   rememberAsked(p.levelQuestions);
@@ -637,9 +643,17 @@ function chooseAnswer(i) {
   passBtn.classList.add("hidden");
   askPupBtn.classList.add("hidden");
 
+  // Stickers! (see stickers.js)
+  if (p.pupPickFor === q && p.pupPick !== q.right) giveSticker(p, "silly-pup");
+
   if (i === q.right) {
     p.results.push(true);
     p.pot += level().coins;
+    p.streak++;
+    p.rightThisGame++;
+    giveSticker(p, "first-try");
+    if (p.streak >= 5) giveSticker(p, "on-fire");
+    if (p.rightThisGame >= 10) giveSticker(p, "big-brain");
     say(pick(host().right) + " +" + level().coins + " coins!", "cheer");
     dogEl.className = "pup full happy";
     showPot(true);
@@ -649,6 +663,7 @@ function chooseAnswer(i) {
     // A wrong answer costs a life and ends the level (you need all 3 right to pass)
     p.results.push(false);
     p.lives--;
+    p.streak = 0;
     lastWrong = true;
     buttons[i].classList.add("wrong");
     const oops = pick(NAUGHTY_THINGS);
@@ -659,7 +674,10 @@ function chooseAnswer(i) {
     nextBtn.textContent = "Oh no... ▶";
     sfx.wrong();
     setTimeout(sfx[oops.sound], 1400); // the naughty noise comes after the sad trombone
-    if (oops.move === "lick") setTimeout(lickScreen, 1200);
+    if (oops.move === "lick") {
+      setTimeout(lickScreen, 1200);
+      setTimeout(() => giveSticker(p, "slobbered"), 4000);
+    }
   }
 
   showHud();
@@ -695,6 +713,7 @@ function levelFailed() {
   if (p.lives === 0) {
     p.done = true;
     p.ending = "out";
+    giveSticker(p, "never-give-up");
     showEnd("GAME OVER",
       "Out of lives! " + p.dogName + " needs a nap. You keep your " + p.bank + " banked coins.",
       finishLabel(), endTurn, false);
@@ -709,6 +728,7 @@ function levelFailed() {
 
 function levelPassed() {
   const p = me();
+  giveSticker(p, level().key); // the Easy, Medium or Hard sticker
   p.bank += p.pot;
   const won = p.pot;
   p.pot = 0;
@@ -720,6 +740,7 @@ function levelPassed() {
     if (p.hardWins.length >= HARD_ROUNDS) {
       p.done = true;
       p.ending = "won";
+      giveSticker(p, "champion");
       showEnd("YOU WIN!!!",
         "You beat HARD in " + HARD_ROUNDS + " themes! " + p.dogName + " is doing the happiest dance EVER! 🐶💃",
         finishLabel(), endTurn, false);
@@ -887,6 +908,9 @@ function askThePup() {
   animate(dogEl, "happy");
   sfx.bark();
   answersEl.children[choice].classList.add("pup-pick");
+  p.pupPick = choice; // after you answer, a wrong bark wins the Silly Pup sticker
+  p.pupPickFor = q;
+  giveSticker(p, "pup-helper");
   say(p.dogName + " sniffs around... and barks at " + LETTERS[choice] + "! Woof woof!");
 }
 

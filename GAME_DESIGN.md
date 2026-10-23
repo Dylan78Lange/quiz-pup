@@ -69,6 +69,14 @@ questions you haven't seen lately first. RECENT_MAX in game.js sets how many it 
   answer (it gets a purple glow and a 🐾). But the pup is only right about half the time - it's a gamble!
 - PUP_RIGHT_CHANCE at the top of game.js sets how often the pup is right (0.5 = half, 1 = always).
 
+## Sticker book 📒
+- Win stickers for cool things (16 of them): first right answer, 5 in a row, 10 right in a game, beating
+  Easy / Medium / Hard, winning, playing 3 themes, using Ask the Pup, a silly pup bark, getting licked,
+  shopping, buying the Crown, 1,000 coins in your piggy bank, playing with friends, and never giving up.
+- A "NEW STICKER!" pops up when you win one. Every name has its own sticker book (saved in this browser).
+- Open it with the 📒 button on the home screen. Stickers you don't have yet are grey with a hint.
+- The stickers live in `stickers.js`.
+
 ## Coins
 - Easy: 100 coins per right answer
 - Medium: 250 coins per right answer
