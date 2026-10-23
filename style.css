@@ -1005,6 +1005,50 @@ body {
 .theme-button.level-medium { border-color: var(--gold); }
 .theme-button.level-hard { border-color: var(--red); }
 
+/* Background picker: the 🎨 button in the corner of the home screen, and the picker screen */
+#home-background {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+  background: var(--pink);
+  cursor: pointer;
+  padding: 0;
+}
+#background-screen { justify-content: flex-start; z-index: 6; }
+.bg-section { font-size: 20px; color: var(--gold); margin: 10px 0 6px; width: 100%; max-width: 620px; text-align: left; }
+.bg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+  width: 100%;
+  max-width: 620px;
+}
+.bg-button {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  color: white;
+  background: var(--night);
+  border: 3px solid #3a2a8a;
+  border-radius: 12px;
+  padding: 5px;
+  cursor: pointer;
+}
+.bg-button.chosen { border-color: var(--gold); box-shadow: 0 0 12px var(--gold); }
+.bg-preview { display: block; height: 52px; border-radius: 8px; margin-bottom: 4px; }
+#background-done { margin: 14px 0 8px; }
+
+/* Dark backgrounds: words on the stage turn white so you can still read them */
+#stage.dark-bg #pot, #stage.dark-bg #progress, #stage.dark-bg #dog-name {
+  color: white;
+  text-shadow: 0 2px 0 var(--night);
+}
+
 .hidden { display: none !important; }
 
 /* ============================================

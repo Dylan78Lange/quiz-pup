@@ -63,6 +63,7 @@
 
     <!-- Home screen -->
     <div id="start-screen" class="overlay">
+      <button id="home-background" title="Pick a background">🎨</button>
       <h1 class="overlay-title">QUIZ PUP</h1>
       <div class="overlay-dog" id="start-dog"></div>
       <p>The quiz show where your pup is the star!</p>
@@ -164,6 +165,16 @@
       <button id="scores-play" class="big-button">Let's play! ▶</button>
     </div>
 
+    <!-- Background picker (opens from the 🎨 button on the home screen) -->
+    <div id="background-screen" class="overlay hidden">
+      <h1 class="overlay-title small">PICK A BACKGROUND!</h1>
+      <h2 class="bg-section">🖼️ Pictures</h2>
+      <div id="background-pictures" class="bg-grid"></div>
+      <h2 class="bg-section">🎨 Colors</h2>
+      <div id="background-colors" class="bg-grid"></div>
+      <button id="background-done" class="big-button">Back home 🏠</button>
+    </div>
+
     <!-- Pup Shop (opens on top of the end screen, or from the cart on the home screen) -->
     <div id="shop-screen" class="overlay hidden">
       <h1 class="overlay-title small">PUP SHOP</h1>
@@ -193,5 +204,6 @@
   <script src="questions/famous-people.js"></script>
   <script src="game.js"></script>
   <script src="shop.js"></script>
+  <script src="backgrounds.js"></script>
 </body>
 </html>

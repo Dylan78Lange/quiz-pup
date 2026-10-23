@@ -25,6 +25,10 @@ Right answers make the dog happy; wrong answers cost lives. Win coins, spend the
 - At the bottom, a row of round buttons: 🏆 Top Scores, a big pulsing START QUIZ circle, and a 🛒 cart.
 - START QUIZ: pick how many players, then each player's name and dog, then the level, then the theme.
 - 🛒 Cart: peek at everything in the Pup Shop and the prices. You buy things during a game.
+- 🎨 Background button (top left): pick what's behind the stage. 14 pictures (Classic, Sunset, Space,
+  Under the Sea, Candy, Flowers, Safari, Brick Wall, Stage, City, Shop, House, Movie Star, Sports)
+  and 9 plain colors. All drawn with code and emoji. The game remembers your pick (in this browser).
+  On dark backgrounds the words on the stage turn white. They live in `backgrounds.js`.
 - 🏠 Home button (top right, next to music and sound) goes back to the home screen from anywhere.
   If a game is still going it asks first, because the game will end.
 

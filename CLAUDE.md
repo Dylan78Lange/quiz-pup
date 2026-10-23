@@ -39,3 +39,4 @@ This is a child's first game project. The person chatting with you may be a kid.
 - `sound.js` - sound effects and the hip hop music, all made with code
 - `game.js` - the game code (players, turns, levels, scores)
 - `shop.js` - the Pup Shop: things to buy and how buying works
+- `backgrounds.js` - the backgrounds you can pick with the 🎨 button (pictures and plain colors)
