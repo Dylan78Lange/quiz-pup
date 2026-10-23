@@ -593,6 +593,60 @@ body {
 
 /* Homework: chomp chomp (paper gets smaller, bits fall), then a big BURP */
 .pup.full.homework .head { animation: chew 0.18s ease-in-out 7; }
+
+/* Lick: the pup leans in close... then a giant tongue licks the whole screen (lickScreen in game.js) */
+.pup.full.lick .head { animation: lean-lick 1.8s ease-in-out 0.8s; }
+@keyframes lean-lick {
+  0%, 100% { transform: none; }
+  30%, 75% { transform: translateY(-6px) scale(1.18); }
+  50% { transform: translateY(-6px) scale(1.18) rotate(-8deg); }
+}
+.lick-screen { position: absolute; inset: 0; z-index: 7; pointer-events: none; overflow: hidden; }
+.lick-screen .tongue {
+  position: absolute;
+  left: 15%;
+  bottom: 0;
+  width: 70%;
+  height: 90%;
+  transform: translateY(110%);
+  transform-origin: 50% 100%;
+  animation: tongue-lick 1.3s ease-in-out forwards;
+}
+.lick-screen .tongue svg { width: 100%; height: 100%; display: block; }
+@keyframes tongue-lick {
+  0% { transform: translateY(110%); }
+  30% { transform: translateY(4%) rotate(-12deg); }
+  50% { transform: translateY(0) rotate(12deg); }
+  70% { transform: translateY(4%) rotate(-6deg); }
+  100% { transform: translateY(115%); }
+}
+/* Shiny slobber drips that slide down and fade away */
+.slobber {
+  position: absolute;
+  width: 46px;
+  height: 38px;
+  border-radius: 50% 50% 45% 55%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.95) 0 14%, rgba(170, 225, 255, 0.6) 16%);
+  border: 2px solid rgba(120, 190, 235, 0.7);
+  opacity: 0;
+  animation: slobber 4s ease-in forwards;
+}
+.slobber::after {
+  content: "";
+  position: absolute;
+  left: 40%;
+  top: 85%;
+  width: 10px;
+  height: 22px;
+  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+  background: rgba(170, 225, 255, 0.7);
+}
+@keyframes slobber {
+  0% { opacity: 0; transform: scale(0.3); }
+  10% { opacity: 1; transform: scale(1); }
+  75% { opacity: 0.9; transform: translateY(40px) scaleY(1.2); }
+  100% { opacity: 0; transform: translateY(70px) scaleY(1.3); }
+}
 .pup.full.homework .paper { transform-origin: 0% 50%; animation: eat-paper 1.3s steps(4) forwards; }
 .pup.full.homework .bit { animation: bit-fall 0.7s ease-in 0.3s forwards; }
 .pup.full.homework .b2 { animation-delay: 0.6s; }

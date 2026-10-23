@@ -15,6 +15,8 @@ Right answers make the dog happy; wrong answers cost lives. Win coins, spend the
     - Vase: a vase appears, the tail swipes it, it wobbles, tips and smashes into shards
     - Homework: chews a sheet of paper (bits fall), belly puffs, big "BURP!" cloud
     - Tail chase: spins round and round, then swirly dizzy eyes with circling stars
+    - Lick: leans in close, then a giant tongue licks the whole screen and leaves slobber
+      drips that slide down and fade (with a SLURP sound)
     Silly cartoon fun, never scary.
 - The stage pup is a full-body drawing (dogs.js, dogBodySvg) that is always alive: wagging tail,
   blinking eyes, little head tilts. Happy = bouncy squash-and-stretch jump with floating hearts.

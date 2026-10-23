@@ -72,6 +72,7 @@ const NAUGHTY_THINGS = [
   { says: "CRASH! The pup knocked over the vase!", move: "vase", sound: "crash" },
   { says: "The pup ate the host's homework... and burped!", move: "homework", sound: "burp" },
   { says: "The pup is chasing its own tail!", move: "chase", sound: "boing" },
+  { says: "SLURP! The pup licked the screen... now it's all slobbery!", move: "lick", sound: "slurp" },
 ];
 
 // Fun names for players who don't type one (letters only, up to 8)
@@ -651,6 +652,7 @@ function chooseAnswer(i) {
     nextBtn.textContent = "Oh no... ▶";
     sfx.wrong();
     setTimeout(sfx[oops.sound], 1400); // the naughty noise comes after the sad trombone
+    if (oops.move === "lick") setTimeout(lickScreen, 1200);
   }
 
   showHud();
@@ -849,6 +851,33 @@ function showScores(newOnes) {
     list.appendChild(li);
   });
   showOverlay("scores-screen");
+}
+
+// ---------- Screen lick ----------
+// A giant tongue swooshes up over the whole screen and leaves slobber drips that slide down
+const TONGUE_SVG = '<svg viewBox="0 0 120 160" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">' +
+  '<path d="M8 160 L8 62 Q8 4 60 4 Q112 4 112 62 L112 160 Z" fill="#ff6b8b" stroke="#1a1040" stroke-width="4"/>' +
+  '<path d="M60 34 L60 130" stroke="#e0456a" stroke-width="6" stroke-linecap="round"/>' +
+  '<ellipse cx="38" cy="42" rx="9" ry="15" fill="#ff9aae"/></svg>';
+
+function lickScreen() {
+  const stage = $("stage");
+  const lick = document.createElement("div");
+  lick.className = "lick-screen";
+  const tongue = document.createElement("div");
+  tongue.className = "tongue";
+  tongue.innerHTML = TONGUE_SVG;
+  lick.appendChild(tongue);
+  for (let i = 0; i < 9; i++) {
+    const drop = document.createElement("span");
+    drop.className = "slobber";
+    drop.style.left = 5 + Math.random() * 80 + "%";
+    drop.style.top = 10 + Math.random() * 60 + "%";
+    drop.style.animationDelay = 0.4 + Math.random() * 0.5 + "s";
+    lick.appendChild(drop);
+  }
+  stage.appendChild(lick);
+  setTimeout(() => lick.remove(), 5000);
 }
 
 // ---------- Confetti ----------

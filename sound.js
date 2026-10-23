@@ -173,6 +173,12 @@ const sfx = {
     noise(t, 0.5, 0.2, out, "bandpass", 300);
   }),
 
+  // The pup licks the screen: a wet slurp
+  slurp: () => play((t, out) => {
+    noise(t, 0.45, 0.3, out, "bandpass", 700);
+    tone(260, t, 0.45, "sine", 0.25, out, 900);
+  }),
+
   // Robot host talking: bleep bloop
   robotTalk: () => play((t, out) => {
     for (let i = 0; i < 4; i++) tone(300 + Math.random() * 600, t + i * 0.07, 0.06, "square", 0.05, out);
