@@ -26,7 +26,7 @@ Right answers make the dog happy; wrong answers cost lives. Win coins, spend the
 - The title, the jumping pup and "Pick your host" at the top.
 - At the bottom, a row of round buttons: 🏆 Top Scores, a big pulsing START QUIZ circle, and a 🛒 cart.
 - START QUIZ: pick how many players, then each player's name and dog, then the level, then the theme.
-- 🛒 Cart: peek at everything in the Pup Shop and the prices. You buy things during a game.
+- 🛒 Cart: "Who's shopping?" - pick your name and spend the coins in your piggy bank (or "Just look").
 - 🎨 Background button (top left): pick what's behind the stage. 14 pictures (Classic, Sunset, Space,
   Under the Sea, Candy, Flowers, Safari, Brick Wall, Stage, City, Shop, House, Movie Star, Sports)
   and 9 plain colors. All drawn with code and emoji. The game remembers your pick (in this browser).
@@ -115,7 +115,10 @@ questions you haven't seen lately first. RECENT_MAX in game.js sets how many it 
 - Dress-up: one hat at a time on the pup's head (bow, cap, top hat, crown).
 - Tricks (emotes): buttons under the pup - bark, spin, roll over, dance, raspberry.
   In multiplayer they're also for teasing the other players (keep it silly and friendly).
-- Everything you buy lasts for one game.
+- Piggy bank 🐷: every player name has its own piggy bank (saved in this browser only). When a game
+  ends, the coins you banked go in. Spend them from the 🛒 cart on the home screen.
+- Toys, hats and tricks are kept forever: every game you play with that name, your pup has them.
+  Treats get eaten, so you buy them again during a game (they can't be bought from the home screen).
 - Prices were doubled so you have to win a few right answers before you can shop.
 - Items live in `shop.js` - easy to add more.
 

@@ -97,26 +97,48 @@ function tease(owner, trick, pupEl) {
   say(owner.dogName + " " + trick.tease + " " + me().name + "! " + trick.emoji);
 }
 
+// Who is shopping right now: a player in the game, someone spending their piggy bank
+// from the home screen, or nobody (just looking)
+let shopper = null;
+
 function openShop() {
-  shopScreen.classList.remove("peek");
-  shopSaysEl.textContent = "Welcome to the Pup Shop, " + me().name + "! What would you like?";
+  shopper = me();
+  shopScreen.classList.remove("home");
+  shopSaysEl.textContent = "Welcome to the Pup Shop, " + shopper.name + "! What would you like?";
+  $("wallet-label").textContent = "COINS TO SPEND";
   $("shop-close").textContent = "Back to the show ▶";
   showShop();
   shopScreen.classList.remove("hidden");
 }
 
-// From the cart on the home screen: look at everything, but nobody has coins yet
-function peekShop() {
-  shopScreen.classList.add("peek");
-  shopSaysEl.textContent = "Have a look around! Win coins in the quiz to buy treats for your pup.";
+// From the cart on the home screen: spend the coins in your piggy bank
+function homeShop(name) {
+  shopper = piggyShopper(name);
+  shopScreen.classList.add("home");
+  shopSaysEl.textContent = "Hi " + name + "! Things you buy here are yours to keep in every game. " +
+    "Treats get eaten, so you buy those during a game.";
+  $("wallet-label").textContent = "🐷 PIGGY BANK";
   $("shop-close").textContent = "Back home 🏠";
+  $("piggy-screen").classList.add("hidden");
+  showShop();
+  shopScreen.classList.remove("hidden");
+}
+
+// Just looking: nobody has a piggy bank yet
+function peekShop() {
+  shopper = null;
+  shopScreen.classList.add("home");
+  shopSaysEl.textContent = "Have a look around! Win coins in the quiz and they go in your piggy bank.";
+  $("shop-close").textContent = "Back home 🏠";
+  $("piggy-screen").classList.add("hidden");
   showShop();
   shopScreen.classList.remove("hidden");
 }
 
 function showShop() {
-  const peeking = shopScreen.classList.contains("peek");
-  const p = peeking ? null : me();
+  const p = shopper;
+  const atHome = shopScreen.classList.contains("home");
+  $("shop-wallet").classList.toggle("hidden", !p);
   if (p) {
     $("shop-coins").textContent = p.bank;
     $("shop-dog").innerHTML = pupHtml(p);
@@ -141,19 +163,19 @@ function showShop() {
 
       const btn = document.createElement("button");
       btn.className = "buy-button";
-      if (!p) {
-        btn.innerHTML = '<span class="coin">Q</span> ' + item.price;
-        btn.disabled = true;
-      } else if (hasItem(p, item)) {
+      if (p && hasItem(p, item)) {
         btn.textContent = item.type === "wear" ? "Wearing ✓" : "Got it ✓";
         btn.disabled = true;
-      } else if (item.life && p.lives >= LIVES) {
+      } else if (p && atHome && item.type === "treat") {
+        btn.textContent = "In a game";
+        btn.disabled = true;
+      } else if (p && item.life && p.lives >= LIVES) {
         btn.textContent = "Lives full";
         btn.disabled = true;
       } else {
         btn.innerHTML = '<span class="coin">Q</span> ' + item.price;
-        btn.disabled = p.bank < item.price;
-        btn.addEventListener("click", () => buy(item));
+        btn.disabled = !p || p.bank < item.price;
+        if (p) btn.addEventListener("click", () => buy(item));
       }
       card.appendChild(btn);
       row.appendChild(card);
@@ -163,7 +185,8 @@ function showShop() {
 }
 
 function buy(item) {
-  const p = me();
+  const p = shopper;
+  const atHome = shopScreen.classList.contains("home");
   p.bank -= item.price;
   sfx.coin();
 
@@ -182,16 +205,152 @@ function buy(item) {
       (players.length > 1 ? " - or to tease the other players!" : ".");
   }
 
+  // Toys, hats and tricks are kept forever, so save them (and the piggy bank coins at home)
+  saveToPiggy(p, atHome ? p.bank : piggyFor(p.name).coins);
+
   showShop();
   animate($("shop-dog"), "happy");
   const wallet = $("shop-coins");
   wallet.classList.remove("bump");
   void wallet.offsetWidth;
   wallet.classList.add("bump");
-  showStage();
-  $("end-coins-num").textContent = p.bank;
+  if (!atHome) {
+    showStage();
+    $("end-coins-num").textContent = p.bank;
+  }
+}
+
+// ---------- Piggy bank ----------
+// Every player name has a piggy bank, saved in this browser. Coins you bank in a game go in
+// when the game ends. Toys, hats and tricks you buy are kept forever. Saved data could be
+// anything, so it's always checked against the real shop items before it's used.
+const PIGGY_KEY = "quiz-pup-piggy-banks";
+const MAX_PIGGY_COINS = 9999999;
+const MAX_PIGGIES = 30; // how many names can have a piggy bank
+
+function itemNamed(type, name) {
+  return SHOP_ITEMS.find(item => item.type === type && item.name === name);
+}
+
+function itemWithEmoji(type, emoji) {
+  return SHOP_ITEMS.find(item => item.type === type && item.emoji === emoji);
+}
+
+function emptyPiggy(name) {
+  return { name: name, coins: 0, breed: BREEDS[0].key, dogName: "Biscuit", toys: [], wear: "", tricks: [] };
+}
+
+// Check one saved piggy bank: names are letters only, and only real shop items are kept
+function cleanPiggy(name, pig) {
+  if (!/^[A-Z]{1,8}$/.test(name) || !pig || typeof pig !== "object") return null;
+  const realItems = (type, list) => Array.isArray(list)
+    ? [...new Set(list.filter(n => itemNamed(type, n)))] : [];
+  const coins = Math.floor(Number(pig.coins));
+  return {
+    name: name,
+    coins: Number.isFinite(coins) ? Math.min(Math.max(coins, 0), MAX_PIGGY_COINS) : 0,
+    breed: BREEDS.some(b => b.key === pig.breed) ? pig.breed : BREEDS[0].key,
+    dogName: typeof pig.dogName === "string" && pig.dogName.trim() ? pig.dogName.trim().slice(0, 14) : "Biscuit",
+    toys: realItems("toy", pig.toys),
+    wear: itemNamed("wear", pig.wear) ? pig.wear : "",
+    tricks: realItems("trick", pig.tricks),
+  };
+}
+
+function loadPiggies() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(PIGGY_KEY));
+    const piggies = {};
+    if (!saved || typeof saved !== "object" || Array.isArray(saved)) return piggies;
+    Object.keys(saved).slice(0, MAX_PIGGIES).forEach(name => {
+      const pig = cleanPiggy(name, saved[name]);
+      if (pig) piggies[name] = pig;
+    });
+    return piggies;
+  } catch (e) {
+    return {};
+  }
+}
+
+function piggyFor(name) {
+  return loadPiggies()[name] || emptyPiggy(name);
+}
+
+// Save a player's kept things and set their piggy bank coins
+function saveToPiggy(p, coins) {
+  const piggies = loadPiggies();
+  if (!piggies[p.name] && Object.keys(piggies).length >= MAX_PIGGIES) {
+    // Full up: make room by removing the piggy bank with the fewest coins
+    const smallest = Object.values(piggies).sort((a, b) => a.coins - b.coins)[0];
+    delete piggies[smallest.name];
+  }
+  const pig = cleanPiggy(p.name, {
+    coins: coins,
+    breed: p.breed,
+    dogName: p.dogName,
+    toys: p.owned.toys.map(emoji => (itemWithEmoji("toy", emoji) || {}).name),
+    wear: (itemWithEmoji("wear", p.owned.wear) || {}).name,
+    tricks: p.owned.tricks.map(trick => trick.name),
+  });
+  if (!pig) return;
+  piggies[p.name] = pig;
+  try {
+    localStorage.setItem(PIGGY_KEY, JSON.stringify(piggies));
+  } catch (e) {
+    // can't save in this browser - it still works for this game
+  }
+  return pig;
+}
+
+// A player starting a game gets the toys, hat and tricks they bought before
+function loadKeptItems(p) {
+  const pig = piggyFor(p.name);
+  p.owned.toys = pig.toys.map(name => itemNamed("toy", name).emoji);
+  p.owned.wear = pig.wear ? itemNamed("wear", pig.wear).emoji : "";
+  p.owned.tricks = pig.tricks.map(name => itemNamed("trick", name));
+}
+
+// Someone shopping from the home screen, with their piggy bank coins to spend
+function piggyShopper(name) {
+  const pig = piggyFor(name);
+  const p = { name: name, dogName: pig.dogName, breed: pig.breed, bank: pig.coins, lives: LIVES,
+    owned: { toys: [], wear: "", tricks: [] } };
+  loadKeptItems(p);
+  return p;
+}
+
+// At the end of a game, everyone's banked coins go into their piggy bank
+function fillPiggyBanks() {
+  return players.map(p => {
+    const pig = saveToPiggy(p, piggyFor(p.name).coins + p.bank);
+    return { name: p.name, added: p.bank, total: pig ? pig.coins : p.bank };
+  });
+}
+
+// The cart on the home screen: pick whose piggy bank to spend
+function showPiggyPicker() {
+  const piggies = Object.values(loadPiggies()).sort((a, b) => b.coins - a.coins);
+  const list = $("piggy-list");
+  list.innerHTML = "";
+  $("piggy-empty").classList.toggle("hidden", piggies.length > 0);
+  piggies.forEach(pig => {
+    const btn = document.createElement("button");
+    btn.className = "piggy-button";
+    const who = document.createElement("span");
+    who.textContent = "🐷 " + pig.name;
+    const coins = document.createElement("span");
+    coins.className = "score-coins";
+    coins.innerHTML = '<span class="coin">Q</span> ';
+    coins.append(String(pig.coins)); // added as plain text, never as HTML
+    btn.append(who, coins);
+    btn.addEventListener("click", () => homeShop(pig.name));
+    list.appendChild(btn);
+  });
+  $("piggy-screen").classList.remove("hidden");
 }
 
 $("end-shop").addEventListener("click", openShop);
-$("home-shop").addEventListener("click", peekShop);
+$("home-shop").addEventListener("click", showPiggyPicker);
+$("piggy-look").addEventListener("click", peekShop);
+$("piggy-back").addEventListener("click", () => $("piggy-screen").classList.add("hidden"));
 $("shop-close").addEventListener("click", () => shopScreen.classList.add("hidden"));

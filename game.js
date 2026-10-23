@@ -316,6 +316,7 @@ function savePlayerForm() {
   p.name = $("player-name").value.toUpperCase().replace(/[^A-Z]/g, "").slice(0, 8) || $("player-name").placeholder;
   p.dogName = $("pup-name").value.trim().slice(0, 14) || $("pup-name").placeholder;
   p.breed = chosenBreed;
+  loadKeptItems(p); // toys, hats and tricks this name bought in earlier games
   setupIndex++;
   if (setupIndex < players.length) {
     showPlayerForm();
@@ -758,6 +759,7 @@ function quitGame() {
 // ---------- Final results ----------
 function showFinal() {
   saveAllScores();
+  showPiggyBanks(fillPiggyBanks());
   const ranked = [...players].sort((a, b) => b.bank - a.bank);
   const icons = { won: "🏆", quit: "👋", out: "💤" };
 
@@ -833,6 +835,18 @@ function saveAllScores() {
   });
   scores.sort((a, b) => b.coins - a.coins);
   storeScores(scores.slice(0, MAX_SCORES));
+}
+
+// Under the final scores: how many coins went into each piggy bank
+function showPiggyBanks(results) {
+  const box = $("final-piggy");
+  box.innerHTML = "";
+  results.forEach(r => {
+    const line = document.createElement("div");
+    line.className = "piggy-line";
+    line.textContent = "🐷 " + r.name + "'s piggy bank: +" + r.added + " coins = " + r.total + " coins";
+    box.appendChild(line);
+  });
 }
 
 // "newOnes" = highlight scores that were just saved

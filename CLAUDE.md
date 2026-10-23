@@ -22,7 +22,7 @@ This is a child's first game project. The person chatting with you may be a kid.
 
 ## Security (this is a public website)
 - Never put player-typed text (names, pup names) or saved data (localStorage) into `innerHTML`.
-  Use `textContent` or `append()` instead. Saved scores go through `cleanScore()` before use.
+  Use `textContent` or `append()` instead. Saved scores go through `cleanScore()` and piggy banks through `cleanPiggy()` before use.
 - When publishing changes, bump the `?v=` number on every `<link>` and `<script>` in index.html,
   so phones don't mix a new page with old cached files.
 - Keep the Content-Security-Policy `<meta>` tag in index.html. Everything must be the game's own

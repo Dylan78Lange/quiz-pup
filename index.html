@@ -8,7 +8,7 @@
         content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'">
   <title>Quiz Pup</title>
   <!-- The ?v= number makes phones fetch the newest files. Make it bigger when you publish changes! -->
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
   <div id="stage">
@@ -154,6 +154,7 @@
       <h1 id="final-title" class="overlay-title small">FINAL SCORES</h1>
       <ol id="final-list"></ol>
       <p>Scores saved to the Top Score Board! 🏆</p>
+      <div id="final-piggy"></div>
       <div class="end-buttons">
         <button id="final-scores" class="big-button quit">🏆 Top Scores</button>
         <button id="final-again" class="big-button">Play again ↺</button>
@@ -177,13 +178,24 @@
       <button id="background-done" class="big-button">Back home 🏠</button>
     </div>
 
+    <!-- Who's shopping? Opens from the 🛒 cart on the home screen -->
+    <div id="piggy-screen" class="overlay hidden">
+      <h1 class="overlay-title small">WHO'S SHOPPING?</h1>
+      <p id="piggy-empty">No piggy banks yet! 🐷 Play a game and your coins will be saved here.</p>
+      <div id="piggy-list"></div>
+      <div class="end-buttons">
+        <button id="piggy-look" class="big-button quit">👀 Just look</button>
+        <button id="piggy-back" class="big-button">Back home 🏠</button>
+      </div>
+    </div>
+
     <!-- Pup Shop (opens on top of the end screen, or from the cart on the home screen) -->
     <div id="shop-screen" class="overlay hidden">
       <h1 class="overlay-title small">PUP SHOP</h1>
       <div id="shop-top">
         <div id="shop-dog" class="pup"></div>
         <div id="shop-wallet">
-          <div class="wallet-label">COINS TO SPEND</div>
+          <div id="wallet-label" class="wallet-label">COINS TO SPEND</div>
           <div class="wallet-amount"><span class="coin big">Q</span> <span id="shop-coins">0</span></div>
         </div>
       </div>
@@ -193,20 +205,20 @@
     </div>
   </div>
 
-  <script src="dogs.js?v=5"></script>
-  <script src="hosts.js?v=5"></script>
-  <script src="sound.js?v=5"></script>
-  <script src="logos.js?v=5"></script>
-  <script src="questions/themes.js?v=5"></script>
-  <script src="questions/geography.js?v=5"></script>
-  <script src="questions/video-games.js?v=5"></script>
-  <script src="questions/kids-movies.js?v=5"></script>
-  <script src="questions/food.js?v=5"></script>
-  <script src="questions/brand-icons.js?v=5"></script>
-  <script src="questions/famous-people.js?v=5"></script>
-  <script src="questions/animals.js?v=5"></script>
-  <script src="game.js?v=5"></script>
-  <script src="shop.js?v=5"></script>
-  <script src="backgrounds.js?v=5"></script>
+  <script src="dogs.js?v=6"></script>
+  <script src="hosts.js?v=6"></script>
+  <script src="sound.js?v=6"></script>
+  <script src="logos.js?v=6"></script>
+  <script src="questions/themes.js?v=6"></script>
+  <script src="questions/geography.js?v=6"></script>
+  <script src="questions/video-games.js?v=6"></script>
+  <script src="questions/kids-movies.js?v=6"></script>
+  <script src="questions/food.js?v=6"></script>
+  <script src="questions/brand-icons.js?v=6"></script>
+  <script src="questions/famous-people.js?v=6"></script>
+  <script src="questions/animals.js?v=6"></script>
+  <script src="game.js?v=6"></script>
+  <script src="shop.js?v=6"></script>
+  <script src="backgrounds.js?v=6"></script>
 </body>
 </html>

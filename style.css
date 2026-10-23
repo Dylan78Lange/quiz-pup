@@ -882,7 +882,27 @@ body {
 .buy-button .coin { width: 18px; height: 18px; font-size: 11px; }
 .buy-button:disabled { background: #444; border-color: #666; color: #bbb; cursor: default; }
 #shop-close { margin: 14px 0 8px; }
-#shop-screen.peek #shop-wallet { display: none; }
+/* Piggy banks: the "Who's shopping?" list, and the lines on the final screen */
+#piggy-screen { z-index: 6; }
+#piggy-list { display: grid; gap: 8px; width: 100%; max-width: 360px; margin: 10px 0; }
+.piggy-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  background: var(--night);
+  border: 3px solid var(--pink);
+  border-radius: 14px;
+  padding: 10px 16px;
+  cursor: pointer;
+  letter-spacing: 2px;
+}
+.piggy-button:hover { background: #3a2a8a; }
+#final-piggy { margin-bottom: 6px; }
+.piggy-line { font-weight: bold; color: #ffb3d1; margin: 2px 0; }
 
 /* Music and sound on/off buttons - always on top, top right corner */
 #sound-buttons {
