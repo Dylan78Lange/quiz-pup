@@ -8,9 +8,9 @@ const QUESTIONS_PER_LEVEL = 3;
 const HARD_ROUNDS = 3; // to win, beat Hard in this many different themes
 const LOGO_QUESTIONS_PER_LEVEL = 2; // in Brand Icons, at least this many questions show a real logo
 const LEVELS = [
-  { key: "easy",   name: "EASY",   coins: 100, emoji: "🟢" },
-  { key: "medium", name: "MEDIUM", coins: 250, emoji: "🟡" },
-  { key: "hard",   name: "HARD",   coins: 500, emoji: "🔴" },
+  { key: "easy",   name: "EASY",   coins: 100, emoji: "😊" },
+  { key: "medium", name: "MEDIUM", coins: 250, emoji: "😬" },
+  { key: "hard",   name: "HARD",   coins: 500, emoji: "😱" },
 ];
 
 // The hosts and the things they say - add your own lines (or a whole new host!)

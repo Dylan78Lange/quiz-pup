@@ -29,7 +29,7 @@ Right answers make the dog happy; wrong answers cost lives. Win coins, spend the
   If a game is still going it asks first, because the game will end.
 
 ## How a round works
-1. At the start of the game, each player picks where to start: 🟢 Easy, 🟡 Medium or 🔴 Hard
+1. At the start of the game, each player picks where to start: 😊 Easy, 😬 Medium or 😱 Hard
    (the "PICK A LEVEL!" screen, right before their first theme). Start higher to skip ahead!
    Then levels go up in order: Easy, then Medium, then Hard. Hard has to be beaten 3 times, each in a
    different theme (HARD 1 of 3, 2 of 3, 3 of 3). Beaten themes get a ✅ and can't be picked again.
