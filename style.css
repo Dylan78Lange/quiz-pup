@@ -953,7 +953,7 @@ body {
   padding: 0;
 }
 .dice-button:hover { transform: rotate(20deg); }
-#count-buttons { display: flex; gap: 16px; margin-top: 20px; }
+#count-buttons { display: flex; gap: 16px; margin-top: 20px; justify-content: center; }
 .count-button { font-size: 40px; width: 90px; height: 90px; padding: 0; }
 .setup-fields { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 12px; }
 .setup-fields label { display: flex; flex-direction: column; gap: 6px; font-weight: bold; color: var(--gold); }
