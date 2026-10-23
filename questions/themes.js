@@ -10,6 +10,7 @@ const THEMES = [
   { name: "Food",           emoji: "🍕" },
   { name: "Brand Icons",    emoji: "🏷️" },
   { name: "Famous People",  emoji: "🌟" },
+  { name: "Animals",        emoji: "🐾" },
 ];
 
 const QUESTIONS = [];
