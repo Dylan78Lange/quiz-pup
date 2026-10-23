@@ -24,7 +24,7 @@ body {
 #stage {
   width: 760px;
   max-width: 100%;
-  min-height: 620px;
+  min-height: 652px;
   box-sizing: border-box;
   padding: 16px 24px;
   background: linear-gradient(var(--sky), var(--sky-deep));
@@ -779,6 +779,8 @@ body {
   z-index: 5;
   overflow-y: auto;
 }
+/* Full screens scroll instead of squishing things on top of each other */
+.overlay > * { flex-shrink: 0; }
 .overlay-title {
   font-size: 60px;
   margin: 0;
@@ -797,7 +799,7 @@ body {
 .big-button.shop { background: var(--green); color: var(--night); }
 
 /* Home screen: big round Start Quiz button and the shopping cart, at the bottom */
-#start-dog { margin-top: 32px; font-size: 90px; } /* room for the pup to jump without bumping the title */
+#start-dog { margin-top: 30px; font-size: 76px; } /* room for the pup to jump without bumping the title */
 #start-screen p { margin: 6px 0 10px; }
 #home-bottom {
   margin-top: auto;
@@ -1214,6 +1216,141 @@ body {
   color: white;
   text-shadow: 0 2px 0 var(--night);
 }
+
+/* Home screen: Question of the Day and My Questions buttons */
+#home-extras { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+.pill-button {
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  background: #3a2a8a;
+  border: 2px solid var(--gold);
+  border-radius: 20px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+.pill-button:hover { background: var(--pink); }
+
+/* Question of the Day */
+#daily-screen, #myq-screen { z-index: 6; }
+#daily-screen { justify-content: flex-start; }
+#daily-who { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.daily-label { font-weight: bold; color: var(--gold); }
+#daily-name, .myq-input {
+  font-family: inherit;
+  font-size: 18px; /* 16px or more so phones don't zoom in */
+  font-weight: bold;
+  text-align: center;
+  background: black;
+  color: white;
+  border: 3px solid var(--gold);
+  border-radius: 8px;
+  padding: 6px;
+}
+#daily-name { width: 200px; text-transform: uppercase; letter-spacing: 3px; }
+#daily-play { width: 100%; max-width: 560px; }
+#daily-box { background: var(--night); border: 4px solid var(--gold); border-radius: 12px; padding: 10px; margin-bottom: 10px; }
+#daily-theme { color: var(--gold); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; }
+#daily-question { font-size: 20px; font-weight: bold; margin-top: 4px; }
+#daily-answers { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; }
+#daily-message { min-height: 1.4em; color: var(--gold); }
+
+/* My Questions */
+#myq-screen { justify-content: flex-start; }
+.myq-help { font-size: 15px !important; margin: 4px 0 8px; }
+#myq-question { width: 100%; max-width: 520px; box-sizing: border-box; }
+.myq-answers { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; max-width: 520px; margin-top: 6px; }
+.myq-answers .myq-input { width: 100%; box-sizing: border-box; font-size: 16px; }
+.myq-right-row { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-weight: bold; }
+.myq-right {
+  font-family: inherit;
+  font-weight: 900;
+  font-size: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: var(--night);
+  color: var(--gold);
+  cursor: pointer;
+}
+.myq-right.chosen { background: var(--green); color: var(--night); }
+#myq-message { min-height: 1.4em; color: var(--gold); margin: 6px 0; font-size: 16px !important; }
+#myq-count { margin: 4px 0; font-size: 15px !important; }
+#myq-list { display: grid; gap: 6px; width: 100%; max-width: 520px; }
+.myq-row { display: flex; align-items: center; gap: 8px; background: var(--night); border-radius: 10px; padding: 6px 10px; text-align: left; }
+.myq-text { flex: 1; font-size: 14px; overflow-wrap: anywhere; }
+.myq-delete { background: var(--red); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; }
+#myq-back, #daily-back { margin: 12px 0 8px; }
+
+/* Beat the Clock: a bar that shrinks as time runs out, and turns red at the end */
+#clock {
+  position: relative;
+  height: 22px;
+  margin: 0 0 6px;
+  background: var(--night);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  overflow: hidden;
+}
+#clock-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--green), var(--gold)); }
+#clock.hurry #clock-fill { background: var(--red); }
+#clock.hurry { animation: growl-shake 0.12s linear infinite; }
+#clock-num {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 14px;
+  color: white;
+  text-shadow: 0 1px 2px var(--night);
+}
+#clock-toggle { font-size: 15px; margin-top: 12px; }
+#clock-toggle.off { opacity: 0.6; }
+
+/* Pup Care: hearts next to the pup's name, and pet / play / feed buttons on the end screen */
+#dog-name, #pup-happy { display: inline-block; }
+#pup-happy { font-size: 13px; letter-spacing: 1px; }
+#pup-care { background: #ffffff18; border: 2px solid #ffffff33; border-radius: 16px; padding: 6px 12px; margin-top: 6px; }
+.care-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
+#care-pup { font-size: 44px; }
+#care-hearts { font-size: 20px; letter-spacing: 2px; }
+#care-buttons { display: flex; gap: 8px; justify-content: center; margin-top: 4px; }
+.care-button {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 2px solid var(--gold);
+  background: var(--night);
+  color: white;
+  cursor: pointer;
+}
+.care-button:disabled { opacity: 0.4; cursor: default; }
+
+/* Spin the Prize Wheel */
+#wheel-screen { z-index: 6; }
+.big-button.wheel-button { background: var(--gold); color: var(--night); animation: throb 1.33s ease-in-out infinite; }
+#wheel-box { position: relative; width: 280px; height: 280px; margin: 6px 0; }
+#wheel { width: 100%; height: 100%; transition: transform 4s cubic-bezier(0.15, 0.7, 0.15, 1); }
+#wheel svg { width: 100%; height: 100%; display: block; }
+#wheel-arrow {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  margin-left: -16px;
+  width: 32px;
+  z-index: 1;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--gold);
+  text-shadow: 0 2px 0 var(--night), 0 0 8px var(--pink);
+}
+#wheel-result { min-height: 2.6em; }
 
 .hidden { display: none !important; }
 

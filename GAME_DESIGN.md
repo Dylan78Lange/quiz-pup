@@ -70,14 +70,41 @@ questions you haven't seen lately first. RECENT_MAX in game.js sets how many it 
 - PUP_RIGHT_CHANCE at the top of game.js sets how often the pup is right (0.5 = half, 1 = always).
 
 ## Sticker book 📒
-- Win stickers for cool things (16 of them): first right answer, 5 in a row, 10 right in a game, beating
+- Win stickers for cool things (21 of them): first right answer, 5 in a row, 10 right in a game, beating
   Easy / Medium / Hard, winning, playing 3 themes, using Ask the Pup, a silly pup bark, getting licked,
-  shopping, buying the Crown, 1,000 coins in your piggy bank, playing with friends, and never giving up.
+  shopping, buying the Crown, 1,000 coins in your piggy bank, playing with friends, never giving up,
+  spinning the Prize Wheel, a totally happy pup, playing your own quiz, the Question of the Day, and
+  beating the clock.
 - A "NEW STICKER!" pops up when you win one. Every name has its own sticker book (saved in this browser).
 - Open it with the 📒 button on the home screen. Stickers you don't have yet are grey with a hint.
 - To delete a sticker book: swipe the name to the left on a phone, or double-click it on a laptop.
   It asks first!
 - The stickers live in `stickers.js`.
+
+## Spin the Prize Wheel 🎡
+- Every time you pass a level you win a spin (the gold "🎡 Spin the Prize Wheel!" button on the
+  end-of-level screen). Prizes: +100 / +250 / +500 / +1000 coins, a treat for your pup, +1 life,
+  a mystery sticker, or "Oops! Nothing!". Change the prizes in `wheel.js`.
+
+## Pup Care 🐶
+- Your pup has a happiness meter (5 hearts) next to its name. Right answers +5, wrong answers -15.
+- On the end-of-level screen you can Pet (+10), Play (+15) and Feed (+20) your pup, once each per level.
+- Pass a level with a totally happy pup (5 hearts) for a +100 coin happy pup bonus. Settings in `pupcare.js`.
+
+## Beat the Clock ⏱️
+- On Hard, each question has a 20 second countdown bar. Answer with 10+ seconds left for a +100
+  speedy bonus. If time runs out, it counts as a wrong answer.
+- Turn it on or off on the "Pick a Level" screen (remembered). Settings in `clock.js`.
+
+## My Questions ✍️
+- On the home screen, "✍️ My Questions" lets you write your own questions (question, 4 answers,
+  which one is right). Saved in this browser only. With 3 or more, the "✍️ My Questions" theme shows
+  up in the theme picker, on any level. Delete one with its ✖ button. Code in `myquestions.js`.
+
+## Question of the Day 📅
+- On the home screen, "📅 Question of the Day": one special question each day (the same for
+  everybody, picked from the date). Each name can try it once a day. Right = +250 coins in your
+  piggy bank. Code in `daily.js`.
 
 ## Coins
 - Easy: 100 coins per right answer

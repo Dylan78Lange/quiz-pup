@@ -22,6 +22,11 @@ const STICKERS = [
   { key: "piggy-rich",  emoji: "🐷", name: "Piggy Rich",    how: "Have 1,000 coins in your piggy bank" },
   { key: "party",       emoji: "🎉", name: "Party Time",    how: "Play with friends (2 or more players)" },
   { key: "never-give-up", emoji: "💪", name: "Never Give Up", how: "Keep trying until your lives run out" },
+  { key: "lucky-spin",  emoji: "🎡", name: "Lucky Spin",    how: "Spin the Prize Wheel" },
+  { key: "best-friends", emoji: "❤️", name: "Best Friends", how: "Make your pup totally happy (5 hearts)" },
+  { key: "quiz-maker",  emoji: "✍️", name: "Quiz Maker",    how: "Play your own ✍️ My Questions quiz" },
+  { key: "daily-star",  emoji: "📅", name: "Daily Star",    how: "Get the Question of the Day right" },
+  { key: "speedy",      emoji: "⏱️", name: "Speedy",        how: "Beat the Clock with time to spare" },
 ];
 const STICKER_KEY = "quiz-pup-sticker-books";
 const MAX_BOOKS = 30; // how many names can have a sticker book

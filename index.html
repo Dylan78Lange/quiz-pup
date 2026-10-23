@@ -8,7 +8,7 @@
         content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'">
   <title>Quiz Pup</title>
   <!-- The ?v= number makes phones fetch the newest files. Make it bigger when you publish changes! -->
-  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
   <div id="stage">
@@ -37,6 +37,9 @@
     <div id="progress"></div>
     <div id="pot"></div>
 
+    <!-- Beat the Clock countdown on Hard questions (clock.js) -->
+    <div id="clock" class="hidden"><div id="clock-fill"></div><span id="clock-num"></span></div>
+
     <div id="question-box">
       <div id="theme"></div>
       <div id="logo-card" class="hidden"><div id="logo"></div></div>
@@ -51,7 +54,7 @@
         <span id="toys"></span>
         <div id="dog" class="pup full"></div>
       </div>
-      <div id="dog-name"></div>
+      <div id="dog-name"></div> <div id="pup-happy"></div>
       <div id="tricks"></div>
     </div>
 
@@ -73,6 +76,11 @@
       <div id="host-picker">
         <div class="host-picker-label">Pick your host:</div>
         <div id="host-buttons"></div>
+      </div>
+      <!-- Question of the Day (daily.js) and write your own questions (myquestions.js) -->
+      <div id="home-extras">
+        <button id="home-daily" class="pill-button">📅 Question of the Day</button>
+        <button id="home-myq" class="pill-button">✍️ My Questions</button>
       </div>
       <!-- Top Scores, the big round Start Quiz button and the shopping cart, at the bottom -->
       <div id="home-bottom">
@@ -129,6 +137,7 @@
       <h1 class="overlay-title small">PICK A LEVEL!</h1>
       <p id="level-who"></p>
       <div id="level-buttons"></div>
+      <button id="clock-toggle" class="big-button quit"></button>
     </div>
 
     <div id="theme-screen" class="overlay hidden">
@@ -143,11 +152,29 @@
       <div id="end-stars"></div>
       <p id="end-text"></p>
       <div id="end-coins"><span class="coin big">Q</span> <span id="end-coins-num">0</span></div>
+      <!-- Pup Care: pet, play with and feed your pup between levels (pupcare.js) -->
+      <div id="pup-care" class="hidden">
+        <div class="care-row"><span id="care-pup" class="pup"></span><span id="care-hearts"></span></div>
+        <div id="care-buttons"></div>
+      </div>
       <div class="end-buttons">
+        <button id="end-wheel" class="big-button wheel-button hidden">🎡 Spin the Prize Wheel!</button>
         <button id="end-main" class="big-button"></button>
         <button id="end-shop" class="big-button shop">🛒 Pup Shop</button>
         <button id="end-quit" class="big-button quit">Quit &amp; keep my coins</button>
       </div>
+    </div>
+
+    <!-- Spin the Prize Wheel (opens on top of the end screen after you pass a level) -->
+    <div id="wheel-screen" class="overlay hidden">
+      <h1 class="overlay-title small">SPIN THE WHEEL!</h1>
+      <div id="wheel-box">
+        <div id="wheel-arrow">▼</div>
+        <div id="wheel"></div>
+      </div>
+      <p id="wheel-result"></p>
+      <button id="wheel-spin" class="big-button">🎡 SPIN!</button>
+      <button id="wheel-done" class="big-button hidden">Yay! Back ▶</button>
     </div>
 
     <!-- Final results -->
@@ -177,6 +204,47 @@
       <h2 class="bg-section">🎨 Colors</h2>
       <div id="background-colors" class="bg-grid"></div>
       <button id="background-done" class="big-button">Back home 🏠</button>
+    </div>
+
+    <!-- Question of the Day -->
+    <div id="daily-screen" class="overlay hidden">
+      <h1 class="overlay-title small">QUESTION OF THE DAY</h1>
+      <p id="daily-date"></p>
+      <div id="daily-who">
+        <label class="daily-label" for="daily-name">Who's playing?</label>
+        <input id="daily-name" maxlength="8" autocomplete="off" placeholder="YOUR NAME">
+        <button id="daily-go" class="big-button">Let's go! ▶</button>
+      </div>
+      <div id="daily-play" class="hidden">
+        <div id="daily-box">
+          <div id="daily-theme"></div>
+          <div id="daily-question"></div>
+        </div>
+        <div id="daily-answers"></div>
+      </div>
+      <p id="daily-message"></p>
+      <button id="daily-back" class="big-button quit">Back home 🏠</button>
+    </div>
+
+    <!-- My Questions: write your own quiz -->
+    <div id="myq-screen" class="overlay hidden">
+      <h1 class="overlay-title small">MY QUESTIONS</h1>
+      <p class="myq-help">Write your own question! With 3 or more, the ✍️ My Questions theme shows up.</p>
+      <input id="myq-question" class="myq-input" maxlength="120" autocomplete="off" placeholder="Your question">
+      <div class="myq-answers">
+        <input id="myq-answer0" class="myq-input" maxlength="40" autocomplete="off" placeholder="Answer A">
+        <input id="myq-answer1" class="myq-input" maxlength="40" autocomplete="off" placeholder="Answer B">
+        <input id="myq-answer2" class="myq-input" maxlength="40" autocomplete="off" placeholder="Answer C">
+        <input id="myq-answer3" class="myq-input" maxlength="40" autocomplete="off" placeholder="Answer D">
+      </div>
+      <div class="myq-right-row">Which one is right?
+        <button class="myq-right">A</button><button class="myq-right">B</button><button class="myq-right">C</button><button class="myq-right">D</button>
+      </div>
+      <button id="myq-add" class="big-button">➕ Add question</button>
+      <p id="myq-message"></p>
+      <p id="myq-count"></p>
+      <div id="myq-list"></div>
+      <button id="myq-back" class="big-button quit">Back home 🏠</button>
     </div>
 
     <!-- Sticker book (opens from the 📒 button on the home screen) -->
@@ -216,21 +284,26 @@
     </div>
   </div>
 
-  <script src="dogs.js?v=9"></script>
-  <script src="hosts.js?v=9"></script>
-  <script src="sound.js?v=9"></script>
-  <script src="logos.js?v=9"></script>
-  <script src="questions/themes.js?v=9"></script>
-  <script src="questions/geography.js?v=9"></script>
-  <script src="questions/video-games.js?v=9"></script>
-  <script src="questions/kids-movies.js?v=9"></script>
-  <script src="questions/food.js?v=9"></script>
-  <script src="questions/brand-icons.js?v=9"></script>
-  <script src="questions/famous-people.js?v=9"></script>
-  <script src="questions/animals.js?v=9"></script>
-  <script src="game.js?v=9"></script>
-  <script src="shop.js?v=9"></script>
-  <script src="backgrounds.js?v=9"></script>
-  <script src="stickers.js?v=9"></script>
+  <script src="dogs.js?v=11"></script>
+  <script src="hosts.js?v=11"></script>
+  <script src="sound.js?v=11"></script>
+  <script src="logos.js?v=11"></script>
+  <script src="questions/themes.js?v=11"></script>
+  <script src="questions/geography.js?v=11"></script>
+  <script src="questions/video-games.js?v=11"></script>
+  <script src="questions/kids-movies.js?v=11"></script>
+  <script src="questions/food.js?v=11"></script>
+  <script src="questions/brand-icons.js?v=11"></script>
+  <script src="questions/famous-people.js?v=11"></script>
+  <script src="questions/animals.js?v=11"></script>
+  <script src="game.js?v=11"></script>
+  <script src="shop.js?v=11"></script>
+  <script src="backgrounds.js?v=11"></script>
+  <script src="stickers.js?v=11"></script>
+  <script src="pupcare.js?v=11"></script>
+  <script src="clock.js?v=11"></script>
+  <script src="wheel.js?v=11"></script>
+  <script src="myquestions.js?v=11"></script>
+  <script src="daily.js?v=11"></script>
 </body>
 </html>

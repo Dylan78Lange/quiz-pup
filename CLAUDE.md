@@ -23,7 +23,8 @@ This is a child's first game project. The person chatting with you may be a kid.
 ## Security (this is a public website)
 - Never put player-typed text (names, pup names) or saved data (localStorage) into `innerHTML`.
   Use `textContent` or `append()` instead. Saved scores go through `cleanScore()` and piggy banks through `cleanPiggy()`, sticker books
-  through `loadStickerBooks()` before use.
+  through `loadStickerBooks()`, your own questions through `cleanMyQuestion()` and daily answers
+  through `loadDaily()` before use.
 - When publishing changes, bump the `?v=` number on every `<link>` and `<script>` in index.html,
   so phones don't mix a new page with old cached files.
 - Keep the Content-Security-Policy `<meta>` tag in index.html. Everything must be the game's own
@@ -42,5 +43,10 @@ This is a child's first game project. The person chatting with you may be a kid.
 - `sound.js` - sound effects and the hip hop music, all made with code
 - `game.js` - the game code (players, turns, levels, scores)
 - `shop.js` - the Pup Shop: things to buy and how buying works
-- `stickers.js` - the sticker book: the 16 stickers and how you win them
+- `stickers.js` - the sticker book: the 21 stickers and how you win them
+- `wheel.js` - the Prize Wheel you spin after passing a level
+- `pupcare.js` - pup happiness hearts, and pet / play / feed between levels
+- `clock.js` - Beat the Clock: the countdown on Hard questions
+- `myquestions.js` - write your own questions (the ✍️ My Questions theme)
+- `daily.js` - the Question of the Day
 - `backgrounds.js` - the backgrounds you can pick with the 🎨 button (pictures and plain colors)

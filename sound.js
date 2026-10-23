@@ -201,6 +201,9 @@ const sfx = {
     noise(t + 0.12, 0.03, 0.25, out, "bandpass", 1800);
   }),
 
+  // The Prize Wheel clicking past a peg
+  tick: () => play((t, out) => tone(1500, t, 0.025, "square", 0.04, out)),
+
   // A new player's turn
   turn: () => play((t, out) => {
     piano(67, t, 0.2, 0.3, out);

@@ -199,6 +199,9 @@ function makePlayer(number) {
     streak: 0,        // right answers in a row (for the On Fire sticker)
     rightThisGame: 0, // right answers this game (for the Big Brain sticker)
     themesPlayed: [], // themes played this game (for the Explorer sticker)
+    wheelReady: false, // gets a spin of the Prize Wheel (after passing a level)
+    happy: HAPPY_START, // how happy the pup is, 0 to 100 (pupcare.js)
+    careDone: [],     // pet, play and feed done since the last level
     hardWins: [],     // themes this player has beaten on Hard
     theme: "",
     levelQuestions: [], // empty = needs to pick a theme for a new level
@@ -248,6 +251,7 @@ function showOverlay(id) {
 function goHome() {
   const playing = players.length > 0 && stillPlaying().length > 0;
   if (playing && !confirm("Go back to the home screen? This game will end.")) return;
+  stopClock();
   players = [];
   turn = 0;
   showOverlay("start-screen");
@@ -370,6 +374,7 @@ function endTurn() {
 // Pass: hand over to the next player. You get a different question when it's your turn again.
 function passTurn() {
   const p = me();
+  stopClock();
   const fresh = pickQuestions(p.theme, level().key, 1, p.levelQuestions.concat(p.seen));
   if (fresh.length > 0) {
     p.levelQuestions[p.current] = fresh[0];
@@ -394,6 +399,7 @@ function showStage() {
   dogEl.innerHTML = pupHtml(p, true);
   $("toys").textContent = p.owned.toys.join(" ");
   $("dog-name").textContent = p.dogName;
+  showHappiness();
   showTricks();
   showPlayersStrip();
 }
@@ -475,7 +481,7 @@ function shuffle(list) {
 // Pick some random questions, skipping any in "avoid" (unless there aren't enough left).
 // "only" can limit it to some questions, like only logo ones.
 function pickQuestions(themeName, levelKey, howMany, avoid, only = () => true) {
-  const all = QUESTIONS.filter(q => q.theme === themeName && q.level === levelKey && only(q));
+  const all = QUESTIONS.filter(q => q.theme === themeName && (q.level === levelKey || q.anyLevel) && only(q));
   let pool = all.filter(q => !avoid.includes(q));
   if (pool.length < howMany) pool = all;
   // Skip questions from the last few games too, if there are enough others
@@ -588,8 +594,10 @@ function startLevel(themeName) {
   p.current = 0;
   p.results = [];
   p.askedPup = false;
+  p.careDone = [];
   if (!p.themesPlayed.includes(themeName)) p.themesPlayed.push(themeName);
   if (p.themesPlayed.length >= 3) giveSticker(p, "explorer");
+  if (themeName === MY_THEME.name) giveSticker(p, "quiz-maker");
   p.levelQuestions = pickLevelQuestions(themeName, level().key, p.seen);
   p.seen.push(...p.levelQuestions);
   rememberAsked(p.levelQuestions);
@@ -625,6 +633,7 @@ function showQuestion() {
     btn.addEventListener("click", () => chooseAnswer(i));
     answersEl.appendChild(btn);
   });
+  startClock(); // Beat the Clock on Hard (clock.js)
 }
 
 // Picture questions have a "logo" - one of the names in logos.js
@@ -634,8 +643,10 @@ function showLogo(q) {
   $("logo").innerHTML = q.logo ? logoSvg(q.logo) : "";
 }
 
+// i = which answer (0 to 3), or -1 if the clock ran out
 function chooseAnswer(i) {
   const p = me();
+  const secondsLeft = stopClock();
   const q = p.levelQuestions[p.current];
   const buttons = answersEl.querySelectorAll(".answer");
   buttons.forEach(b => b.disabled = true);
@@ -652,9 +663,10 @@ function chooseAnswer(i) {
     p.streak++;
     p.rightThisGame++;
     giveSticker(p, "first-try");
+    cheerUpPup(p, HAPPY_RIGHT);
     if (p.streak >= 5) giveSticker(p, "on-fire");
     if (p.rightThisGame >= 10) giveSticker(p, "big-brain");
-    say(pick(host().right) + " +" + level().coins + " coins!", "cheer");
+    say(pick(host().right) + " +" + level().coins + " coins!" + speedyBonus(p, secondsLeft), "cheer");
     dogEl.className = "pup full happy";
     showPot(true);
     sfx.right();
@@ -664,10 +676,11 @@ function chooseAnswer(i) {
     p.results.push(false);
     p.lives--;
     p.streak = 0;
+    cheerUpPup(p, HAPPY_WRONG);
     lastWrong = true;
-    buttons[i].classList.add("wrong");
+    if (buttons[i]) buttons[i].classList.add("wrong");
     const oops = pick(NAUGHTY_THINGS);
-    say(pick(host().wrong) + " " + oops.says.replace("The pup", p.dogName).replace("the pup", p.dogName), "facepalm");
+    say((i === -1 ? "⏰ Time's up! " : "") + pick(host().wrong) + " " + oops.says.replace("The pup", p.dogName).replace("the pup", p.dogName), "facepalm");
     dogEl.className = "pup full " + (oops.move || "naughty");
     effectEl.textContent = oops.effect || "";
     effectEl.className = oops.how || "";
@@ -697,6 +710,8 @@ function showEnd(title, text, mainLabel, mainAction, between) {
   afterEnd = mainAction;
   $("end-quit").classList.toggle("hidden", !between);
   $("end-shop").classList.toggle("hidden", !between);
+  $("end-wheel").classList.toggle("hidden", !(between && me().wheelReady));
+  showPupCare(between);
   showOverlay("end-screen");
 }
 
@@ -729,6 +744,8 @@ function levelFailed() {
 function levelPassed() {
   const p = me();
   giveSticker(p, level().key); // the Easy, Medium or Hard sticker
+  p.wheelReady = true; // passing a level wins a spin of the Prize Wheel (wheel.js)
+  const bonus = happyPupBonus(p); // a totally happy pup gives bonus coins (pupcare.js)
   p.bank += p.pot;
   const won = p.pot;
   p.pot = 0;
@@ -742,7 +759,7 @@ function levelPassed() {
       p.ending = "won";
       giveSticker(p, "champion");
       showEnd("YOU WIN!!!",
-        "You beat HARD in " + HARD_ROUNDS + " themes! " + p.dogName + " is doing the happiest dance EVER! 🐶💃",
+        "You beat HARD in " + HARD_ROUNDS + " themes! " + p.dogName + " is doing the happiest dance EVER! 🐶💃" + bonus,
         finishLabel(), endTurn, false);
       sfx.win();
       confetti(80);
@@ -753,7 +770,7 @@ function levelPassed() {
     // Stay on Hard, but next time it has to be a different theme
     showEnd("HARD " + p.hardWins.length + " OF " + HARD_ROUNDS + " DONE!",
       won + " coins banked! You beat HARD " + p.theme + ". Beat HARD in " +
-      (HARD_ROUNDS - p.hardWins.length) + " more theme" + (HARD_ROUNDS - p.hardWins.length > 1 ? "s" : "") + " to win!",
+      (HARD_ROUNDS - p.hardWins.length) + " more theme" + (HARD_ROUNDS - p.hardWins.length > 1 ? "s" : "") + " to win!" + bonus,
       "Next: " + levelLabel() + " ▶", continueTurn, true);
     return;
   }
@@ -763,7 +780,7 @@ function levelPassed() {
   p.levelIndex++;
   // A right answer means you keep your turn, so carry straight on
   showEnd("LEVEL PASSED!",
-    won + " coins banked! " + p.dogName + " is SO proud! Ready for " + levelLabel() + "?",
+    won + " coins banked! " + p.dogName + " is SO proud! Ready for " + levelLabel() + "?" + bonus,
     "Next: " + levelLabel() + " ▶", continueTurn, true);
 }
 
